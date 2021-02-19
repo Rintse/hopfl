@@ -1,0 +1,50 @@
+entrypoints Type, Exp, Envi ;
+comment     "#" ;
+
+
+-- Tokens
+token       Lam     ('λ' | '\\') ;
+token       Prod    ('×' | '*') ;
+token       To      ('→' | '-''>') ;
+token       Next    ('⊳' | '|''>') ;
+token       Napp    ('⊙' | '(''.'')') ;
+
+
+-- Types
+TReal.      Typ3    ::= "real" ;
+TNext.      Typ2    ::= Next Typ3 ;
+TPRod.      Typ1    ::= Typ1 Prod Typ2 ;
+TFun.       Typ     ::= Typ1 To Typ ;
+
+coercions Typ 3 ;
+
+
+-- Atoms
+Var.        Exp4    ::= Ident ;
+Val.        Exp4    ::= Integer ;
+
+
+-- Functions
+Rec.        Exp1    ::= "fix" Ident "." Exp1 ;
+Abstr.      Exp1    ::= Lam Ident "." Exp1 ;
+App.        Exp3    ::= Exp3 Exp4 ;
+NApp.       Exp3    ::= Exp4 Napp Exp4 ;
+
+
+-- Products
+Pair.       Exp2    ::= "<" Exp3 "," Exp2 ">";
+Fst.        Exp3    ::= "fst" Exp4 ;
+Snd.        Exp3    ::= "snd" Exp4 ;
+
+
+-- Expressions with explicit types
+Typed.      Exp     ::= Exp "::" Typ ;
+
+coercions Exp 4 ;
+
+
+-- Environment passing
+Assign.     Assignment  ::= Ident "=" Exp ;
+Env.        Environment ::= [Assignment] ;
+
+separator   Assignment ";" ;
