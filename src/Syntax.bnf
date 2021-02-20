@@ -1,4 +1,4 @@
-entrypoints Type, Exp, Envi ;
+entrypoints Typ, Exp, Environment ;
 comment     "#" ;
 
 

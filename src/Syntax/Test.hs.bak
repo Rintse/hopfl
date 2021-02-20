@@ -6,11 +6,11 @@ import System.Environment ( getArgs, getProgName )
 import System.Exit        ( exitFailure, exitSuccess )
 import Control.Monad      ( when )
 
-import Grammar.Lex   ( Token )
-import Grammar.Par   ( pType, myLexer )
-import Grammar.Skel  ()
-import Grammar.Print ( Print, printTree )
-import Grammar.Abs   ()
+import Syntax.Lex   ( Token )
+import Syntax.Par   ( pType, myLexer )
+import Syntax.Skel  ()
+import Syntax.Print ( Print, printTree )
+import Syntax.Abs   ()
 
 type Err = Either String
 type ParseFun a = [Token] -> Err a
