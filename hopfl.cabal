@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 7a2e761f018f498682990f19b4a2fb0da825c020bd9fb17d9cf2539e6cffa2cb
+-- hash: 9a6d267cd114fa198d5fb3e27efa32512453888fdc2c6c1ab7c8c551094627e0
 
 name:           hopfl
 version:        0.1.0.0
@@ -14,7 +14,6 @@ bug-reports:    https://github.com/rintse/hopfl/issues
 author:         Rintse van de Vlasakker
 maintainer:     Rintse van de Vlasakker
 license:        BSD3
-license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
     README.md
@@ -26,6 +25,7 @@ source-repository head
 
 library
   exposed-modules:
+      ErrM
       Semantics
       Syntax.Abs
       Syntax.ErrM
@@ -40,6 +40,9 @@ library
   build-depends:
       array
     , base >=4.7 && <5
+    , containers
+    , hashable
+    , unordered-containers >=0.2.12.0
   default-language: Haskell2010
 
 executable hopfl-exe
@@ -52,7 +55,10 @@ executable hopfl-exe
   build-depends:
       array
     , base >=4.7 && <5
+    , containers
+    , hashable
     , hopfl
+    , unordered-containers >=0.2.12.0
   default-language: Haskell2010
 
 test-suite hopfl-test
@@ -66,5 +72,8 @@ test-suite hopfl-test
   build-depends:
       array
     , base >=4.7 && <5
+    , containers
+    , hashable
     , hopfl
+    , unordered-containers >=0.2.12.0
   default-language: Haskell2010
