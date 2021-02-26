@@ -1,34 +1,32 @@
 -- Small step semantics for guarded HOPFL
 module Semantics where
 
+import Syntax.Abs
 import Data.HashMap.Lazy as HM
-import DeBruijn.Abs as DB
-import DeBruijn.Translate
-import DeBruijn.Substitution
 
 -- Environment as hashmap
-type Env = HashMap String DB.Exp
+type Env = HashMap String Exp
 
 emptyEnv :: Env
 emptyEnv = HM.empty
 
-mkEnv :: Raw.Environment -> Env
-mkEnv (Raw.Env e) = fromList $ fmap mkAssign e
+mkEnv :: Environment -> Env
+mkEnv (Env e) = fromList $ fmap mkAssign e
   where
-    mkAssign (Raw.Assign (Raw.Ident x) exp) = (x, toDeBruijnTree exp)
+    mkAssign (Assign (Ident x) exp) = (x, exp)
 
 -- Update the environment
-update :: String -> DB.Exp -> Env -> Env
+update :: String -> Exp -> Env -> Env
 update = insert
 
 -- Lookup in the environment
-getVal :: String -> Env -> DB.Exp
+getVal :: String -> Env -> Exp
 getVal x e = e ! x
 
 
 
 result :: IO ()
-result = print $ eval 0
+result = print $ evalExp 0
 
-eval :: Integer -> Float
-eval x = 0 
+evalExp :: Integer -> Float
+evalExp x = 0 
