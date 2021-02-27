@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE CPP, ImplicitParams #-}
 
 #if __GLASGOW_HASKELL__ >= 708
 ---------------------------------------------------------------------------
@@ -20,6 +20,8 @@ module Syntax.ErrM where
 
 import Control.Monad       (MonadPlus(..))
 import Control.Applicative (Alternative(..))
+import GHC.Stack
+
 
 -- | Error monad with 'String' error messages.
 type Err = Either String
@@ -83,3 +85,6 @@ instance Alternative Err where
   (<|>) = mplus
 
 #endif
+
+failure :: (Show a, ?loc :: CallStack) => a -> b
+failure x = error $ "Undefined case: " ++ show x ++ "\n" ++ show ?loc

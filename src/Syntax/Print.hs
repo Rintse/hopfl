@@ -12,6 +12,7 @@ module Syntax.Print where
 
 import qualified Syntax.Abs
 import Data.Char
+import Data.Tree
 
 -- | The top-level printing method.
 

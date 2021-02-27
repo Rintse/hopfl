@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 59c1c87ae8b58d9bf3b3d9d2085577f73c8599a6626cf4788e1c7ed58d10eb92
+-- hash: a6f08191dd015f767ce71d5f04f280766632b4354da72ef1ad7617a8a7592d25
 
 name:           hopfl
 version:        0.1.0.0
@@ -41,7 +41,9 @@ library
       array
     , base >=4.7 && <5
     , containers
+    , directory
     , hashable
+    , mtl
     , unordered-containers >=0.2.12.0
   default-language: Haskell2010
 
@@ -56,8 +58,10 @@ executable hopfl-exe
       array
     , base >=4.7 && <5
     , containers
+    , directory
     , hashable
     , hopfl
+    , mtl
     , unordered-containers >=0.2.12.0
   default-language: Haskell2010
 
@@ -73,7 +77,9 @@ test-suite hopfl-test
       array
     , base >=4.7 && <5
     , containers
+    , directory
     , hashable
     , hopfl
+    , mtl
     , unordered-containers >=0.2.12.0
   default-language: Haskell2010
