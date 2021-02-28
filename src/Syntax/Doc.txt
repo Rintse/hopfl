@@ -17,7 +17,11 @@ reserved words excluded.
 
 
 ===Literals===
-Integer literals //Integer// are nonempty sequences of digits.
+Double-precision float literals //Double// have the structure
+indicated by the regular expression ``digit+ '.' digit+ ('e' ('-')? digit+)?`` i.e.\
+two sequences of digits separated by a decimal point, optionally
+followed by an unsigned or negative exponent.
+
 
 
 
@@ -29,16 +33,19 @@ Integer literals //Integer// are nonempty sequences of digits.
 Lam literals are recognized by the regular expression
 `````["\λ"]`````
 
+Mu literals are recognized by the regular expression
+`````'μ' | {"|u"}`````
+
 Prod literals are recognized by the regular expression
 `````["*×"]`````
 
 To literals are recognized by the regular expression
 `````'→' | {"->"}`````
 
-Next literals are recognized by the regular expression
+Later literals are recognized by the regular expression
 `````'⊳' | {"|>"}`````
 
-Napp literals are recognized by the regular expression
+Lapp literals are recognized by the regular expression
 `````'⊙' | {"(.)"}`````
 
 
@@ -46,10 +53,11 @@ Napp literals are recognized by the regular expression
 The set of reserved words is the set of terminals appearing in the grammar. Those reserved words that consist of non-letter characters are called symbols, and they are treated in a different way from those that are similar to identifiers. The lexer follows rules familiar from languages like Haskell, C, and Java, including longest match and spacing conventions.
 
 The reserved words used in Syntax are the following:
-  | ``fix`` | ``fst`` | ``real`` | ``snd``
+  | ``fix`` | ``fst`` | ``in`` | ``next``
+  | ``normal`` | ``out`` | ``real`` | ``snd``
 
 The symbols used in Syntax are the following:
-  | ( | ) | . | <
+  | . | ( | ) | <
   | , | > | :: | =
   | ; |  |  |
 
@@ -62,29 +70,38 @@ The symbols -> (production),  **|**  (union)
 and **eps** (empty rule) belong to the BNF notation.
 All other symbols are terminals.
 
-  | //Typ3// | -> | ``real``
+  | //Typ4// | -> | ``real``
+  |  |  **|**  | //Ident//
   |  |  **|**  | ``(`` //Typ// ``)``
-  | //Typ2// | -> | //Next// //Typ3//
+  | //Typ3// | -> | //Later// //Typ3//
+  |  |  **|**  | //Typ4//
+  | //Typ2// | -> | //Typ1// //Prod// //Typ2//
   |  |  **|**  | //Typ3//
-  | //Typ1// | -> | //Typ1// //Prod// //Typ2//
+  | //Typ1// | -> | //Mu// //Ident// ``.`` //Typ1//
   |  |  **|**  | //Typ2//
   | //Typ// | -> | //Typ1// //To// //Typ//
   |  |  **|**  | //Typ1//
-  | //Exp4// | -> | //Ident//
-  |  |  **|**  | //Integer//
+  | //Exp6// | -> | //Ident//
+  |  |  **|**  | //Double//
   |  |  **|**  | ``(`` //Exp// ``)``
-  | //Exp1// | -> | ``fix`` //Ident// ``.`` //Exp1//
-  |  |  **|**  | //Lam// //Ident// ``.`` //Exp1//
-  |  |  **|**  | //Exp2//
-  | //Exp3// | -> | //Exp3// //Exp4//
-  |  |  **|**  | //Exp4// //Napp// //Exp4//
+  | //Exp5// | -> | ``next`` //Exp6//
+  |  |  **|**  | ``in`` //Exp6//
+  |  |  **|**  | ``out`` //Exp6//
+  |  |  **|**  | //Exp6//
+  | //Exp4// | -> | //Exp4// //Exp4//
+  |  |  **|**  | //Exp4// //Lapp// //Exp4//
+  |  |  **|**  | ``<`` //Exp4// ``,`` //Exp4// ``>``
   |  |  **|**  | ``fst`` //Exp4//
   |  |  **|**  | ``snd`` //Exp4//
-  |  |  **|**  | //Exp4//
-  | //Exp2// | -> | ``<`` //Exp3// ``,`` //Exp2// ``>``
-  |  |  **|**  | //Exp3//
+  |  |  **|**  | ``normal`` //Exp4//
+  |  |  **|**  | //Exp5//
+  | //Exp1// | -> | //Lam// //Ident// ``.`` //Exp1//
+  |  |  **|**  | ``fix`` //Ident// ``.`` //Exp1//
+  |  |  **|**  | //Exp2//
   | //Exp// | -> | //Exp// ``::`` //Typ//
   |  |  **|**  | //Exp1//
+  | //Exp2// | -> | //Exp3//
+  | //Exp3// | -> | //Exp4//
   | //Assignment// | -> | //Ident// ``=`` //Exp//
   | //Environment// | -> | //[Assignment]//
   | //[Assignment]// | -> | **eps**

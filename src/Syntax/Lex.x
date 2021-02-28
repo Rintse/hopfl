@@ -17,7 +17,7 @@ $d = [0-9]           -- digit
 $i = [$l $d _ ']     -- identifier character
 $u = [. \n]          -- universal: any character
 @rsyms =    -- symbols and non-identifier-like reserved words
-   \( | \) | \. | \< | \, | \> | \: \: | \= | \;
+   \. | \( | \) | \< | \, | \> | \: \: | \= | \;
 :-
 
 -- Line comments
@@ -28,22 +28,24 @@ $white+ ;
     { tok (\p s -> PT p (eitherResIdent (TV . share) s)) }
 [\\ λ]
     { tok (\p s -> PT p (eitherResIdent (T_Lam . share) s)) }
+μ | \| u
+    { tok (\p s -> PT p (eitherResIdent (T_Mu . share) s)) }
 [\* \×]
     { tok (\p s -> PT p (eitherResIdent (T_Prod . share) s)) }
 \→ | \- \>
     { tok (\p s -> PT p (eitherResIdent (T_To . share) s)) }
 \⊳ | \| \>
-    { tok (\p s -> PT p (eitherResIdent (T_Next . share) s)) }
+    { tok (\p s -> PT p (eitherResIdent (T_Later . share) s)) }
 \⊙ | \( \. \)
-    { tok (\p s -> PT p (eitherResIdent (T_Napp . share) s)) }
+    { tok (\p s -> PT p (eitherResIdent (T_Lapp . share) s)) }
 
 $l $i*
     { tok (\p s -> PT p (eitherResIdent (TV . share) s)) }
 
 
-$d+
-    { tok (\p s -> PT p (TI $ share s))    }
 
+$d+ \. $d+ (e (\-)? $d+)?
+    { tok (\p s -> PT p (TD $ share s)) }
 
 {
 
@@ -61,10 +63,11 @@ data Tok =
  | TD !String         -- double precision float literals
  | TC !String         -- character literals
  | T_Lam !String
+ | T_Mu !String
  | T_Prod !String
  | T_To !String
- | T_Next !String
- | T_Napp !String
+ | T_Later !String
+ | T_Lapp !String
 
  deriving (Eq,Show,Ord)
 
@@ -103,10 +106,11 @@ tokenText t = case t of
   PT _ (TC s)   -> s
   Err _         -> "#error"
   PT _ (T_Lam s) -> s
+  PT _ (T_Mu s) -> s
   PT _ (T_Prod s) -> s
   PT _ (T_To s) -> s
-  PT _ (T_Next s) -> s
-  PT _ (T_Napp s) -> s
+  PT _ (T_Later s) -> s
+  PT _ (T_Lapp s) -> s
 
 prToken :: Token -> String
 prToken t = tokenText t
@@ -122,7 +126,7 @@ eitherResIdent tv s = treeFind resWords
                               | s == a = t
 
 resWords :: BTree
-resWords = b "<" 7 (b "." 4 (b ")" 2 (b "(" 1 N N) (b "," 3 N N)) (b ";" 6 (b "::" 5 N N) N)) (b "fst" 11 (b ">" 9 (b "=" 8 N N) (b "fix" 10 N N)) (b "snd" 13 (b "real" 12 N N) N))
+resWords = b ">" 9 (b "::" 5 (b "," 3 (b ")" 2 (b "(" 1 N N) N) (b "." 4 N N)) (b "<" 7 (b ";" 6 N N) (b "=" 8 N N))) (b "normal" 14 (b "in" 12 (b "fst" 11 (b "fix" 10 N N) N) (b "next" 13 N N)) (b "real" 16 (b "out" 15 N N) (b "snd" 17 N N)))
    where b s n = let bs = s
                  in  B bs (TS bs n)
 

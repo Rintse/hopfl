@@ -12,7 +12,6 @@ module Syntax.Print where
 
 import qualified Syntax.Abs
 import Data.Char
-import Data.Tree
 
 -- | The top-level printing method.
 
@@ -104,36 +103,45 @@ instance Print Syntax.Abs.Ident where
 instance Print Syntax.Abs.Lam where
   prt _ (Syntax.Abs.Lam i) = doc $ showString $ i
 
+instance Print Syntax.Abs.Mu where
+  prt _ (Syntax.Abs.Mu i) = doc $ showString $ i
+
 instance Print Syntax.Abs.Prod where
   prt _ (Syntax.Abs.Prod i) = doc $ showString $ i
 
 instance Print Syntax.Abs.To where
   prt _ (Syntax.Abs.To i) = doc $ showString $ i
 
-instance Print Syntax.Abs.Next where
-  prt _ (Syntax.Abs.Next i) = doc $ showString $ i
+instance Print Syntax.Abs.Later where
+  prt _ (Syntax.Abs.Later i) = doc $ showString $ i
 
-instance Print Syntax.Abs.Napp where
-  prt _ (Syntax.Abs.Napp i) = doc $ showString $ i
+instance Print Syntax.Abs.Lapp where
+  prt _ (Syntax.Abs.Lapp i) = doc $ showString $ i
 
 instance Print Syntax.Abs.Typ where
   prt i e = case e of
-    Syntax.Abs.TReal -> prPrec i 3 (concatD [doc (showString "real")])
-    Syntax.Abs.TNext next typ -> prPrec i 2 (concatD [prt 0 next, prt 3 typ])
-    Syntax.Abs.TPRod typ1 prod typ2 -> prPrec i 1 (concatD [prt 1 typ1, prt 0 prod, prt 2 typ2])
+    Syntax.Abs.TReal -> prPrec i 4 (concatD [doc (showString "real")])
+    Syntax.Abs.TVar id -> prPrec i 4 (concatD [prt 0 id])
+    Syntax.Abs.TLat later typ -> prPrec i 3 (concatD [prt 0 later, prt 3 typ])
+    Syntax.Abs.TPRod typ1 prod typ2 -> prPrec i 2 (concatD [prt 1 typ1, prt 0 prod, prt 2 typ2])
+    Syntax.Abs.TRec mu id typ -> prPrec i 1 (concatD [prt 0 mu, prt 0 id, doc (showString "."), prt 1 typ])
     Syntax.Abs.TFun typ1 to typ2 -> prPrec i 0 (concatD [prt 1 typ1, prt 0 to, prt 0 typ2])
 
 instance Print Syntax.Abs.Exp where
   prt i e = case e of
-    Syntax.Abs.Var id -> prPrec i 4 (concatD [prt 0 id])
-    Syntax.Abs.Val n -> prPrec i 4 (concatD [prt 0 n])
-    Syntax.Abs.Rec id exp -> prPrec i 1 (concatD [doc (showString "fix"), prt 0 id, doc (showString "."), prt 1 exp])
+    Syntax.Abs.Var id -> prPrec i 6 (concatD [prt 0 id])
+    Syntax.Abs.Val d -> prPrec i 6 (concatD [prt 0 d])
+    Syntax.Abs.Next exp -> prPrec i 5 (concatD [doc (showString "next"), prt 6 exp])
+    Syntax.Abs.In exp -> prPrec i 5 (concatD [doc (showString "in"), prt 6 exp])
+    Syntax.Abs.Out exp -> prPrec i 5 (concatD [doc (showString "out"), prt 6 exp])
+    Syntax.Abs.App exp1 exp2 -> prPrec i 4 (concatD [prt 4 exp1, prt 4 exp2])
+    Syntax.Abs.LApp exp1 lapp exp2 -> prPrec i 4 (concatD [prt 4 exp1, prt 0 lapp, prt 4 exp2])
+    Syntax.Abs.Pair exp1 exp2 -> prPrec i 4 (concatD [doc (showString "<"), prt 4 exp1, doc (showString ","), prt 4 exp2, doc (showString ">")])
+    Syntax.Abs.Fst exp -> prPrec i 4 (concatD [doc (showString "fst"), prt 4 exp])
+    Syntax.Abs.Snd exp -> prPrec i 4 (concatD [doc (showString "snd"), prt 4 exp])
+    Syntax.Abs.Norm exp -> prPrec i 4 (concatD [doc (showString "normal"), prt 4 exp])
     Syntax.Abs.Abstr lam id exp -> prPrec i 1 (concatD [prt 0 lam, prt 0 id, doc (showString "."), prt 1 exp])
-    Syntax.Abs.App exp1 exp2 -> prPrec i 3 (concatD [prt 3 exp1, prt 4 exp2])
-    Syntax.Abs.NApp exp1 napp exp2 -> prPrec i 3 (concatD [prt 4 exp1, prt 0 napp, prt 4 exp2])
-    Syntax.Abs.Pair exp1 exp2 -> prPrec i 2 (concatD [doc (showString "<"), prt 3 exp1, doc (showString ","), prt 2 exp2, doc (showString ">")])
-    Syntax.Abs.Fst exp -> prPrec i 3 (concatD [doc (showString "fst"), prt 4 exp])
-    Syntax.Abs.Snd exp -> prPrec i 3 (concatD [doc (showString "snd"), prt 4 exp])
+    Syntax.Abs.Rec id exp -> prPrec i 1 (concatD [doc (showString "fix"), prt 0 id, doc (showString "."), prt 1 exp])
     Syntax.Abs.Typed exp typ -> prPrec i 0 (concatD [prt 0 exp, doc (showString "::"), prt 0 typ])
 
 instance Print Syntax.Abs.Assignment where

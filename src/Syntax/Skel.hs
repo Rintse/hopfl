@@ -16,35 +16,44 @@ transIdent x = case x of
 transLam :: Syntax.Abs.Lam -> Result
 transLam x = case x of
   Syntax.Abs.Lam string -> failure x
+transMu :: Syntax.Abs.Mu -> Result
+transMu x = case x of
+  Syntax.Abs.Mu string -> failure x
 transProd :: Syntax.Abs.Prod -> Result
 transProd x = case x of
   Syntax.Abs.Prod string -> failure x
 transTo :: Syntax.Abs.To -> Result
 transTo x = case x of
   Syntax.Abs.To string -> failure x
-transNext :: Syntax.Abs.Next -> Result
-transNext x = case x of
-  Syntax.Abs.Next string -> failure x
-transNapp :: Syntax.Abs.Napp -> Result
-transNapp x = case x of
-  Syntax.Abs.Napp string -> failure x
+transLater :: Syntax.Abs.Later -> Result
+transLater x = case x of
+  Syntax.Abs.Later string -> failure x
+transLapp :: Syntax.Abs.Lapp -> Result
+transLapp x = case x of
+  Syntax.Abs.Lapp string -> failure x
 transTyp :: Syntax.Abs.Typ -> Result
 transTyp x = case x of
   Syntax.Abs.TReal -> failure x
-  Syntax.Abs.TNext next typ -> failure x
+  Syntax.Abs.TVar ident -> failure x
+  Syntax.Abs.TLat later typ -> failure x
   Syntax.Abs.TPRod typ1 prod typ2 -> failure x
+  Syntax.Abs.TRec mu ident typ -> failure x
   Syntax.Abs.TFun typ1 to typ2 -> failure x
 transExp :: Syntax.Abs.Exp -> Result
 transExp x = case x of
   Syntax.Abs.Var ident -> failure x
-  Syntax.Abs.Val integer -> failure x
-  Syntax.Abs.Rec ident exp -> failure x
-  Syntax.Abs.Abstr lam ident exp -> failure x
+  Syntax.Abs.Val double -> failure x
+  Syntax.Abs.Next exp -> failure x
+  Syntax.Abs.In exp -> failure x
+  Syntax.Abs.Out exp -> failure x
   Syntax.Abs.App exp1 exp2 -> failure x
-  Syntax.Abs.NApp exp1 napp exp2 -> failure x
+  Syntax.Abs.LApp exp1 lapp exp2 -> failure x
   Syntax.Abs.Pair exp1 exp2 -> failure x
   Syntax.Abs.Fst exp -> failure x
   Syntax.Abs.Snd exp -> failure x
+  Syntax.Abs.Norm exp -> failure x
+  Syntax.Abs.Abstr lam ident exp -> failure x
+  Syntax.Abs.Rec ident exp -> failure x
   Syntax.Abs.Typed exp typ -> failure x
 transAssignment :: Syntax.Abs.Assignment -> Result
 transAssignment x = case x of

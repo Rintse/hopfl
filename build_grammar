@@ -1,0 +1,6 @@
+#!/bin/sh
+
+cd src
+bnfc -d Syntax.bnf
+rm Syntax/*.bak
+rm Syntax/Test.hs

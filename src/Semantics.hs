@@ -4,21 +4,20 @@ module Semantics where
 
 import Syntax.Abs
 import Syntax.ErrM
+import Syntax.Fail
 
 import Data.HashMap.Lazy as HM
 import Control.Monad.Reader
 import Control.Applicative
 
 data Value
-  = VInt Integer
-  | VBool Bool
+  = VReal Double
   | VPair Value Value
   | VThunk Exp
   deriving (Eq, Show)
 
 instance Ord Value where
-  VInt m <= VInt n = m <= n
-  VBool a <= VBool b = a <= b
+  VReal m <= VReal n = m <= n
   _ <= _ = False
 
 -- Environment as hashmap
@@ -42,5 +41,5 @@ getVal x e = e ! x
 
 evalExp :: MonadReader Env m => Exp -> m Value
 evalExp exp = case exp of
-    Val v   -> return $VInt v
+    Val v   -> return $VReal v
     _       -> failure exp 

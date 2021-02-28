@@ -4,43 +4,48 @@ comment     "#" ;
 
 -- Tokens
 token       Lam     ('λ' | '\\') ;
+token       Mu      ('μ' | '|''u');
 token       Prod    ('×' | '*') ;
 token       To      ('→' | '-''>') ;
-token       Next    ('⊳' | '|''>') ;
-token       Napp    ('⊙' | '(''.'')') ;
+token       Later   ('⊳' | '|''>') ;
+token       Lapp    ('⊙' | '(''.'')') ;
 
 
 -- Types
-TReal.      Typ3    ::= "real" ;
-TNext.      Typ2    ::= Next Typ3 ;
-TPRod.      Typ1    ::= Typ1 Prod Typ2 ;
+TReal.      Typ4    ::= "real" ;
+TVar.       Typ4    ::= Ident ;
+TLat.       Typ3    ::= Later Typ3 ;
+TPRod.      Typ2    ::= Typ1 Prod Typ2 ;
+TRec.       Typ1    ::= Mu Ident "." Typ1 ;
 TFun.       Typ     ::= Typ1 To Typ ;
 
-coercions Typ 3 ;
+coercions Typ 4 ;
 
 
+-- TODO: fix exp count!
 -- Atoms
-Var.        Exp4    ::= Ident ;
-Val.        Exp4    ::= Integer ;
+Var.        Exp6    ::= Ident ;
+Val.        Exp6    ::= Double ;
 
+Next.       Exp5    ::= "next" Exp6 ;
+In.         Exp5    ::= "in" Exp6 ;
+Out.        Exp5    ::= "out" Exp6 ;
 
--- Functions
-Rec.        Exp1    ::= "fix" Ident "." Exp1 ;
+App.        Exp4    ::= Exp4 Exp4 ;
+LApp.       Exp4    ::= Exp4 Lapp Exp4 ;
+
+Pair.       Exp4    ::= "<" Exp4 "," Exp4 ">";
+Fst.        Exp4    ::= "fst" Exp4 ;
+Snd.        Exp4    ::= "snd" Exp4 ;
+
+Norm.       Exp4    ::= "normal" Exp4 ;
+
 Abstr.      Exp1    ::= Lam Ident "." Exp1 ;
-App.        Exp3    ::= Exp3 Exp4 ;
-NApp.       Exp3    ::= Exp4 Napp Exp4 ;
+Rec.        Exp1    ::= "fix" Ident "." Exp1 ;
 
-
--- Products
-Pair.       Exp2    ::= "<" Exp3 "," Exp2 ">";
-Fst.        Exp3    ::= "fst" Exp4 ;
-Snd.        Exp3    ::= "snd" Exp4 ;
-
-
--- Expressions with explicit types
 Typed.      Exp     ::= Exp "::" Typ ;
 
-coercions Exp 4 ;
+coercions Exp 6 ;
 
 
 -- Environment passing

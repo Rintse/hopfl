@@ -15,32 +15,44 @@ newtype Ident = Ident String
 newtype Lam = Lam String
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 
+newtype Mu = Mu String
+  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
+
 newtype Prod = Prod String
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 
 newtype To = To String
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 
-newtype Next = Next String
+newtype Later = Later String
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 
-newtype Napp = Napp String
+newtype Lapp = Lapp String
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 
 data Typ
-    = TReal | TNext Next Typ | TPRod Typ Prod Typ | TFun Typ To Typ
+    = TReal
+    | TVar Ident
+    | TLat Later Typ
+    | TPRod Typ Prod Typ
+    | TRec Mu Ident Typ
+    | TFun Typ To Typ
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Exp
     = Var Ident
-    | Val Integer
-    | Rec Ident Exp
-    | Abstr Lam Ident Exp
+    | Val Double
+    | Next Exp
+    | In Exp
+    | Out Exp
     | App Exp Exp
-    | NApp Exp Napp Exp
+    | LApp Exp Lapp Exp
     | Pair Exp Exp
     | Fst Exp
     | Snd Exp
+    | Norm Exp
+    | Abstr Lam Ident Exp
+    | Rec Ident Exp
     | Typed Exp Typ
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
