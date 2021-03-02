@@ -95,8 +95,8 @@ All other symbols are terminals.
   |  |  **|**  | ``snd`` //Exp4//
   |  |  **|**  | ``normal`` //Exp4//
   |  |  **|**  | //Exp5//
-  | //Exp1// | -> | //Lam// //Ident// ``.`` //Exp1//
-  |  |  **|**  | ``fix`` //Ident// ``.`` //Exp1//
+  | //Exp1// | -> | //Lam// //Exp6// ``.`` //Exp1//
+  |  |  **|**  | ``fix`` //Exp6// ``.`` //Exp1//
   |  |  **|**  | //Exp2//
   | //Exp// | -> | //Exp// ``::`` //Typ//
   |  |  **|**  | //Exp1//

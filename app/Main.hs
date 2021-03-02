@@ -13,6 +13,7 @@ import Syntax.Print
 import Syntax.Abs as Raw
 
 import Semantics
+import Substitution
 import Syntax.ErrM
 
 import Data.Tree
@@ -45,7 +46,7 @@ run v p s = do
             exitFailure
         Ok tree -> do 
             putStrLn "\nParse Successful!"
-            showTree v tree
+            showTree v (markVars tree)
             exitSuccess
 
 
@@ -65,7 +66,7 @@ parse v p s = let ts = myLLexer s in
 eval :: Verbosity -> ParseFun Raw.Exp -> Raw.Environment -> String -> IO ()
 eval v pExp env prog = do
     e <- parse v pExp prog
-    let r = Ok . show . evalExp e $ mkEnv env
+    let r = Ok . show . evalExp [] e $ mkEnv env
         in case r of
         Bad s -> do
             putStrLn "Evaluation failed"
@@ -93,7 +94,7 @@ main = do
     else do
         print (last args)
         prog <- readFile $ last args -- Last arg should be the file
-        let verbo = if "-s" `elem` args then 0 else 1 in
+        let verbo = if "-s" `elem` args then 0 else 2 in
             case args of
                 "-e":envS:fs    ->  parse 1 pEnvironment envS --Parse
                                 >>= \env -> eval 1 pExp env prog -- And evaluate

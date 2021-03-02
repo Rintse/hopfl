@@ -103,8 +103,8 @@ Exp4 : Exp4 Exp4 { Syntax.Abs.App $1 $2 }
      | Exp5 { $1 }
 
 Exp1 :: { Syntax.Abs.Exp }
-Exp1 : Lam Ident '.' Exp1 { Syntax.Abs.Abstr $1 $2 $4 }
-     | 'fix' Ident '.' Exp1 { Syntax.Abs.Rec $2 $4 }
+Exp1 : Lam Exp6 '.' Exp1 { Syntax.Abs.Abstr $1 $2 $4 }
+     | 'fix' Exp6 '.' Exp1 { Syntax.Abs.Rec $2 $4 }
      | Exp2 { $1 }
 
 Exp :: { Syntax.Abs.Exp }

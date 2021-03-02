@@ -51,8 +51,8 @@ data Exp
     | Fst Exp
     | Snd Exp
     | Norm Exp
-    | Abstr Lam Ident Exp
-    | Rec Ident Exp
+    | Abstr Lam Exp Exp
+    | Rec Exp Exp
     | Typed Exp Typ
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 

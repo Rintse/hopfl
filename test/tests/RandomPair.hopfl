@@ -1,6 +1,6 @@
 # Creates a pair of draws from a gaussian distribution
 # centered around 0, with a std. dev. of 1
 
-#normal <1.0,1.0>
-
-< normal < 0.0 , 1.0 > , normal < 0.0 , 1.0 > >
+# < normal < 0.0 , 1.0 > , normal < 0.0 , 1.0 > >
+#
+\ r . normal <x , <x, <y, z>>>

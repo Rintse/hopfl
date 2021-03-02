@@ -4,7 +4,7 @@ comment     "#" ;
 
 -- Tokens
 token       Lam     ('λ' | '\\') ;
-token       Mu      ('μ' | '|''u');
+token       Mu      ('μ' | '|''u') ;
 token       Prod    ('×' | '*') ;
 token       To      ('→' | '-''>') ;
 token       Later   ('⊳' | '|''>') ;
@@ -40,8 +40,8 @@ Snd.        Exp4    ::= "snd" Exp4 ;
 
 Norm.       Exp4    ::= "normal" Exp4 ;
 
-Abstr.      Exp1    ::= Lam Ident "." Exp1 ;
-Rec.        Exp1    ::= "fix" Ident "." Exp1 ;
+Abstr.      Exp1    ::= Lam Exp6 "." Exp1 ;
+Rec.        Exp1    ::= "fix" Exp6 "." Exp1 ;
 
 Typed.      Exp     ::= Exp "::" Typ ;
 

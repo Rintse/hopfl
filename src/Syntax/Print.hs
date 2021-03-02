@@ -140,8 +140,8 @@ instance Print Syntax.Abs.Exp where
     Syntax.Abs.Fst exp -> prPrec i 4 (concatD [doc (showString "fst"), prt 4 exp])
     Syntax.Abs.Snd exp -> prPrec i 4 (concatD [doc (showString "snd"), prt 4 exp])
     Syntax.Abs.Norm exp -> prPrec i 4 (concatD [doc (showString "normal"), prt 4 exp])
-    Syntax.Abs.Abstr lam id exp -> prPrec i 1 (concatD [prt 0 lam, prt 0 id, doc (showString "."), prt 1 exp])
-    Syntax.Abs.Rec id exp -> prPrec i 1 (concatD [doc (showString "fix"), prt 0 id, doc (showString "."), prt 1 exp])
+    Syntax.Abs.Abstr lam exp1 exp2 -> prPrec i 1 (concatD [prt 0 lam, prt 6 exp1, doc (showString "."), prt 1 exp2])
+    Syntax.Abs.Rec exp1 exp2 -> prPrec i 1 (concatD [doc (showString "fix"), prt 6 exp1, doc (showString "."), prt 1 exp2])
     Syntax.Abs.Typed exp typ -> prPrec i 0 (concatD [prt 0 exp, doc (showString "::"), prt 0 typ])
 
 instance Print Syntax.Abs.Assignment where

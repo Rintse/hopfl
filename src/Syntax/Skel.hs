@@ -52,8 +52,8 @@ transExp x = case x of
   Syntax.Abs.Fst exp -> failure x
   Syntax.Abs.Snd exp -> failure x
   Syntax.Abs.Norm exp -> failure x
-  Syntax.Abs.Abstr lam ident exp -> failure x
-  Syntax.Abs.Rec ident exp -> failure x
+  Syntax.Abs.Abstr lam exp1 exp2 -> failure x
+  Syntax.Abs.Rec exp1 exp2 -> failure x
   Syntax.Abs.Typed exp typ -> failure x
 transAssignment :: Syntax.Abs.Assignment -> Result
 transAssignment x = case x of
