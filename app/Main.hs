@@ -6,6 +6,7 @@ import System.Exit ( exitFailure, exitSuccess )
 import System.Directory
 
 import Control.Monad (when)
+import Control.Monad.State
 
 import Syntax.Lex
 import Syntax.Par
@@ -15,10 +16,6 @@ import Syntax.Abs as Raw
 import Semantics
 import Substitution
 import Syntax.ErrM
-
-import Data.Tree
-class Treeish a where
-    toTree :: a -> Tree String
 
 type ParseFun a = [Token] -> Err a
 myLLexer = myLexer
@@ -33,21 +30,6 @@ putStrV v s = when (v > 1) $ putStrLn s
 showTree :: (Show a, Print a) => Int -> a -> IO ()
 showTree v tree = do
     putStrV v $ "\n[Abstract Syntax]\n\n" ++ show tree
-
--- Starts the parsing and evaluation process
-run :: Verbosity -> ParseFun Raw.Exp -> String -> IO ()
-run v p s = do
-    let ts = myLLexer s in case p ts of
-        Bad s -> do 
-            putStrLn "\nParse   Failed...\n"
-            putStrV v "Tokens:"
-            putStrV v $ show ts
-            putStrLn s
-            exitFailure
-        Ok tree -> do 
-            putStrLn "\nParse Successful!"
-            showTree v (markVars tree)
-            exitSuccess
 
 
 parse :: (Show a) => Verbosity -> ParseFun a -> String -> IO a
@@ -94,9 +76,13 @@ main = do
     else do
         print (last args)
         prog <- readFile $ last args -- Last arg should be the file
-        let verbo = if "-s" `elem` args then 0 else 2 in
+        let v = if "-s" `elem` args then 0 else 2 in
             case args of
                 "-e":envS:fs    ->  parse 1 pEnvironment envS --Parse
                                 >>= \env -> eval 1 pExp env prog -- And evaluate
-                _               -> run verbo pExp prog -- Just parse otherwise
+                _               -> do 
+                    tree <- parse v pExp prog -- Just parse otherwise
+                    showTree v (markVars tree) -- And show parsing result
+                
+                
 

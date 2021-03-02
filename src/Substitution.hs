@@ -1,40 +1,32 @@
 module Substitution where
 
 import Control.Monad.Reader
+import Control.Monad.State
 import Data.Bifunctor
 
 import Syntax.Abs
 
-
 markVars :: Exp -> Exp
-markVars e = snd $ markTree (0, e)
+markVars e = evalState (markSub e) 0 
 
-markTree :: (Integer, Exp) -> (Integer, Exp)
-markTree (i, e) = case e of
-    Var (Ident x)   -> (i+1, Var $ Ident (x ++ show i))
-    Val v           -> (i, Val v)
-    Next e          -> second Next (markTree (i, e))
-    In e            -> second In (markTree (i, e))
-    Out e           -> second Out (markTree (i, e))
-    App e1 e2       -> let r1 = markTree (i, e1) in
-                       let r2 = markTree (fst r1, e2) in
-                       second (App (snd r1)) r2
-    LApp e1 _ e2    -> let r1 = markTree (i, e1) in
-                       let r2 = markTree (fst r1, e2) in
-                       second (App (snd r1)) r2
-    Pair e1 e2      -> let r1 = markTree (i, e1) in
-                       let r2 = markTree (fst r1, e2) in
-                       second (App (snd r1)) r2
-    Fst e           -> second Fst (markTree (i, e))
-    Snd e           -> second Snd (markTree (i, e))
-    Norm e          -> second Norm (markTree (i, e))
-    Abstr l x e     -> let r1 = markTree (i, x) in
-                       let r2 = markTree (fst r1, e) in
-                       (fst r2, Abstr l (snd r1) (snd r2))
-    -- Rec x e         -> let r1 = markTree (i, x) in
-                       -- let r2 = markTree (fst r1, e) in
-                       -- (fst r2, Rec (snd r1) (snd r2))
-    Typed e t       -> (i, Typed (snd $ markTree (i, e)) t)
+markSub :: Exp -> State Integer Exp
+markSub e = case e of
+    Var (Ident x)   -> modify (+1) >> gets (\l -> Var $ Ident (x ++ show l))
+    Val v           -> return $ Val v
+    Next e          -> Next <$> markSub e
+    In e            -> In <$> markSub e
+    Out e           -> Out <$> markSub e
+    App e1 e2       -> App <$> markSub e1 <*> markSub e2
+    LApp e1 o e2    -> LApp <$> markSub e1 <*> return o <*> markSub e2
+    Pair e1 e2      -> Pair <$> markSub e1 <*> markSub e2
+    Fst e           -> Fst <$> markSub e
+    Snd e           -> Snd <$> markSub e
+    Norm e          -> Norm <$> markSub e
+    Abstr l x e     -> Abstr l <$> markSub x <*> markSub e
+    Rec x e         -> Rec <$> markSub x <*> markSub e
+    Typed e t       -> Typed <$> markSub e <*> return t
+
+
 
 insertBinds :: Exp -> Exp
 insertBinds e = e

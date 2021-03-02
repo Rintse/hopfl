@@ -3,4 +3,4 @@
 
 # < normal < 0.0 , 1.0 > , normal < 0.0 , 1.0 > >
 #
-\ r . normal <x , <x, <y, z>>>
+(\ r . normal <x , <x, <y, z>>>) t
