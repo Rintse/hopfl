@@ -49,10 +49,10 @@ stripName :: String -> String
 stripName = dropWhile isDigit
 
 -- Prerequesite: The program tree is marked using markVars
--- Substitutes, in exp, x for s
-substitute :: Exp -> String -> Exp -> Exp
+-- Substitutes x (if free) for s in e
+substitute :: Exp -> Exp -> Exp -> Exp
 substitute exp x s = case exp of
-    Var (Ident v)   -> if v == x then s else exp
+    Var (Ident v)   -> if v == x then Var $ Ident s else exp
     Val v           -> exp
     Next e          -> Next $ substitute e x s 
     In e            -> In $ substitute e x s
@@ -71,8 +71,8 @@ substitute exp x s = case exp of
 -- Used for performing application and recursion
 removeBinder :: Exp -> Exp -> Exp
 removeBinder exp s = case exp of
-    Abstr l (Var (Ident x)) e   -> substitute e x s
-    Rec (Var (Ident x)) e       -> substitute e x exp
-    _ -> exp
+    Abstr l x e -> substitute e x s
+    Rec x e     -> substitute e x exp
+    _           -> exp
 
 

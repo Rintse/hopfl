@@ -62,10 +62,7 @@ evalExp s exp = case exp of
 
     LApp e1 _ e2    -> failure exp
     
-    Pair e1 e2 -> do
-        r1 <- evalExp s e1
-        r2 <- evalExp s e2
-        return $ VPair r1 r2
+    Pair e1 e2 -> VPair <$> evalExp s e1 <*> evalExp s e2
     
     Fst e -> do
         r <- evalExp s e
@@ -86,7 +83,7 @@ evalExp s exp = case exp of
                 return $ VDouble $ pdfNorm (mean, dev) 1.0
             _ -> error "Normal argument not a pair of real numbers"
     
-    a@(Abstr l x e) -> return $ VThunk a
-    a@(Rec x e)     -> failure exp
+    Abstr l x e     -> return $ VThunk exp
+    Rec x e         -> failure exp
     Typed e t       -> evalExp s e
 
