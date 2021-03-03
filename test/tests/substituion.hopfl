@@ -1,0 +1,4 @@
+# Nested abstractions that use the same binding variable
+# Tests for correct substition
+
+( \x . ( \ x . x ) x ) x
