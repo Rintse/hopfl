@@ -8,30 +8,10 @@ import Data.Char
 
 import Syntax.Abs
 
--- markVars :: Exp -> Exp
--- markVars e = evalState (markSub e) 0 
-
--- markSub :: Exp -> State Integer Exp
--- markSub e = case e of
-    -- Var (Ident x)   -> modify (+1) >> gets (\l -> Var $ Ident (x ++ show l))
-    -- Val v           -> return $ Val v
-    -- Next e          -> Next <$> markSub e
-    -- In e            -> In <$> markSub e
-    -- Out e           -> Out <$> markSub e
-    -- App e1 e2       -> App <$> markSub e1 <*> markSub e2
-    -- LApp e1 o e2    -> LApp <$> markSub e1 <*> return o <*> markSub e2
-    -- Pair e1 e2      -> Pair <$> markSub e1 <*> markSub e2
-    -- Fst e           -> Fst <$> markSub e
-    -- Snd e           -> Snd <$> markSub e
-    -- Norm e          -> Norm <$> markSub e
-    -- Abstr l x e     -> Abstr l <$> markSub x <*> markSub e
-    -- Rec x e         -> Rec <$> markSub x <*> markSub e
-    -- Typed e t       -> Typed <$> markSub e <*> return t
-
 -- Marks each variable with its depth (w.r.t. binders, i.e. lambda, fix)
--- To avoid having to rename during substition. Variable names are prepended
--- with their depth when bound, or "$" when free
--- NOTE: Both prepends results in illegal var names, preventing collisions
+-- to avoid having to rename during substition. Variable names are prepended
+-- with their depth when bound
+-- NOTE: The resulting name is illegal, preventing collisions
 markVars :: Exp -> Exp
 markVars e = runReader (markSub e) HM.empty
 
@@ -58,7 +38,6 @@ markSub e = case e of
     Abstr l x e     -> Abstr l <$> local (addVar x) (markSub x) <*> local (addVar x) (markSub e)
     Rec x e         -> Rec <$> local (addVar x) (markSub x) <*> local (addVar x) (markSub e)
     Typed e t       -> Typed <$> markSub e <*> return t
-
 
 -- Prerequesite: The program tree is marked using markVars
 -- Checks whether a variable is free
@@ -88,10 +67,12 @@ substitute exp x s = case exp of
     Rec v e         -> Rec v (substitute e x s)
     Typed e t       -> Typed (substitute e x s) t
 
+-- Removes a binder and substitutes the bound occurances
+-- Used for performing application and recursion
 removeBinder :: Exp -> Exp -> Exp
-removeBinder e s = case e of
-    Abstr l x e -> e
-    Rec x e     -> e
-    e           -> e
+removeBinder exp s = case exp of
+    Abstr l x e -> substitute e x s
+    Rec x e     -> substitute e x exp
+    _           -> exp
 
 

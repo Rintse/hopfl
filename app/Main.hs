@@ -6,16 +6,15 @@ import System.Exit ( exitFailure, exitSuccess )
 import System.Directory
 
 import Control.Monad (when)
-import Control.Monad.State
 
 import Syntax.Lex
 import Syntax.Par
 import Syntax.Print
+import Syntax.ErrM
 import Syntax.Abs as Raw
 
 import Semantics
 import Substitution
-import Syntax.ErrM
 
 type ParseFun a = [Token] -> Err a
 myLLexer = myLexer
@@ -33,33 +32,42 @@ showTree v tree = do
 
 
 parse :: (Show a) => Verbosity -> ParseFun a -> String -> IO a
-parse v p s = let ts = myLLexer s in 
+parse v p s = let ts = myLLexer s in
     case p ts of
-        Bad s -> do 
+        Bad s -> do
             putStrLn "\nParse Failed...\n"
             putStrV v "Tokens:"
             putStrV v $ show ts
             putStrLn s
             exitFailure
-        Ok tree -> do 
+        Ok tree -> do
             putStrLn "\nParse Successful!"
             return tree
 
-eval :: Verbosity -> ParseFun Raw.Exp -> Raw.Environment -> String -> IO ()
-eval v pExp env prog = do
+eval :: Verbosity -> ParseFun Raw.Exp -> String -> Raw.Environment -> IO ()
+eval v pExp prog env = do
     e <- parse v pExp prog
-    let r = Ok . show . evalExp [] e $ mkEnv env
+    -- TODO: What is happening down here V ??? 
+    let r = (Ok . evalExp [] e) $ mkEnv env
+    --       ^  ^ ^               ^
+    --       |  | |               |
+    --       Monad constructor    |
+    --          | |               |
+    --          Composition       |
+    --            |               |
+    --            m Value         |
+    --                            HashMap String Exp
         in case r of
         Bad s -> do
             putStrLn "Evaluation failed"
             putStrLn s
-        Ok s -> putStrLn $ "Evaluation result:" ++ s
+        Ok s -> putStrLn $ "Evaluation result:" ++ show s
 
 -- Prints help message regarding program usage
 usage :: IO ()
 usage = do
     progName <- getProgName
-    putStrLn $ unlines 
+    putStrLn $ unlines
         [ "usage: " ++ progName ++ " [options] file"
         , "  -h                 Display this help message."
         , "  -s                 Parse silently"
@@ -78,11 +86,11 @@ main = do
         prog <- readFile $ last args -- Last arg should be the file
         let v = if "-s" `elem` args then 0 else 2 in
             case args of
-                "-e":envS:fs    ->  parse 1 pEnvironment envS --Parse
-                                >>= \env -> eval 1 pExp env prog -- And evaluate
-                _               -> do 
+                -- Parse and evaluate with given environment
+                "-e":ev:fs  -> parse 1 pEnvironment ev >>= eval v pExp prog
+                _ -> do
                     tree <- parse v pExp prog -- Just parse otherwise
                     showTree v (markVars tree) -- And show parsing result
-                
-                
+
+
 
