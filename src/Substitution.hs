@@ -15,9 +15,14 @@ import Syntax.Abs
 markVars :: Exp -> Exp
 markVars e = runReader (markSub e) HM.empty
 
+-- Reader environment contains a hashmap that tracks
+-- how many abstractions using the same variable deep we are
+
+-- Adds a new variable to the environment (or updates existing)
 addVar :: Exp -> HashMap String Integer -> HashMap String Integer
 addVar (Var (Ident x)) = insertWith (+) x 1
 
+-- Returns a string representing the depth of a given variable
 getDepth :: String -> HashMap String Integer -> String
 getDepth x l = maybe "" show (HM.lookup x l)
 
@@ -38,6 +43,7 @@ markSub e = case e of
     Abstr l x e     -> Abstr l <$> local (addVar x) (markSub x) <*> local (addVar x) (markSub e)
     Rec x e         -> Rec <$> local (addVar x) (markSub x) <*> local (addVar x) (markSub e)
     Typed e t       -> Typed <$> markSub e <*> return t
+
 
 -- Prerequesite: The program tree is marked using markVars
 -- Checks whether a variable is free

@@ -4,6 +4,7 @@ import System.IO ( stdin, hGetContents )
 import System.Environment ( getArgs, getProgName )
 import System.Exit ( exitFailure, exitSuccess )
 import System.Directory
+import Text.Read
 
 import Control.Monad (when)
 
@@ -12,7 +13,6 @@ import Syntax.Par
 import Syntax.Print
 import Syntax.ErrM
 import Syntax.Abs as Raw
-
 import Semantics
 import Substitution
 
@@ -22,7 +22,7 @@ myLLexer = myLexer
 type Verbosity = Int
 
 putStrV :: Verbosity -> String -> IO ()
-putStrV v s = when (v > 1) $ putStrLn s
+putStrV v s = when (v > 0) $ putStrLn s
 
 -- Prints the parsed AST
 -- TODO: actually print a tree
@@ -44,19 +44,22 @@ parse v p s = let ts = myLLexer s in
             putStrLn "\nParse Successful!"
             return tree
 
-eval :: Verbosity -> ParseFun Raw.Exp -> String -> Raw.Environment -> IO ()
-eval v pExp prog env = do
+eval :: Verbosity -> ParseFun Raw.Exp -> String -> Integer -> Environment -> IO ()
+eval v pExp prog n env = do
     e <- parse v pExp prog
     -- TODO: What is happening down here V ??? 
-    let r = (Ok . evalExp [] e) $ mkEnv env
-    --       ^  ^ ^               ^
-    --       |  | |               |
-    --       Monad constructor    |
-    --          | |               |
-    --          Composition       |
-    --            |               |
-    --            m Value         |
-    --                            HashMap String Exp
+    --
+    --          Err m Value         Env
+    --      |--------^-------|   |---^---|
+    let r = (Ok . evalExp n e) $ mkEnv env
+    --       ^  ^ ^ 
+    --       |  | |
+    --       + Monad constructor
+    --          | |
+    --          + Composition
+    --            |
+    --            + m Value
+    --
         in case r of
         Bad s -> do
             putStrLn "Evaluation failed"
@@ -80,14 +83,18 @@ main :: IO ()
 main = do
     args <- getArgs
     if "-h" `elem` args then usage
-    else if null args then print "Must supply a file"
+    else if null args then putStrLn "Must supply a file"
     else do
-        print (last args)
         prog <- readFile $ last args -- Last arg should be the file
-        let v = if "-s" `elem` args then 0 else 2 in
+        let v = if "-s" `elem` args then 0 else 1 in
             case args of
                 -- Parse and evaluate with given environment
-                "-e":ev:fs  -> parse 1 pEnvironment ev >>= eval v pExp prog
+                "-e":e:n:f -> do 
+                    env <- parse 0 pEnvironment e
+                    let depth = readMaybe n in
+                        case depth of
+                            Just n  -> eval v pExp prog n env
+                            Nothing -> putStrLn "Invalid depth"
                 _ -> do
                     tree <- parse v pExp prog -- Just parse otherwise
                     showTree v (markVars tree) -- And show parsing result
