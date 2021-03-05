@@ -55,7 +55,7 @@ evalExp :: MonadReader Env m => Integer -> Exp -> m Value
 -- Variables
 evalExp n (Var (Ident v)) = do
     val <- asks $ HM.lookup v
-    case val of 
+    case val of
         Just e  -> evalExp n e
         Nothing -> error $ "Undefined free variable: " ++ show v
 
@@ -63,9 +63,8 @@ evalExp n (Var (Ident v)) = do
 evalExp n (Val v) = return $ VVal v
 
 -- Later modality
-evalExp n (Next e) = do
-    r <- evalExp (n-1) e -- TODO: ???
-    return $ VNext r
+evalExp 0 exp@(Next e) = return $ VThunk exp
+evalExp n (Next e) = VNext <$> evalExp (n-1) e
 
 -- Put into fixpoint
 evalExp n (In e) = VIn <$> evalExp n e
@@ -78,11 +77,11 @@ evalExp n (Out e) = do
         _ -> return $ VVal 1.0 -- TODO
 
 -- Function application
-evalExp n (App e1 e2) = do -- TODO: only allow values as arguments
+evalExp n (App e1 e2) = do
     r1 <- evalExp n e1
     r2 <- evalExp n e2
     case r1 of
-        VThunk e -> evalExp n (removeBinder (toExp r1) (toExp r2))
+        VThunk Abstr {} -> evalExp n (removeBinder (toExp r1) (toExp r2))
         _ -> error $ show r1 ++ " is not a function"
 
 -- Delayed function application
@@ -111,7 +110,7 @@ evalExp n (Snd e) = do
         _ -> error $ "Took snd of non-pair " ++ show r
 
 -- Normal distribtion sampling
-evalExp n (Norm e) = do 
+evalExp n (Norm e) = do
     r <- evalExp n e
     case r of
         VPair (VVal m) (VVal s) -> return $ VVal $ pdfNorm (m, s) 1.0

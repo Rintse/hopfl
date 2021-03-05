@@ -4,7 +4,10 @@ import Control.Monad.Reader
 import Control.Applicative
 import Control.Monad.State
 import Data.HashMap.Lazy as HM
+import Data.Bifunctor
 import Data.Char
+import Data.Sequence as Seq
+import Debug.Trace
 
 import Syntax.Abs
 
@@ -12,40 +15,65 @@ import Syntax.Abs
 -- to avoid having to rename during substition. Variable names are prepended
 -- with their depth when bound
 -- NOTE: The resulting name is illegal, preventing collisions
+type MarkMap = (Integer, HashMap String (Seq String))
+
 markVars :: Exp -> Exp
-markVars e = runReader (markSub e) HM.empty
+markVars e = evalState (markSub2 e) (0, HM.empty)
 
 -- Reader environment contains a hashmap that tracks
 -- how many abstractions using the same variable deep we are
 
 -- Adds a new variable to the environment (or updates existing)
-addVar :: Exp -> HashMap String Integer -> HashMap String Integer
-addVar (Var (Ident x)) = insertWith (+) x 1
+-- pushVar :: Exp -> HashMap String Integer -> HashMap String Integer
+-- pushVar (Var (Ident x)) = insertWith (+) x 1
 
--- Returns a string representing the depth of a given variable
-getDepth :: String -> HashMap String Integer -> String
-getDepth x l = maybe "" show (HM.lookup x l)
+-- popVar :: Exp -> HashMap  String Integer -> HashMap  String Integer
+-- popVar (Var (Ident x)) = adjust (subtract 1) x
 
--- Reader to be run by markVars
-markSub :: Exp -> Reader (HashMap String Integer) Exp
-markSub e = case e of
-    Var (Ident x)   -> asks (\l -> Var $ Ident (getDepth x l ++ x))
+-- rename :: Exp -> HashMap String (Seq String) -> Exp
+-- rename (Var (Ident x)) (c, _:|>l) = Var $ Ident (if snd l == x then x ++ show else x)
+
+pushVar :: Exp -> MarkMap -> MarkMap
+pushVar (Var (Ident x)) (c, m) = 
+    let toAdd = Seq.singleton (x ++ show (c+1)) in
+        (c+1, HM.insertWith (flip (><)) x toAdd m)
+
+popVar :: Exp -> MarkMap -> MarkMap
+popVar (Var (Ident x)) (c, m) = (c, HM.adjust (\(t:|>s) -> t) x m)
+
+getSub :: Exp -> MarkMap -> Exp
+getSub (Var (Ident x)) (c, m) = Var $ Ident (case HM.lookup x m of
+    Just (_:|>s) -> s
+    _            -> x) 
+
+markSub2 :: Exp -> State MarkMap Exp
+markSub2 e = case e of
+    Var v           -> gets (getSub e)
     Val v           -> return $ Val v
-    Next e          -> Next <$> markSub e
-    In e            -> In <$> markSub e
-    Out e           -> Out <$> markSub e
-    App e1 e2       -> App <$> markSub e1 <*> markSub e2
-    LApp e1 o e2    -> LApp <$> markSub e1 <*> return o <*> markSub e2
-    Pair e1 e2      -> Pair <$> markSub e1 <*> markSub e2
-    Fst e           -> Fst <$> markSub e
-    Snd e           -> Snd <$> markSub e
-    Norm e          -> Norm <$> markSub e
-    Abstr l x e     -> Abstr l <$> local (addVar x) (markSub x) <*> local (addVar x) (markSub e)
-    Rec x e         -> Rec <$> local (addVar x) (markSub x) <*> local (addVar x) (markSub e)
-    Typed e t       -> Typed <$> markSub e <*> return t
+    Next e          -> Next <$> markSub2 e
+    In e            -> In <$> markSub2 e
+    Out e           -> Out <$> markSub2 e
+    App e1 e2       -> liftA2 App (markSub2 e1) (markSub2 e2)
+    LApp e1 o e2    -> liftA3 LApp (markSub2 e1) (return o) (markSub2 e2)
+    Pair e1 e2      -> liftA2 Pair (markSub2 e1) (markSub2 e2)
+    Fst e           -> Fst <$> markSub2 e
+    Snd e           -> Snd <$> markSub2 e
+    Norm e          -> Norm <$> markSub2 e
+    Abstr l x e     -> do
+        modify (pushVar x)
+        r1 <- markSub2 x
+        r2 <- markSub2 e
+        modify (popVar x)
+        return $ Abstr l r1 r2
+    Rec x e         -> do
+        modify $ pushVar x
+        r1 <- markSub2 x
+        r2 <- markSub2 e
+        modify (popVar x)
+        return $ Rec r1 r2
+    Typed e t       -> Typed <$> markSub2 e <*> return t
 
 
--- Prerequesite: The program tree is marked using markVars
 -- Checks whether a variable is free
 isFree :: Exp -> Bool
 isFree (Var (Ident e)) = not (isDigit $ head e)
@@ -60,7 +88,7 @@ substitute :: Exp -> String -> Exp -> Exp
 substitute exp x s = case exp of
     Var (Ident v)   -> if v == x then s else exp
     Val v           -> exp
-    Next e          -> Next $ substitute e x s 
+    Next e          -> Next $ substitute e x s
     In e            -> In $ substitute e x s
     Out e           -> Out $ substitute e x s
     App e1 e2       -> App (substitute e1 x s) (substitute e2 x s)
