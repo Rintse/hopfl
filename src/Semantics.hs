@@ -13,6 +13,7 @@ import Data.HashMap.Lazy as HM
 import Control.Monad.Reader
 import Control.Monad.State
 import Control.Applicative
+import Debug.Trace
 
 data Value
   = VVal Double
@@ -45,10 +46,11 @@ update = insert
 pdfNorm :: (Double, Double) -> Double -> Double
 pdfNorm (x, s) c = 1 / exp(((c-x) ^^ 2) / 2 * s) * sqrt(2 * s * pi)
 
-
 newtype SemEnv a = SemEnv
-  { runSem :: StateT [Double] (ReaderT Env Err) a
-  } deriving (Functor, Applicative, Monad, MonadState [Double], MonadReader Env)
+  { runSem :: StateT (Double, [Double]) (ReaderT Env Err) a
+  } deriving (  Functor, Applicative, Monad,
+                MonadState (Double, [Double]),
+                MonadReader Env)
 
 -- Evaluation function: 
 -- Takes an AST and calculates the result of the program using small
@@ -121,9 +123,12 @@ evalExp n (Norm e) = do
     r <- evalExp n e
     case r of
         VPair (VVal m) (VVal s) -> do
-            r <- gets head
-            modify tail
-            return $ VVal $ pdfNorm (m, s) r
+            (w, l) <- get
+            case l of
+                (c:_)   -> do
+                    modify (\(w, l) -> (w * pdfNorm (m,s) c, tail l))
+                    return $ VVal c
+                _       -> error "Random draws list too small"
         _ -> error "Normal argument not a pair of real numbers"
 
 -- Function abstraction

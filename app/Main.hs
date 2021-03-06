@@ -18,7 +18,7 @@ import Syntax.ErrM
 import Syntax.Abs as Raw
 import Semantics
 import Substitution
-import NonDet
+import RandomList
 
 type ParseFun a = [Token] -> Err a
 myLLexer = myLexer
@@ -51,14 +51,14 @@ parse v p s = let ts = myLLexer s in
 eval :: Verbosity -> ParseFun Raw.Exp -> String -> Integer -> Environment -> IO ()
 eval v pExp prog n env = do
     e <- parse v pExp prog
-    let s = buildSeq e in do
-        print s
-        let r = runReaderT (evalStateT (runSem (evalExp n e)) s) (mkEnv env)
+    let s = genList e in do
+        putStrLn ("Evaluating with random draws: " ++ show s)
+        let r = runReaderT (evalStateT (runSem (evalExp n e)) (1.0, s)) (mkEnv env)
             in case r of
             Bad s -> do
                 putStrLn "Evaluation failed"
                 putStrLn s
-            Ok s -> putStrLn $ "Evaluation result:" ++ show s
+            Ok s -> putStrLn $ "Evaluation result (with density ??): \n" ++ show s
 
 -- Prints help message regarding program usage
 usage :: IO ()
