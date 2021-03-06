@@ -1,4 +1,6 @@
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+
 -- Small step semantics for guarded HOPFL
 module Semantics where
 
@@ -9,6 +11,7 @@ import Syntax.Fail
 
 import Data.HashMap.Lazy as HM
 import Control.Monad.Reader
+import Control.Monad.State
 import Control.Applicative
 
 data Value
@@ -43,6 +46,10 @@ pdfNorm :: (Double, Double) -> Double -> Double
 pdfNorm (x, s) c = 1 / exp(((c-x) ^^ 2) / 2 * s) * sqrt(2 * s * pi)
 
 
+newtype SemEnv a = SemEnv
+  { runSem :: StateT [Double] (ReaderT Env Err) a
+  } deriving (Functor, Applicative, Monad, MonadState [Double], MonadReader Env)
+
 -- Evaluation function: 
 -- Takes an AST and calculates the result of the program using small
 -- step semantics. Uses an error monad to allow for evaluation error logging
@@ -50,7 +57,7 @@ pdfNorm (x, s) c = 1 / exp(((c-x) ^^ 2) / 2 * s) * sqrt(2 * s * pi)
 -- The second argument is the expression to be evaluated.
 -- TODO: do not include tokens into the datatypes
 -- TODO: something like LEFTFIRST?
-evalExp :: MonadReader Env m => Integer -> Exp -> m Value
+evalExp :: Integer -> Exp -> SemEnv Value
 
 -- Variables
 evalExp n (Var (Ident v)) = do
@@ -113,7 +120,10 @@ evalExp n (Snd e) = do
 evalExp n (Norm e) = do
     r <- evalExp n e
     case r of
-        VPair (VVal m) (VVal s) -> return $ VVal $ pdfNorm (m, s) 1.0
+        VPair (VVal m) (VVal s) -> do
+            r <- gets head
+            modify tail
+            return $ VVal $ pdfNorm (m, s) r
         _ -> error "Normal argument not a pair of real numbers"
 
 -- Function abstraction

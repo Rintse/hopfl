@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wno-deferred-type-errors #-}
 module Main where
 
 import System.IO ( stdin, hGetContents )
@@ -7,6 +8,8 @@ import System.Directory
 import Text.Read
 
 import Control.Monad (when)
+import Control.Monad.Reader
+import Control.Monad.State
 
 import Syntax.Lex
 import Syntax.Par
@@ -15,6 +18,7 @@ import Syntax.ErrM
 import Syntax.Abs as Raw
 import Semantics
 import Substitution
+import NonDet
 
 type ParseFun a = [Token] -> Err a
 myLLexer = myLexer
@@ -47,24 +51,14 @@ parse v p s = let ts = myLLexer s in
 eval :: Verbosity -> ParseFun Raw.Exp -> String -> Integer -> Environment -> IO ()
 eval v pExp prog n env = do
     e <- parse v pExp prog
-    -- TODO: What is happening down here V ??? 
-    --
-    --          Err m Value         Env
-    --      |--------^-------|   |---^---|
-    let r = (Ok . evalExp n e) $ mkEnv env
-    --       ^  ^ ^ 
-    --       |  | |
-    --       + Monad constructor
-    --          | |
-    --          + Composition
-    --            |
-    --            + m Value
-    --
-        in case r of
-        Bad s -> do
-            putStrLn "Evaluation failed"
-            putStrLn s
-        Ok s -> putStrLn $ "Evaluation result:" ++ show s
+    let s = buildSeq e in do
+        print s
+        let r = runReaderT (evalStateT (runSem (evalExp n e)) s) (mkEnv env)
+            in case r of
+            Bad s -> do
+                putStrLn "Evaluation failed"
+                putStrLn s
+            Ok s -> putStrLn $ "Evaluation result:" ++ show s
 
 -- Prints help message regarding program usage
 usage :: IO ()
@@ -89,7 +83,7 @@ main = do
         let v = if "-s" `elem` args then 0 else 1 in
             case args of
                 -- Parse and evaluate with given environment
-                "-e":e:n:f -> do 
+                "-e":e:n:f -> do
                     env <- parse 0 pEnvironment e
                     let depth = readMaybe n in
                         case depth of
@@ -97,7 +91,7 @@ main = do
                             Nothing -> putStrLn "Invalid depth"
                 _ -> do
                     tree <- parse v pExp prog -- Just parse otherwise
-                    showTree v (markVars tree) -- And show parsing result
+                    showTree v (uniqNames tree) -- And show parsing result
 
 
 

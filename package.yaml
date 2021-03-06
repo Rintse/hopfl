@@ -25,6 +25,9 @@ dependencies:
 - unordered-containers >= 0.2.12.0
 - mtl
 - directory
+- normaldistribution
+- random
+- MonadRandom
 
 library:
   source-dirs: src

@@ -15,74 +15,60 @@ import Syntax.Abs
 -- to avoid having to rename during substition. Variable names are prepended
 -- with their depth when bound
 -- NOTE: The resulting name is illegal, preventing collisions
-type MarkMap = (Integer, HashMap String (Seq String))
 
-markVars :: Exp -> Exp
-markVars e = evalState (markSub2 e) (0, HM.empty)
+uniqNames :: Exp -> Exp
+uniqNames e = evalState (reName e) (0, HM.empty)
 
--- Reader environment contains a hashmap that tracks
--- how many abstractions using the same variable deep we are
+-- State environment contains a counter and a hashmap in which the values 
+-- track all the names that we are currently substituting the key for.
+-- The last element in the sequence is the name to substitute the key for.
+type MarkMap = (Integer, HashMap String [String])
 
--- Adds a new variable to the environment (or updates existing)
--- pushVar :: Exp -> HashMap String Integer -> HashMap String Integer
--- pushVar (Var (Ident x)) = insertWith (+) x 1
-
--- popVar :: Exp -> HashMap  String Integer -> HashMap  String Integer
--- popVar (Var (Ident x)) = adjust (subtract 1) x
-
--- rename :: Exp -> HashMap String (Seq String) -> Exp
--- rename (Var (Ident x)) (c, _:|>l) = Var $ Ident (if snd l == x then x ++ show else x)
-
+-- Increments counter and pushes new substitute for x onto m[x]
 pushVar :: Exp -> MarkMap -> MarkMap
-pushVar (Var (Ident x)) (c, m) = 
-    let toAdd = Seq.singleton (x ++ show (c+1)) in
-        (c+1, HM.insertWith (flip (><)) x toAdd m)
+pushVar (Var (Ident x)) (c, m) = (c+1, HM.insertWith (++) x [x ++ show (c+1)] m)
 
+-- Pops the latest substitute for x off m[x]
 popVar :: Exp -> MarkMap -> MarkMap
-popVar (Var (Ident x)) (c, m) = (c, HM.adjust (\(t:|>s) -> t) x m)
+popVar (Var (Ident x)) (c, m) = (c, HM.adjust tail x m)
 
+-- Gets the latest substitute for x from m[x] (returns x if none are found)
 getSub :: Exp -> MarkMap -> Exp
-getSub (Var (Ident x)) (c, m) = Var $ Ident (case HM.lookup x m of
-    Just (_:|>s) -> s
-    _            -> x) 
+getSub (Var (Ident x)) (c, m) = Var $ Ident (
+    case HM.lookup x m of
+    Just (s:_) -> s
+    _          -> x )
 
-markSub2 :: Exp -> State MarkMap Exp
-markSub2 e = case e of
+-- TODO check for faulty programs
+reName :: Exp -> State MarkMap Exp
+reName e = case e of
     Var v           -> gets (getSub e)
     Val v           -> return $ Val v
-    Next e          -> Next <$> markSub2 e
-    In e            -> In <$> markSub2 e
-    Out e           -> Out <$> markSub2 e
-    App e1 e2       -> liftA2 App (markSub2 e1) (markSub2 e2)
-    LApp e1 o e2    -> liftA3 LApp (markSub2 e1) (return o) (markSub2 e2)
-    Pair e1 e2      -> liftA2 Pair (markSub2 e1) (markSub2 e2)
-    Fst e           -> Fst <$> markSub2 e
-    Snd e           -> Snd <$> markSub2 e
-    Norm e          -> Norm <$> markSub2 e
+    Next e          -> Next <$> reName e
+    In e            -> In <$> reName e
+    Out e           -> Out <$> reName e
+    App e1 e2       -> liftA2 App (reName e1) (reName e2)
+    LApp e1 o e2    -> liftA3 LApp (reName e1) (return o) (reName e2)
+    Pair e1 e2      -> liftA2 Pair (reName e1) (reName e2)
+    Fst e           -> Fst <$> reName e
+    Snd e           -> Snd <$> reName e
+    Norm e          -> Norm <$> reName e
     Abstr l x e     -> do
         modify (pushVar x)
-        r1 <- markSub2 x
-        r2 <- markSub2 e
+        r1 <- reName x
+        r2 <- reName e
         modify (popVar x)
         return $ Abstr l r1 r2
     Rec x e         -> do
-        modify $ pushVar x
-        r1 <- markSub2 x
-        r2 <- markSub2 e
+        modify (pushVar x)
+        r1 <- reName x
+        r2 <- reName e
         modify (popVar x)
         return $ Rec r1 r2
-    Typed e t       -> Typed <$> markSub2 e <*> return t
+    Typed e t       -> Typed <$> reName e <*> return t
 
 
--- Checks whether a variable is free
-isFree :: Exp -> Bool
-isFree (Var (Ident e)) = not (isDigit $ head e)
-
--- Strips the marked variable name by removing the leading $ or digits
-stripName :: String -> String
-stripName = dropWhile isDigit
-
--- Prerequesite: The program tree is marked using markVars
+-- Prerequesite: The program tree is renamed using uniqNames
 -- Substitutes, in exp, x for s
 substitute :: Exp -> String -> Exp -> Exp
 substitute exp x s = case exp of
@@ -108,5 +94,4 @@ removeBinder exp s = case exp of
     Abstr l (Var (Ident x)) e   -> substitute e x s
     Rec (Var (Ident x)) e       -> substitute e x exp
     _ -> exp
-
 
