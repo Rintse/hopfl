@@ -28,6 +28,7 @@ dependencies:
 - normaldistribution
 - random
 - MonadRandom
+- split
 
 library:
   source-dirs: src

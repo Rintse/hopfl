@@ -1,25 +1,34 @@
 module RandomList where
 
+import Syntax.Abs as S
+
 import Control.Monad.State
 import Data.Random.Normal
 import Control.Monad.Random
+import Data.List.Split
+import Data.Maybe
 import System.Random
+import Text.Read
+import Syntax.ErrM
 
-import Syntax.Abs
+
+-- Parses a user-provided list
+parseList :: String -> Err [Double]
+parseList s = let l = map (readMaybe :: String -> Maybe Double) (splitOn "," s)
+    in if Nothing `elem` l then Bad []
+    else Ok (catMaybes l)
+
 
 -- TODO init seed based on something like time?
 -- Builds a sequence of random numbers that correspond with each 
--- of the normal calls present in the program. Actually generates 
--- numbers from a normal distribution that matches the normal call, 
--- to avoid having very small densities. 
-
+-- of the normal calls present in the program. 
 genList :: Exp -> [Double]
-genList e = execState (runRandT (subList e) (mkStdGen 200)) []
+genList e = execState (runRandT (subList e) (mkStdGen 3)) []
 
 -- TODO check for faulty programs
 subList :: Exp -> RandT StdGen (State [Double]) Exp
 subList exp = case exp of
-    Var (Ident v)   -> return exp
+    Var (S.Ident v) -> return exp
     Val v           -> return exp
     Next e          -> Next <$> subList e
     In e            -> In <$> subList e

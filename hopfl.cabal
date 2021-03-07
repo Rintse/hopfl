@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: efd6f08d964d1c752b15f020d90e90c29d0cdd32702128f6d861d031e4df04cf
+-- hash: 8f414d2453abf4c5a801404c48da09f3c7a98fe8d674b84ceb61c52ea71913d9
 
 name:           hopfl
 version:        0.1.0.0
@@ -50,6 +50,7 @@ library
     , mtl
     , normaldistribution
     , random
+    , split
     , unordered-containers >=0.2.12.0
   default-language: Haskell2010
 
@@ -71,6 +72,7 @@ executable hopfl-exe
     , mtl
     , normaldistribution
     , random
+    , split
     , unordered-containers >=0.2.12.0
   default-language: Haskell2010
 
@@ -93,5 +95,6 @@ test-suite hopfl-test
     , mtl
     , normaldistribution
     , random
+    , split
     , unordered-containers >=0.2.12.0
   default-language: Haskell2010

@@ -10,11 +10,13 @@ import Syntax.ErrM
 import Syntax.Fail
 
 import Data.HashMap.Lazy as HM
+import Data.Bifunctor
+import Debug.Trace
 import Control.Monad.Reader
 import Control.Monad.State
 import Control.Applicative
-import Debug.Trace
 
+-- Result values
 data Value
   = VVal Double
   | VPair Value Value
@@ -23,13 +25,10 @@ data Value
   | VThunk Exp
   deriving (Eq, Show)
 
-instance Ord Value where
-  VVal m <= VVal n = m <= n
-  _ <= _ = False
-
 toExp :: Value -> Exp
 toExp (VVal v) = Val v
 toExp (VThunk e) = e
+
 
 -- Environment as hashmap
 type Env = HashMap String Exp
@@ -39,18 +38,21 @@ mkEnv :: Environment -> Env
 mkEnv (Env e) = fromList $ fmap mkAssign e
   where mkAssign (Assign (Ident x) exp) = (x, exp)
 
--- Update the environment
-update :: String -> Exp -> Env -> Env
-update = insert
 
+-- Probability density function of the gaussian distribution
 pdfNorm :: (Double, Double) -> Double -> Double
 pdfNorm (x, s) c = 1 / exp(((c-x) ^^ 2) / 2 * s) * sqrt(2 * s * pi)
 
+
+-- A monad containing:
+--   - A reader with (a map from vars to their values, and the evaluation depth)
+--   - A State with (a list of random draws, and the density of this execution)
+--   - An error monad to express evaluation failure
 newtype SemEnv a = SemEnv
-  { runSem :: StateT (Double, [Double]) (ReaderT Env Err) a
+  { runSem :: ReaderT (Env, Integer) (StateT (Double, [Double]) Err) a
   } deriving (  Functor, Applicative, Monad,
                 MonadState (Double, [Double]),
-                MonadReader Env)
+                MonadReader (Env, Integer))
 
 -- Evaluation function: 
 -- Takes an AST and calculates the result of the program using small
@@ -59,68 +61,71 @@ newtype SemEnv a = SemEnv
 -- The second argument is the expression to be evaluated.
 -- TODO: do not include tokens into the datatypes
 -- TODO: something like LEFTFIRST?
-evalExp :: Integer -> Exp -> SemEnv Value
+evalExp :: Exp -> SemEnv Value
 
 -- Variables
-evalExp n (Var (Ident v)) = do
-    val <- asks $ HM.lookup v
+evalExp (Var (Ident v)) = do
+    val <- asks (\(x,_) -> HM.lookup v x)
     case val of
-        Just e  -> evalExp n e
+        Just e  -> evalExp e
         Nothing -> error $ "Undefined free variable: " ++ show v
 
 -- Values (reals)
-evalExp n (Val v) = return $ VVal v
+evalExp (Val v) = return $ VVal v
 
 -- Later modality
-evalExp 0 exp@(Next e) = return $ VThunk exp
-evalExp n (Next e) = VNext <$> evalExp (n-1) e
+-- Do no allow calculation past n (param) nexts
+evalExp exp@(Next e) = do
+    depth <- asks snd
+    if depth == 0 then trace "NUL" (return $ VThunk exp)
+    else local (second $ subtract 1) (VNext <$> evalExp e)
 
 -- Put into fixpoint
-evalExp n (In e) = VIn <$> evalExp n e
+evalExp (In e) = VIn <$> evalExp e
 
 -- Extract from fixpoint
-evalExp n (Out e) = do
-    r <- evalExp n e
+evalExp (Out e) = do
+    r <- evalExp e
     case r of
         VIn v -> return v
         _ -> return $ VVal 1.0 -- TODO
 
 -- Function application
-evalExp n (App e1 e2) = do
-    r1 <- evalExp n e1
-    r2 <- evalExp n e2
+evalExp (App e1 e2) = do
+    r1 <- evalExp e1
+    r2 <- evalExp e2
     case r1 of
-        VThunk Abstr {} -> evalExp n (removeBinder (toExp r1) (toExp r2))
+        VThunk Abstr {} -> evalExp (removeBinder (toExp r1) (toExp r2))
         _ -> error $ show r1 ++ " is not a function"
 
 -- Delayed function application
-evalExp n (LApp e1 _ e2) = do
-    r1 <- evalExp n e1
-    r2 <- evalExp n e2
+evalExp (LApp e1 _ e2) = do
+    r1 <- evalExp e1
+    r2 <- evalExp e2
     case (r1, r2) of
-        (VNext (VThunk e), VNext s) -> VNext <$> evalExp n (App e $ toExp s) -- TODO: this?
+        (VNext (VThunk e), VNext s) -> VNext <$> evalExp (App e $ toExp s) -- TODO: this?
         _ -> error "Invalid arguments to LApp"
 
 -- Pair creation
-evalExp n (Pair e1 e2) = VPair <$> evalExp n e1 <*> evalExp n e2
+evalExp (Pair e1 e2) = VPair <$> evalExp e1 <*> evalExp e2
 
 -- First projection
-evalExp n (Fst e) = do
-    r <- evalExp n e
+evalExp (Fst e) = do
+    r <- evalExp e
     case r of
         VPair v1 v2 -> return v1
         _ -> error $ "Took fst of non-pair " ++ show r
 
 -- Second projection
-evalExp n (Snd e) = do
-    r <- evalExp n e
+evalExp (Snd e) = do
+    r <- evalExp e
     case r of
         VPair v1 v2 -> return v2
         _ -> error $ "Took snd of non-pair " ++ show r
 
 -- Normal distribtion sampling
-evalExp n (Norm e) = do
-    r <- evalExp n e
+evalExp (Norm e) = do
+    r <- evalExp e
     case r of
         VPair (VVal m) (VVal s) -> do
             (w, l) <- get
@@ -132,11 +137,11 @@ evalExp n (Norm e) = do
         _ -> error "Normal argument not a pair of real numbers"
 
 -- Function abstraction
-evalExp n exp@(Abstr l x e) = return $ VThunk exp
+evalExp exp@(Abstr l x e) = return $ VThunk exp
 
 -- Recursion
-evalExp n (Rec x e) = evalExp n $ removeBinder e e
+evalExp (Rec x e) = evalExp $ removeBinder e e
 
 -- Typed terms
-evalExp n (Typed e t) = evalExp n e
+evalExp (Typed e t) = evalExp e
 
