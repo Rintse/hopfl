@@ -1,0 +1,1 @@
+( fix f . λ x . < normal <x, x> , f (.) next x > ) 1.0

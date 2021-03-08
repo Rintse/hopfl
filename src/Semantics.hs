@@ -61,70 +61,91 @@ newtype SemEnv a = SemEnv
 -- The second argument is the expression to be evaluated.
 -- TODO: do not include tokens into the datatypes
 -- TODO: something like LEFTFIRST?
+debugRet :: Exp -> Value -> SemEnv Value
+debugRet e v = trace (show e ++ "\nReturning: " ++ show v ++ "\n") return v
+
 evalExp :: Exp -> SemEnv Value
 
 -- Variables
-evalExp (Var (Ident v)) = do
+evalExp exp@(Var (Ident v)) = do
     val <- asks (\(x,_) -> HM.lookup v x)
     case val of
-        Just e  -> evalExp e
+        Just e  -> do
+            r <- evalExp e
+            debugRet exp r
         Nothing -> error $ "Undefined free variable: " ++ show v
 
 -- Values (reals)
-evalExp (Val v) = return $ VVal v
+evalExp exp@(Val v) = debugRet exp (VVal v)
 
 -- Later modality
 -- Do no allow calculation past n (param) nexts
 evalExp exp@(Next e) = do
     depth <- asks snd
-    if depth == 0 then trace "NUL" (return $ VThunk exp)
-    else local (second $ subtract 1) (VNext <$> evalExp e)
+    if depth == 0 then 
+        trace "NUL" 
+        (debugRet exp $ VNext $ VThunk e)
+    else 
+        trace "-1" 
+        (local (second $ subtract 1) ( do
+            r <- evalExp e
+            debugRet exp $ VNext r 
+        ))
 
 -- Put into fixpoint
-evalExp (In e) = VIn <$> evalExp e
+evalExp exp@(In e) = do 
+    r <- evalExp e
+    debugRet exp $ VIn r
 
 -- Extract from fixpoint
-evalExp (Out e) = do
+evalExp exp@(Out e) = do
     r <- evalExp e
     case r of
-        VIn v -> return v
-        _ -> return $ VVal 1.0 -- TODO
+        VIn v -> debugRet exp v
+        _ -> debugRet exp $ VThunk exp
 
 -- Function application
-evalExp (App e1 e2) = do
+evalExp exp@(App e1 e2) = do
     r1 <- evalExp e1
     r2 <- evalExp e2
     case r1 of
-        VThunk Abstr {} -> evalExp (removeBinder (toExp r1) (toExp r2))
+        VThunk Abstr {} -> do
+            r <- evalExp (removeBinder (toExp r1) (toExp r2))
+            debugRet exp r
         _ -> error $ show r1 ++ " is not a function"
 
 -- Delayed function application
-evalExp (LApp e1 _ e2) = do
+evalExp exp@(LApp e1 _ e2) = do
     r1 <- evalExp e1
     r2 <- evalExp e2
     case (r1, r2) of
-        (VNext (VThunk e), VNext s) -> VNext <$> evalExp (App e $ toExp s) -- TODO: this?
+        (VNext e, VNext s) -> do
+            r <- evalExp $ Next (App (toExp e) (toExp s)) -- TODO: this?
+            debugRet exp r
         _ -> error "Invalid arguments to LApp"
 
 -- Pair creation
-evalExp (Pair e1 e2) = VPair <$> evalExp e1 <*> evalExp e2
+evalExp exp@(Pair e1 e2) = do 
+    r1 <- evalExp e1 
+    r2 <- evalExp e2 
+    debugRet exp $ VPair r1 r2
 
 -- First projection
-evalExp (Fst e) = do
+evalExp exp@(Fst e) = do
     r <- evalExp e
     case r of
-        VPair v1 v2 -> return v1
+        VPair v1 v2 -> debugRet exp v1
         _ -> error $ "Took fst of non-pair " ++ show r
 
 -- Second projection
-evalExp (Snd e) = do
+evalExp exp@(Snd e) = do
     r <- evalExp e
     case r of
-        VPair v1 v2 -> return v2
+        VPair v1 v2 -> debugRet exp v2
         _ -> error $ "Took snd of non-pair " ++ show r
 
 -- Normal distribtion sampling
-evalExp (Norm e) = do
+evalExp exp@(Norm e) = do
     r <- evalExp e
     case r of
         VPair (VVal m) (VVal s) -> do
@@ -132,15 +153,17 @@ evalExp (Norm e) = do
             case l of
                 (c:_)   -> do
                     modify (\(w, l) -> (w * pdfNorm (m,s) c, tail l))
-                    return $ VVal c
+                    debugRet exp $ VVal c
                 _       -> error "Random draws list too small"
         _ -> error "Normal argument not a pair of real numbers"
 
 -- Function abstraction
-evalExp exp@(Abstr l x e) = return $ VThunk exp
+evalExp exp@(Abstr l x e) = debugRet exp $ VThunk exp
 
 -- Recursion
-evalExp (Rec x e) = evalExp $ removeBinder e e
+evalExp exp@(Rec x e) = do 
+    r <- evalExp $ removeBinder exp (Next exp)
+    debugRet exp r
 
 -- Typed terms
 evalExp (Typed e t) = evalExp e

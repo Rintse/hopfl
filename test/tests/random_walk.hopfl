@@ -1,10 +1,10 @@
 # Takes the first number of a random walk
 
 out ( 
-    λ s . 
-        fix f . #:: ⊳ ( real × (μ X . real × ⊳ X) ) . 
-            λ x . in < 
-                x , 
-                f ⊙ next( normal( x , s ) )
-            > 
+    (fix f . #:: ⊳ ( real × (μ X . real × ⊳ X) ) . 
+        λ x . in ( < 
+            x , 
+            f ⊙ next( normal <x , s> )
+        > )
+    ) x0
 )

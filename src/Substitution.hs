@@ -90,6 +90,6 @@ substitute exp = case exp of
 removeBinder :: Exp -> Exp -> Exp
 removeBinder exp s = case exp of
     Abstr l (Var (Ident x)) e   -> runReader (substitute e) (x, s)
-    Rec (Var (Ident x)) e       -> runReader (substitute e) (x, exp)
+    Rec (Var (Ident x)) e       -> runReader (substitute e) (x, s)
     _ -> exp
 

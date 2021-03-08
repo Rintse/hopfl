@@ -1,5 +1,15 @@
 {-# OPTIONS_GHC -Wno-deferred-type-errors #-}
+
 module Main where
+
+import Syntax.Lex
+import Syntax.Par
+import Syntax.Print
+import Syntax.ErrM
+import Syntax.Abs as Raw
+import Semantics
+import Substitution
+import RandomList
 
 import System.IO ( stdin, hGetContents )
 import System.Environment ( getArgs, getProgName )
@@ -11,14 +21,6 @@ import Control.Monad (when)
 import Control.Monad.Reader
 import Control.Monad.State
 
-import Syntax.Lex
-import Syntax.Par
-import Syntax.Print
-import Syntax.ErrM
-import Syntax.Abs as Raw
-import Semantics
-import Substitution
-import RandomList
 
 type ParseFun a = [Token] -> Err a
 myLLexer = myLexer
@@ -84,7 +86,7 @@ main = do
         let v =  (if "-s" `elem` args then 0 else 1) in do
             file <- readFile $ last args -- Last arg should be the file
             putStrLn "Parsing program"
-            prog <- parse v pExp file 
+            prog <- parse v pExp file
 
             case args of
                 -- Parse and evaluate with given environment
@@ -96,7 +98,9 @@ main = do
                             Just n  -> case f of 
                                 [x]   -> eval v prog n (genList prog) env
                                 [l,x] -> let l2 = parseList l in case l2 of 
-                                    Ok s -> eval v prog n s env
+                                    Ok s -> do
+                                        showTree v (uniqNames prog)
+                                        eval v (uniqNames prog) n s env
                                     _    -> putStrLn "Invalid draws list"
                             Nothing -> putStrLn "Invalid depth"
 
