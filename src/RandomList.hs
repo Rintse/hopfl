@@ -1,3 +1,5 @@
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+
 module RandomList where
 
 import Syntax.Abs as S
@@ -41,7 +43,7 @@ subList exp = case exp of
     Abstr l v e     -> Abstr l v <$> subList e
     Rec v e         -> Rec v <$> subList e
     Typed e t       -> liftM2 Typed (subList e) (return t)
-    Norm e          -> do 
+    Norm e          -> do
         r <- getRandom
         modify ([r] ++)
         return exp

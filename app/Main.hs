@@ -1,5 +1,3 @@
-{-# OPTIONS_GHC -Wno-deferred-type-errors #-}
-
 module Main where
 
 import Syntax.Lex
@@ -34,7 +32,7 @@ putStrV v s = when (v > 0) $ putStrLn s
 -- TODO: actually print a tree
 showTree :: (Show a, Print a) => Int -> a -> IO ()
 showTree v tree = do
-    putStrV v $ "\n[Abstract Syntax]\n\n" ++ show tree
+    putStrV v $ "[Abstract Syntax]\n" ++ show tree ++ "\n"
 
 -- Parses both environments and programs
 parse :: (Show a) => Verbosity -> ParseFun a -> String -> IO a
@@ -87,6 +85,7 @@ main = do
             file <- readFile $ last args -- Last arg should be the file
             putStrLn "Parsing program"
             prog <- parse v pExp file
+            showTree v prog
 
             case args of
                 -- Parse and evaluate with given environment
@@ -103,7 +102,5 @@ main = do
                                         eval v (uniqNames prog) n s env
                                     _    -> putStrLn "Invalid draws list"
                             Nothing -> putStrLn "Invalid depth"
-
-                _ -> do showTree v (uniqNames prog) -- Else just show AST
 
 

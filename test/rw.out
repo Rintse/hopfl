@@ -26,27 +26,25 @@ Out (
 )
 
 Out (
-            (In
-                (Pair
-                    (Val 1.0)
-                    (LApp
-                        (Next
-                            (Rec 
-                                (Var (Ident "f1")) 
-                                (Abstr 
-                                    (Lam) (Val 1.0)
-                                    (In
-                                        (Pair
-                                            (Val 1.0)
-                                            (LApp 
-                                                (Var (Ident "f1"))
-                                                (Next 
-                                                    (Norm 
-                                                        (Pair 
-                                                            (Val 1.0) 
-                                                            (Var (Ident "s"))
-                                                        )
-                                                    )
+    (In
+        (Pair
+            (Val 1.0)
+            (LApp
+                (Next
+                    (Rec 
+                        (Var (Ident "f1")) 
+                        (Abstr 
+                            (Lam) (Val 1.0)
+                            (In
+                                (Pair
+                                    (Val 1.0)
+                                    (LApp 
+                                        (Var (Ident "f1"))
+                                        (Next 
+                                            (Norm 
+                                                (Pair 
+                                                    (Val 1.0) 
+                                                    (Var (Ident "s"))
                                                 )
                                             )
                                         )
@@ -54,16 +52,17 @@ Out (
                                 )
                             )
                         )
-                        (Next 
-                            (Norm 
-                                (Pair 
-                                    (Val 1.0) 
-                                    (Var (Ident "s"))
-                                )
-                            )
+                    )
+                )
+                (Next 
+                    (Norm 
+                        (Pair 
+                            (Val 1.0) 
+                            (Var (Ident "s"))
                         )
                     )
                 )
             )
         )
+    )
 )

@@ -65,6 +65,24 @@ reName e = case e of
         return $ Rec r1 r2
     Typed e t       -> Typed <$> reName e <*> return t
 
+-- Renames all variables in body of rec statement to avoid
+-- application substitution in folded out rec terms
+recName :: Exp -> Exp
+recName exp = case exp of
+    Var (Ident v)   -> Var (Ident $ "$" ++ v)
+    Val v           -> exp
+    Next e          -> Next $ recName e
+    In e            -> In $ recName e
+    Out e           -> Out $ recName e
+    App e1 e2       -> App (recName e1) (recName e2)
+    LApp e1 o e2    -> LApp (recName e1) o (recName e2)
+    Pair e1 e2      -> Pair (recName e1) (recName e2)
+    Fst e           -> Fst $ recName e
+    Snd e           -> Snd $ recName e
+    Norm e          -> Norm $ recName e
+    Abstr l v e     -> Abstr l (recName v) (recName e)
+    Rec v e         -> Rec (recName v) (recName e)
+    Typed e t       -> Typed (recName e) t
 
 -- Prerequesite: The program tree is renamed using uniqNames
 -- Substitutes, in exp, x for s
@@ -90,6 +108,6 @@ substitute exp = case exp of
 removeBinder :: Exp -> Exp -> Exp
 removeBinder exp s = case exp of
     Abstr l (Var (Ident x)) e   -> runReader (substitute e) (x, s)
-    Rec (Var (Ident x)) e       -> runReader (substitute e) (x, s)
+    Rec (Var (Ident x)) e       -> runReader (substitute e) (x, recName s)
     _ -> exp
 
