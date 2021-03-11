@@ -8,7 +8,6 @@ import Syntax.Abs
 import Semantics
 import Substitution
 
-import System.IO ( stdin, hGetContents )
 import System.Environment ( getArgs, getProgName )
 import System.Exit ( exitFailure, exitSuccess )
 import System.Directory
@@ -36,8 +35,7 @@ putStrV v s = when (v > 0) $ putStrLn s
 -- Prints the parsed AST
 -- TODO: actually print a tree
 showTree :: (Show a, Print a) => Int -> a -> IO ()
-showTree v tree = do
-    putStrV v $ "[Abstract Syntax]\n" ++ show tree ++ "\n"
+showTree v tree = putStrV v $ "[Abstract Syntax]\n" ++ show tree ++ "\n"
 
 -- Parses both environments and programs
 parse :: (Show a) => Verbosity -> ParseFun a -> String -> IO a

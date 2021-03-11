@@ -26,9 +26,10 @@ data Value
 
 toExp :: Value -> Exp
 toExp (VVal v) = Val v
+toExp (VIn e) = In $ toExp e
 toExp (VThunk e) = e
 toExp (VPair e1 e2) = Pair (toExp e1) (toExp e2)
-toExp e = trace ("NO toExp for : " ++ show e) Val 1.0
+toExp (VNext e) = Next $ toExp e
 
 -- Environment as hashmap
 type Env = HashMap String Exp
@@ -131,7 +132,9 @@ evalExp exp@(Norm e) = do
             (w, l) <- get
             case l of
                 (c:_)   -> do
-                    modify (\(w, l) -> (w * pdfNorm (m,s) c, tail l))
+                    let density = pdfNorm (m,s) c in
+                        if isNaN density then error "PDF not defined for given values"
+                        else modify (\(w, l) -> (w * density, tail l))
                     return $ VVal c
                 _       -> error "Random draws list too small"
         _ -> error "Normal argument not a pair of real numbers"

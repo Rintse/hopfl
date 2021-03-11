@@ -31,7 +31,7 @@ Next.       Exp5    ::= "next" Exp6 ;
 In.         Exp5    ::= "in" Exp6 ;
 Out.        Exp5    ::= "out" Exp6 ;
 
-App.        Exp4    ::= Exp4 Exp4 ;
+App.        Exp4    ::= Exp4 Exp5 ;
 LApp.       Exp4    ::= Exp4 Lapp Exp4 ;
 
 Pair.       Exp4    ::= "<" Exp4 "," Exp4 ">";

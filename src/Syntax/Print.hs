@@ -134,7 +134,7 @@ instance Print Syntax.Abs.Exp where
     Syntax.Abs.Next exp -> prPrec i 5 (concatD [doc (showString "next"), prt 6 exp])
     Syntax.Abs.In exp -> prPrec i 5 (concatD [doc (showString "in"), prt 6 exp])
     Syntax.Abs.Out exp -> prPrec i 5 (concatD [doc (showString "out"), prt 6 exp])
-    Syntax.Abs.App exp1 exp2 -> prPrec i 4 (concatD [prt 4 exp1, prt 4 exp2])
+    Syntax.Abs.App exp1 exp2 -> prPrec i 4 (concatD [prt 4 exp1, prt 5 exp2])
     Syntax.Abs.LApp exp1 lapp exp2 -> prPrec i 4 (concatD [prt 4 exp1, prt 0 lapp, prt 4 exp2])
     Syntax.Abs.Pair exp1 exp2 -> prPrec i 4 (concatD [doc (showString "<"), prt 4 exp1, doc (showString ","), prt 4 exp2, doc (showString ">")])
     Syntax.Abs.Fst exp -> prPrec i 4 (concatD [doc (showString "fst"), prt 4 exp])

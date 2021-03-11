@@ -88,7 +88,7 @@ All other symbols are terminals.
   |  |  **|**  | ``in`` //Exp6//
   |  |  **|**  | ``out`` //Exp6//
   |  |  **|**  | //Exp6//
-  | //Exp4// | -> | //Exp4// //Exp4//
+  | //Exp4// | -> | //Exp4// //Exp5//
   |  |  **|**  | //Exp4// //Lapp// //Exp4//
   |  |  **|**  | ``<`` //Exp4// ``,`` //Exp4// ``>``
   |  |  **|**  | ``fst`` //Exp4//

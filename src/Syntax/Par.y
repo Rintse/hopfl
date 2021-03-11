@@ -94,7 +94,7 @@ Exp5 : 'next' Exp6 { Syntax.Abs.Next $2 }
      | Exp6 { $1 }
 
 Exp4 :: { Syntax.Abs.Exp }
-Exp4 : Exp4 Exp4 { Syntax.Abs.App $1 $2 }
+Exp4 : Exp4 Exp5 { Syntax.Abs.App $1 $2 }
      | Exp4 Lapp Exp4 { Syntax.Abs.LApp $1 $2 $3 }
      | '<' Exp4 ',' Exp4 '>' { Syntax.Abs.Pair $2 $4 }
      | 'fst' Exp4 { Syntax.Abs.Fst $2 }

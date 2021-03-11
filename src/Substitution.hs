@@ -8,7 +8,7 @@ import Control.Monad.State
 import Data.HashMap.Lazy as HM
 import Data.Bifunctor
 import Debug.Trace
-
+import Data.Char
 
 -- Renames all variables to unique names to make substitution trivial
 uniqNames :: Exp -> Exp
@@ -21,7 +21,7 @@ type NameMap = (Integer, HashMap String [String])
 
 -- Increments counter and pushes new substitute for x onto m[x]
 pushVar :: Exp -> NameMap -> NameMap
-pushVar (Var (Ident x)) (c, m) = (c+1, HM.insertWith (++) x [x ++ show (c+1)] m)
+pushVar (Var (Ident x)) (c, m) = (c+1, HM.insertWith (++) x [show (c+1) ++ x] m)
 
 -- Pops the latest substitute for x off m[x]
 popVar :: Exp -> NameMap -> NameMap
@@ -63,11 +63,14 @@ reName e = case e of
         return $ Rec r1 r2
     Typed e t       -> Typed <$> reName e <*> return t
 
+isFree :: String -> Bool 
+isFree s = not $ isDigit $ head s
+
 -- Renames all variables in body of rec statement to avoid
 -- application substitution in folded out rec terms
 recName :: Exp -> Exp
 recName exp = case exp of
-    Var (Ident v)   -> Var (Ident $ "$" ++ v)
+    Var (Ident v)   -> if isFree v then exp else Var (Ident $ "$" ++ v)
     Val v           -> exp
     Next e          -> Next $ recName e
     In e            -> In $ recName e
