@@ -4,17 +4,17 @@ import Syntax.Lex
 import Syntax.Par
 import Syntax.Print
 import Syntax.ErrM
-import Syntax.Abs as Raw
+import Syntax.Abs
 import Semantics
 import Substitution
-import RandomList
 
 import System.IO ( stdin, hGetContents )
 import System.Environment ( getArgs, getProgName )
 import System.Exit ( exitFailure, exitSuccess )
 import System.Directory
+import Data.List.Split
+import Data.Maybe
 import Text.Read
-
 import Control.Monad (when)
 import Control.Monad.Reader
 import Control.Monad.State
@@ -23,8 +23,13 @@ import Control.Monad.State
 type ParseFun a = [Token] -> Err a
 myLLexer = myLexer
 
-type Verbosity = Int
+-- Parses a user-provided random-draws list
+parseList :: String -> Err [Double]
+parseList s = let l = map (readMaybe :: String -> Maybe Double) (splitOn "," s)
+    in if Nothing `elem` l then Bad []
+    else Ok (catMaybes l)
 
+type Verbosity = Int
 putStrV :: Verbosity -> String -> IO ()
 putStrV v s = when (v > 0) $ putStrLn s
 
@@ -67,9 +72,8 @@ usage = do
         [ "usage: " ++ progName ++ " [options] file"
         , "  -h                                 Display this help message."
         , "  -s                                 Parse silently"
-        , "  -e (environment) depth [draws]     Evaluate with environment " ++
-            "up to depth using optional comma seperated draws" ++ 
-            "(randomly generated if not provided)"
+        , "  -e (environment) depth draws       Evaluate with environment " ++
+            "up to depth using optional comma seperated draws"
         ]
     exitFailure
 
@@ -80,27 +84,22 @@ main = do
     args <- getArgs
     if "-h" `elem` args then usage
     else if null args then putStrLn "Must supply a file"
-    else do
-        let v =  (if "-s" `elem` args then 0 else 1) in do
-            file <- readFile $ last args -- Last arg should be the file
-            putStrLn "Parsing program"
-            prog <- parse v pExp file
-            showTree v prog
+    else let v =  (if "-s" `elem` args then 0 else 1) in do
+        file <- readFile $ last args -- Last arg should be the file
+        putStrLn "Parsing program"
+        prog <- parse v pExp file
+        showTree v prog
 
-            case args of
-                -- Parse and evaluate with given environment
-                "-e":e:n:f -> do
-                    putStrLn "Parsing environment"
-                    env <- parse 0 pEnvironment e
-                    let depth = readMaybe n in
-                        case depth of
-                            Just n  -> case f of 
-                                [x]   -> eval v prog n (genList prog) env
-                                [l,x] -> let l2 = parseList l in case l2 of 
-                                    Ok s -> do
-                                        showTree v (uniqNames prog)
-                                        eval v (uniqNames prog) n s env
-                                    _    -> putStrLn "Invalid draws list"
-                            Nothing -> putStrLn "Invalid depth"
+        case args of
+            -- Parse and evaluate with given environment
+            "-e":e:n:l:f -> do
+                putStrLn "Parsing environment"
+                env <- parse 0 pEnvironment e
+                case readMaybe n of
+                    Just n  -> case parseList l of 
+                        Ok s -> do
+                            eval v (uniqNames prog) n s env
+                        _    -> putStrLn "Invalid draws list"
+                    Nothing -> putStrLn "Invalid depth"
 
 

@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 8f414d2453abf4c5a801404c48da09f3c7a98fe8d674b84ceb61c52ea71913d9
+-- hash: 335a66f83bc39380f31ccdc5fe9cebb055456633532773a6d35f3d2a7d361b25
 
 name:           hopfl
 version:        0.1.0.0
@@ -25,7 +25,6 @@ source-repository head
 
 library
   exposed-modules:
-      RandomList
       Semantics
       Substitution
       Syntax.Abs

@@ -7,8 +7,6 @@ import Control.Applicative
 import Control.Monad.State
 import Data.HashMap.Lazy as HM
 import Data.Bifunctor
-import Data.Char
-import Data.Sequence as Seq
 import Debug.Trace
 
 

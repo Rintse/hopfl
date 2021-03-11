@@ -14,7 +14,6 @@ import Data.Bifunctor
 import Debug.Trace
 import Control.Monad.Reader
 import Control.Monad.State
-import Control.Applicative
 
 -- Result values
 data Value
@@ -28,7 +27,8 @@ data Value
 toExp :: Value -> Exp
 toExp (VVal v) = Val v
 toExp (VThunk e) = e
-
+toExp (VPair e1 e2) = Pair (toExp e1) (toExp e2)
+toExp e = trace ("NO toExp for : " ++ show e) Val 1.0
 
 -- Environment as hashmap
 type Env = HashMap String Exp
@@ -36,12 +36,12 @@ type Env = HashMap String Exp
 -- Transform the environment AST into a hashmap
 mkEnv :: Environment -> Env
 mkEnv (Env e) = fromList $ fmap mkAssign e
-  where mkAssign (Assign (Ident x) exp) = (x, exp)
+    where mkAssign (Assign (Ident x) exp) = (x, exp)
 
 
 -- Probability density function of the gaussian distribution
 pdfNorm :: (Double, Double) -> Double -> Double
-pdfNorm (x, s) c = 1 / exp(((c-x) ^^ 2) / 2 * s) * sqrt(2 * s * pi)
+pdfNorm (m,s) c = (1 / (s * sqrt (2 * pi))) * exp (-0.5 * (((c - m) / s) ^^ 2))
 
 
 -- A monad containing:
@@ -86,7 +86,6 @@ evalExp exp@(In e) = VIn <$> evalExp e
 -- Extract from fixpoint
 evalExp exp@(Out e) = do
     r <- evalExp e
-    trace ("R: " ++ show r) ask
     case r of
         VIn v -> return v
         _ -> return $ VThunk exp
@@ -96,7 +95,7 @@ evalExp exp@(App e1 e2) = do
     r1 <- evalExp e1
     r2 <- evalExp e2
     case r1 of
-        VThunk Abstr {} -> evalExp (removeBinder (toExp r1) (toExp r2))
+        VThunk Abstr {} -> evalExp $ removeBinder (toExp r1) (toExp r2)
         _ -> error $ show r1 ++ " is not a function"
 
 -- Delayed function application
@@ -104,7 +103,7 @@ evalExp exp@(LApp e1 _ e2) = do
     r1 <- evalExp e1
     r2 <- evalExp e2
     case (r1, r2) of
-        (VNext e, VNext s) -> evalExp $ Next (App (toExp e) (toExp s)) -- TODO: this?
+        (VNext e, VNext s) -> evalExp $ Next $ App (toExp e) (toExp s) -- TODO: this?
         _ -> error "Invalid arguments to LApp"
 
 -- Pair creation

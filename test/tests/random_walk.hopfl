@@ -1,6 +1,6 @@
 # Takes the first number of a random walk
 
-out ( 
+λ s . out ( 
     (fix f . #:: ⊳ ( real × (μ X . real × ⊳ X) ) . 
         λ x . in ( < 
             x , 
