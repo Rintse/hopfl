@@ -64,7 +64,7 @@ reName e = case e of
     Typed e t       -> Typed <$> reName e <*> return t
 
 isFree :: String -> Bool 
-isFree s = not $ isDigit $ head s
+isFree s = isLetter $ head s
 
 -- Renames all variables in body of rec statement to avoid
 -- application substitution in folded out rec terms

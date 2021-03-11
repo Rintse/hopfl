@@ -131,7 +131,7 @@ evalExp exp@(Norm e) = do
         VPair (VVal m) (VVal s) -> do
             (w, l) <- get
             case l of
-                (c:_)   -> do
+                (c:_) -> do
                     let density = pdfNorm (m,s) c in
                         if isNaN density then error "PDF not defined for given values"
                         else modify (\(w, l) -> (w * density, tail l))
