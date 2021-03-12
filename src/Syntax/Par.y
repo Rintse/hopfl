@@ -6,7 +6,6 @@ import qualified Syntax.Abs
 import Syntax.Lex
 }
 
-%name pTyp Typ
 %name pExp Exp
 %name pEnvironment Environment
 -- no lexer declaration
@@ -15,29 +14,45 @@ import Syntax.Lex
 %token
   '(' { PT _ (TS _ 1) }
   ')' { PT _ (TS _ 2) }
-  ',' { PT _ (TS _ 3) }
-  '.' { PT _ (TS _ 4) }
-  '::' { PT _ (TS _ 5) }
-  ';' { PT _ (TS _ 6) }
-  '<' { PT _ (TS _ 7) }
-  '=' { PT _ (TS _ 8) }
-  '>' { PT _ (TS _ 9) }
-  'fix' { PT _ (TS _ 10) }
-  'fst' { PT _ (TS _ 11) }
-  'in' { PT _ (TS _ 12) }
-  'next' { PT _ (TS _ 13) }
-  'normal' { PT _ (TS _ 14) }
-  'out' { PT _ (TS _ 15) }
-  'real' { PT _ (TS _ 16) }
-  'snd' { PT _ (TS _ 17) }
+  '*' { PT _ (TS _ 3) }
+  '+' { PT _ (TS _ 4) }
+  ',' { PT _ (TS _ 5) }
+  '-' { PT _ (TS _ 6) }
+  '->' { PT _ (TS _ 7) }
+  '.' { PT _ (TS _ 8) }
+  '/' { PT _ (TS _ 9) }
+  ';' { PT _ (TS _ 10) }
+  '<' { PT _ (TS _ 11) }
+  '=' { PT _ (TS _ 12) }
+  '>' { PT _ (TS _ 13) }
+  '[' { PT _ (TS _ 14) }
+  ']' { PT _ (TS _ 15) }
+  'case' { PT _ (TS _ 16) }
+  'else' { PT _ (TS _ 17) }
+  'false' { PT _ (TS _ 18) }
+  'fix' { PT _ (TS _ 19) }
+  'fst' { PT _ (TS _ 20) }
+  'if' { PT _ (TS _ 21) }
+  'in' { PT _ (TS _ 22) }
+  'inL' { PT _ (TS _ 23) }
+  'inR' { PT _ (TS _ 24) }
+  'next' { PT _ (TS _ 25) }
+  'normal' { PT _ (TS _ 26) }
+  'of' { PT _ (TS _ 27) }
+  'out' { PT _ (TS _ 28) }
+  'snd' { PT _ (TS _ 29) }
+  'then' { PT _ (TS _ 30) }
+  'true' { PT _ (TS _ 31) }
+  '{' { PT _ (TS _ 32) }
+  '}' { PT _ (TS _ 33) }
   L_Ident  { PT _ (TV $$) }
   L_doubl  { PT _ (TD $$) }
   L_Lam { PT _ (T_Lam $$) }
-  L_Mu { PT _ (T_Mu $$) }
-  L_Prod { PT _ (T_Prod $$) }
-  L_To { PT _ (T_To $$) }
-  L_Later { PT _ (T_Later $$) }
-  L_Lapp { PT _ (T_Lapp $$) }
+  L_Conj { PT _ (T_Conj $$) }
+  L_Disj { PT _ (T_Disj $$) }
+  L_TLeq { PT _ (T_TLeq $$) }
+  L_TGeq { PT _ (T_TGeq $$) }
+  L_TLApp { PT _ (T_TLApp $$) }
 
 %%
 
@@ -50,71 +65,89 @@ Double   : L_doubl  { (read ($1)) :: Double }
 Lam :: { Syntax.Abs.Lam}
 Lam  : L_Lam { Syntax.Abs.Lam $1 }
 
-Mu :: { Syntax.Abs.Mu}
-Mu  : L_Mu { Syntax.Abs.Mu $1 }
+Conj :: { Syntax.Abs.Conj}
+Conj  : L_Conj { Syntax.Abs.Conj $1 }
 
-Prod :: { Syntax.Abs.Prod}
-Prod  : L_Prod { Syntax.Abs.Prod $1 }
+Disj :: { Syntax.Abs.Disj}
+Disj  : L_Disj { Syntax.Abs.Disj $1 }
 
-To :: { Syntax.Abs.To}
-To  : L_To { Syntax.Abs.To $1 }
+TLeq :: { Syntax.Abs.TLeq}
+TLeq  : L_TLeq { Syntax.Abs.TLeq $1 }
 
-Later :: { Syntax.Abs.Later}
-Later  : L_Later { Syntax.Abs.Later $1 }
+TGeq :: { Syntax.Abs.TGeq}
+TGeq  : L_TGeq { Syntax.Abs.TGeq $1 }
 
-Lapp :: { Syntax.Abs.Lapp}
-Lapp  : L_Lapp { Syntax.Abs.Lapp $1 }
+TLApp :: { Syntax.Abs.TLApp}
+TLApp  : L_TLApp { Syntax.Abs.TLApp $1 }
 
-Typ4 :: { Syntax.Abs.Typ }
-Typ4 : 'real' { Syntax.Abs.TReal }
-     | Ident { Syntax.Abs.TVar $1 }
-     | '(' Typ ')' { $2 }
+BConst :: { Syntax.Abs.BConst }
+BConst : 'true' { Syntax.Abs.BTrue }
+       | 'false' { Syntax.Abs.BFalse }
 
-Typ3 :: { Syntax.Abs.Typ }
-Typ3 : Later Typ3 { Syntax.Abs.TLat $1 $2 } | Typ4 { $1 }
+Exp11 :: { Syntax.Abs.Exp }
+Exp11 : Ident { Syntax.Abs.Var $1 }
+      | Double { Syntax.Abs.Val $1 }
+      | BConst { Syntax.Abs.BVal $1 }
+      | '(' Exp ')' { $2 }
 
-Typ2 :: { Syntax.Abs.Typ }
-Typ2 : Typ1 Prod Typ2 { Syntax.Abs.TPRod $1 $2 $3 } | Typ3 { $1 }
+Exp10 :: { Syntax.Abs.Exp }
+Exp10 : 'next' Exp11 { Syntax.Abs.Next $2 }
+      | 'in' Exp11 { Syntax.Abs.In $2 }
+      | 'out' Exp11 { Syntax.Abs.Out $2 }
+      | 'fst' Exp11 { Syntax.Abs.Fst $2 }
+      | 'snd' Exp11 { Syntax.Abs.Snd $2 }
+      | 'inL' Exp11 { Syntax.Abs.InL $2 }
+      | 'inR' Exp11 { Syntax.Abs.InR $2 }
+      | Exp11 { $1 }
 
-Typ1 :: { Syntax.Abs.Typ }
-Typ1 : Mu Ident '.' Typ1 { Syntax.Abs.TRec $1 $2 $4 } | Typ2 { $1 }
+Exp9 :: { Syntax.Abs.Exp }
+Exp9 : Exp9 Exp10 { Syntax.Abs.App $1 $2 }
+     | Exp9 TLApp Exp10 { Syntax.Abs.LApp $1 $2 $3 }
+     | Exp10 { $1 }
 
-Typ :: { Syntax.Abs.Typ }
-Typ : Typ1 To Typ { Syntax.Abs.TFun $1 $2 $3 } | Typ1 { $1 }
+Exp8 :: { Syntax.Abs.Exp }
+Exp8 : Exp8 '*' Exp9 { Syntax.Abs.Mul $1 $3 }
+     | Exp8 '/' Exp9 { Syntax.Abs.Div $1 $3 }
+     | Exp9 { $1 }
+
+Exp7 :: { Syntax.Abs.Exp }
+Exp7 : Exp7 '+' Exp8 { Syntax.Abs.Add $1 $3 }
+     | Exp7 '-' Exp8 { Syntax.Abs.Sub $1 $3 }
+     | Exp8 { $1 }
 
 Exp6 :: { Syntax.Abs.Exp }
-Exp6 : Ident { Syntax.Abs.Var $1 }
-     | Double { Syntax.Abs.Val $1 }
-     | '(' Exp ')' { $2 }
+Exp6 : Exp6 '=' Exp7 { Syntax.Abs.Eq $1 $3 }
+     | Exp6 '<' Exp7 { Syntax.Abs.Lt $1 $3 }
+     | Exp6 '>' Exp7 { Syntax.Abs.Gt $1 $3 }
+     | Exp6 TLeq Exp7 { Syntax.Abs.Leq $1 $2 $3 }
+     | Exp6 TGeq Exp7 { Syntax.Abs.Geq $1 $2 $3 }
+     | Exp7 { $1 }
 
 Exp5 :: { Syntax.Abs.Exp }
-Exp5 : 'next' Exp6 { Syntax.Abs.Next $2 }
-     | 'in' Exp6 { Syntax.Abs.In $2 }
-     | 'out' Exp6 { Syntax.Abs.Out $2 }
+Exp5 : Exp5 Conj Exp6 { Syntax.Abs.And $1 $2 $3 }
+     | Exp5 Disj Exp6 { Syntax.Abs.Or $1 $2 $3 }
      | Exp6 { $1 }
 
 Exp4 :: { Syntax.Abs.Exp }
-Exp4 : Exp4 Exp5 { Syntax.Abs.App $1 $2 }
-     | Exp4 Lapp Exp4 { Syntax.Abs.LApp $1 $2 $3 }
-     | '<' Exp4 ',' Exp4 '>' { Syntax.Abs.Pair $2 $4 }
-     | 'fst' Exp4 { Syntax.Abs.Fst $2 }
-     | 'snd' Exp4 { Syntax.Abs.Snd $2 }
+Exp4 : '[' Exp4 ',' Exp4 ']' { Syntax.Abs.Pair $2 $4 }
      | 'normal' Exp4 { Syntax.Abs.Norm $2 }
      | Exp5 { $1 }
 
-Exp1 :: { Syntax.Abs.Exp }
-Exp1 : Lam Exp6 '.' Exp1 { Syntax.Abs.Abstr $1 $2 $4 }
-     | 'fix' Exp6 '.' Exp1 { Syntax.Abs.Rec $2 $4 }
-     | Exp2 { $1 }
-
-Exp :: { Syntax.Abs.Exp }
-Exp : Exp '::' Typ { Syntax.Abs.Typed $1 $3 } | Exp1 { $1 }
+Exp3 :: { Syntax.Abs.Exp }
+Exp3 : 'if' Exp5 'then' Exp7 'else' Exp7 ';' { Syntax.Abs.Ite $2 $4 $6 }
+     | Exp4 { $1 }
 
 Exp2 :: { Syntax.Abs.Exp }
-Exp2 : Exp3 { $1 }
+Exp2 : 'case' Exp11 'of' '{' Ident '->' Exp11 ';' Ident '->' Exp11 '}' { Syntax.Abs.Case $2 $5 $7 $9 $11 }
+     | Exp3 { $1 }
 
-Exp3 :: { Syntax.Abs.Exp }
-Exp3 : Exp4 { $1 }
+Exp :: { Syntax.Abs.Exp }
+Exp : Lam Ident '.' Exp { Syntax.Abs.Abstr $1 $2 $4 }
+    | 'fix' Ident '.' Exp { Syntax.Abs.Rec $2 $4 }
+    | Exp1 { $1 }
+
+Exp1 :: { Syntax.Abs.Exp }
+Exp1 : Exp2 { $1 }
 
 Assignment :: { Syntax.Abs.Assignment }
 Assignment : Ident '=' Exp { Syntax.Abs.Assign $1 $3 }

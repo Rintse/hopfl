@@ -17,7 +17,7 @@ $d = [0-9]           -- digit
 $i = [$l $d _ ']     -- identifier character
 $u = [. \n]          -- universal: any character
 @rsyms =    -- symbols and non-identifier-like reserved words
-   \. | \( | \) | \< | \, | \> | \: \: | \= | \;
+   \* | \/ | \+ | \- | \= | \< | \> | \[ | \, | \] | \; | \{ | \- \> | \} | \. | \( | \)
 :-
 
 -- Line comments
@@ -28,16 +28,16 @@ $white+ ;
     { tok (\p s -> PT p (eitherResIdent (TV . share) s)) }
 [\\ λ]
     { tok (\p s -> PT p (eitherResIdent (T_Lam . share) s)) }
-μ | \| u
-    { tok (\p s -> PT p (eitherResIdent (T_Mu . share) s)) }
-[\* \×]
-    { tok (\p s -> PT p (eitherResIdent (T_Prod . share) s)) }
-\→ | \- \>
-    { tok (\p s -> PT p (eitherResIdent (T_To . share) s)) }
-\⊳ | \| \>
-    { tok (\p s -> PT p (eitherResIdent (T_Later . share) s)) }
+\∧ | a n d
+    { tok (\p s -> PT p (eitherResIdent (T_Conj . share) s)) }
+\∨ | o r
+    { tok (\p s -> PT p (eitherResIdent (T_Disj . share) s)) }
+\≤ | \< \=
+    { tok (\p s -> PT p (eitherResIdent (T_TLeq . share) s)) }
+\≥ | \> \=
+    { tok (\p s -> PT p (eitherResIdent (T_TGeq . share) s)) }
 \⊙ | \( \. \)
-    { tok (\p s -> PT p (eitherResIdent (T_Lapp . share) s)) }
+    { tok (\p s -> PT p (eitherResIdent (T_TLApp . share) s)) }
 
 $l $i*
     { tok (\p s -> PT p (eitherResIdent (TV . share) s)) }
@@ -63,11 +63,11 @@ data Tok =
  | TD !String         -- double precision float literals
  | TC !String         -- character literals
  | T_Lam !String
- | T_Mu !String
- | T_Prod !String
- | T_To !String
- | T_Later !String
- | T_Lapp !String
+ | T_Conj !String
+ | T_Disj !String
+ | T_TLeq !String
+ | T_TGeq !String
+ | T_TLApp !String
 
  deriving (Eq,Show,Ord)
 
@@ -106,11 +106,11 @@ tokenText t = case t of
   PT _ (TC s)   -> s
   Err _         -> "#error"
   PT _ (T_Lam s) -> s
-  PT _ (T_Mu s) -> s
-  PT _ (T_Prod s) -> s
-  PT _ (T_To s) -> s
-  PT _ (T_Later s) -> s
-  PT _ (T_Lapp s) -> s
+  PT _ (T_Conj s) -> s
+  PT _ (T_Disj s) -> s
+  PT _ (T_TLeq s) -> s
+  PT _ (T_TGeq s) -> s
+  PT _ (T_TLApp s) -> s
 
 prToken :: Token -> String
 prToken t = tokenText t
@@ -126,7 +126,7 @@ eitherResIdent tv s = treeFind resWords
                               | s == a = t
 
 resWords :: BTree
-resWords = b ">" 9 (b "::" 5 (b "," 3 (b ")" 2 (b "(" 1 N N) N) (b "." 4 N N)) (b "<" 7 (b ";" 6 N N) (b "=" 8 N N))) (b "normal" 14 (b "in" 12 (b "fst" 11 (b "fix" 10 N N) N) (b "next" 13 N N)) (b "real" 16 (b "out" 15 N N) (b "snd" 17 N N)))
+resWords = b "else" 17 (b "/" 9 (b "," 5 (b "*" 3 (b ")" 2 (b "(" 1 N N) N) (b "+" 4 N N)) (b "->" 7 (b "-" 6 N N) (b "." 8 N N))) (b ">" 13 (b "<" 11 (b ";" 10 N N) (b "=" 12 N N)) (b "]" 15 (b "[" 14 N N) (b "case" 16 N N)))) (b "normal" 26 (b "in" 22 (b "fst" 20 (b "fix" 19 (b "false" 18 N N) N) (b "if" 21 N N)) (b "inR" 24 (b "inL" 23 N N) (b "next" 25 N N))) (b "then" 30 (b "out" 28 (b "of" 27 N N) (b "snd" 29 N N)) (b "{" 32 (b "true" 31 N N) (b "}" 33 N N))))
    where b s n = let bs = s
                  in  B bs (TS bs n)
 

@@ -1,1 +1,3 @@
-out ( ( fix f . ( λ x . in ( < x , f (.) next x > ) ) ) 1.0 )
+out ( ( fix f . ( λ x . in ( [ x , f (.) next x ] ) ) ) 1.0 )
+
+# TODO: Variables: make pairs of (name, recursion depth)

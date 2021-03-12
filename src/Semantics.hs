@@ -131,10 +131,10 @@ evalExp exp@(Norm e) = do
         VPair (VVal m) (VVal s) -> do
             (w, l) <- get
             case l of
-                (c:_) -> do
+                (c:l2) -> do -- Todo: rename l2
                     let density = pdfNorm (m,s) c in
                         if isNaN density then error "PDF not defined for given values"
-                        else modify (\(w, l) -> (w * density, tail l))
+                        else modify (\(w, l) -> (w * density, l2))
                     return $ VVal c
                 _       -> error "Random draws list too small"
         _ -> error "Normal argument not a pair of real numbers"
@@ -144,7 +144,4 @@ evalExp exp@(Abstr l x e) = return $ VThunk exp
 
 -- Recursion
 evalExp exp@(Rec x e) = evalExp $ removeBinder exp (Next exp)
-
--- Typed terms
-evalExp (Typed e t) = evalExp e
 

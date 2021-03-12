@@ -103,46 +103,57 @@ instance Print Syntax.Abs.Ident where
 instance Print Syntax.Abs.Lam where
   prt _ (Syntax.Abs.Lam i) = doc $ showString $ i
 
-instance Print Syntax.Abs.Mu where
-  prt _ (Syntax.Abs.Mu i) = doc $ showString $ i
+instance Print Syntax.Abs.Conj where
+  prt _ (Syntax.Abs.Conj i) = doc $ showString $ i
 
-instance Print Syntax.Abs.Prod where
-  prt _ (Syntax.Abs.Prod i) = doc $ showString $ i
+instance Print Syntax.Abs.Disj where
+  prt _ (Syntax.Abs.Disj i) = doc $ showString $ i
 
-instance Print Syntax.Abs.To where
-  prt _ (Syntax.Abs.To i) = doc $ showString $ i
+instance Print Syntax.Abs.TLeq where
+  prt _ (Syntax.Abs.TLeq i) = doc $ showString $ i
 
-instance Print Syntax.Abs.Later where
-  prt _ (Syntax.Abs.Later i) = doc $ showString $ i
+instance Print Syntax.Abs.TGeq where
+  prt _ (Syntax.Abs.TGeq i) = doc $ showString $ i
 
-instance Print Syntax.Abs.Lapp where
-  prt _ (Syntax.Abs.Lapp i) = doc $ showString $ i
+instance Print Syntax.Abs.TLApp where
+  prt _ (Syntax.Abs.TLApp i) = doc $ showString $ i
 
-instance Print Syntax.Abs.Typ where
+instance Print Syntax.Abs.BConst where
   prt i e = case e of
-    Syntax.Abs.TReal -> prPrec i 4 (concatD [doc (showString "real")])
-    Syntax.Abs.TVar id -> prPrec i 4 (concatD [prt 0 id])
-    Syntax.Abs.TLat later typ -> prPrec i 3 (concatD [prt 0 later, prt 3 typ])
-    Syntax.Abs.TPRod typ1 prod typ2 -> prPrec i 2 (concatD [prt 1 typ1, prt 0 prod, prt 2 typ2])
-    Syntax.Abs.TRec mu id typ -> prPrec i 1 (concatD [prt 0 mu, prt 0 id, doc (showString "."), prt 1 typ])
-    Syntax.Abs.TFun typ1 to typ2 -> prPrec i 0 (concatD [prt 1 typ1, prt 0 to, prt 0 typ2])
+    Syntax.Abs.BTrue -> prPrec i 0 (concatD [doc (showString "true")])
+    Syntax.Abs.BFalse -> prPrec i 0 (concatD [doc (showString "false")])
 
 instance Print Syntax.Abs.Exp where
   prt i e = case e of
-    Syntax.Abs.Var id -> prPrec i 6 (concatD [prt 0 id])
-    Syntax.Abs.Val d -> prPrec i 6 (concatD [prt 0 d])
-    Syntax.Abs.Next exp -> prPrec i 5 (concatD [doc (showString "next"), prt 6 exp])
-    Syntax.Abs.In exp -> prPrec i 5 (concatD [doc (showString "in"), prt 6 exp])
-    Syntax.Abs.Out exp -> prPrec i 5 (concatD [doc (showString "out"), prt 6 exp])
-    Syntax.Abs.App exp1 exp2 -> prPrec i 4 (concatD [prt 4 exp1, prt 5 exp2])
-    Syntax.Abs.LApp exp1 lapp exp2 -> prPrec i 4 (concatD [prt 4 exp1, prt 0 lapp, prt 4 exp2])
-    Syntax.Abs.Pair exp1 exp2 -> prPrec i 4 (concatD [doc (showString "<"), prt 4 exp1, doc (showString ","), prt 4 exp2, doc (showString ">")])
-    Syntax.Abs.Fst exp -> prPrec i 4 (concatD [doc (showString "fst"), prt 4 exp])
-    Syntax.Abs.Snd exp -> prPrec i 4 (concatD [doc (showString "snd"), prt 4 exp])
+    Syntax.Abs.Var id -> prPrec i 11 (concatD [prt 0 id])
+    Syntax.Abs.Val d -> prPrec i 11 (concatD [prt 0 d])
+    Syntax.Abs.BVal bconst -> prPrec i 11 (concatD [prt 0 bconst])
+    Syntax.Abs.Next exp -> prPrec i 10 (concatD [doc (showString "next"), prt 11 exp])
+    Syntax.Abs.In exp -> prPrec i 10 (concatD [doc (showString "in"), prt 11 exp])
+    Syntax.Abs.Out exp -> prPrec i 10 (concatD [doc (showString "out"), prt 11 exp])
+    Syntax.Abs.Fst exp -> prPrec i 10 (concatD [doc (showString "fst"), prt 11 exp])
+    Syntax.Abs.Snd exp -> prPrec i 10 (concatD [doc (showString "snd"), prt 11 exp])
+    Syntax.Abs.InL exp -> prPrec i 10 (concatD [doc (showString "inL"), prt 11 exp])
+    Syntax.Abs.InR exp -> prPrec i 10 (concatD [doc (showString "inR"), prt 11 exp])
+    Syntax.Abs.App exp1 exp2 -> prPrec i 9 (concatD [prt 9 exp1, prt 10 exp2])
+    Syntax.Abs.LApp exp1 tlapp exp2 -> prPrec i 9 (concatD [prt 9 exp1, prt 0 tlapp, prt 10 exp2])
+    Syntax.Abs.Mul exp1 exp2 -> prPrec i 8 (concatD [prt 8 exp1, doc (showString "*"), prt 9 exp2])
+    Syntax.Abs.Div exp1 exp2 -> prPrec i 8 (concatD [prt 8 exp1, doc (showString "/"), prt 9 exp2])
+    Syntax.Abs.Add exp1 exp2 -> prPrec i 7 (concatD [prt 7 exp1, doc (showString "+"), prt 8 exp2])
+    Syntax.Abs.Sub exp1 exp2 -> prPrec i 7 (concatD [prt 7 exp1, doc (showString "-"), prt 8 exp2])
+    Syntax.Abs.Eq exp1 exp2 -> prPrec i 6 (concatD [prt 6 exp1, doc (showString "="), prt 7 exp2])
+    Syntax.Abs.Lt exp1 exp2 -> prPrec i 6 (concatD [prt 6 exp1, doc (showString "<"), prt 7 exp2])
+    Syntax.Abs.Gt exp1 exp2 -> prPrec i 6 (concatD [prt 6 exp1, doc (showString ">"), prt 7 exp2])
+    Syntax.Abs.Leq exp1 tleq exp2 -> prPrec i 6 (concatD [prt 6 exp1, prt 0 tleq, prt 7 exp2])
+    Syntax.Abs.Geq exp1 tgeq exp2 -> prPrec i 6 (concatD [prt 6 exp1, prt 0 tgeq, prt 7 exp2])
+    Syntax.Abs.And exp1 conj exp2 -> prPrec i 5 (concatD [prt 5 exp1, prt 0 conj, prt 6 exp2])
+    Syntax.Abs.Or exp1 disj exp2 -> prPrec i 5 (concatD [prt 5 exp1, prt 0 disj, prt 6 exp2])
+    Syntax.Abs.Pair exp1 exp2 -> prPrec i 4 (concatD [doc (showString "["), prt 4 exp1, doc (showString ","), prt 4 exp2, doc (showString "]")])
     Syntax.Abs.Norm exp -> prPrec i 4 (concatD [doc (showString "normal"), prt 4 exp])
-    Syntax.Abs.Abstr lam exp1 exp2 -> prPrec i 1 (concatD [prt 0 lam, prt 6 exp1, doc (showString "."), prt 1 exp2])
-    Syntax.Abs.Rec exp1 exp2 -> prPrec i 1 (concatD [doc (showString "fix"), prt 6 exp1, doc (showString "."), prt 1 exp2])
-    Syntax.Abs.Typed exp typ -> prPrec i 0 (concatD [prt 0 exp, doc (showString "::"), prt 0 typ])
+    Syntax.Abs.Ite exp1 exp2 exp3 -> prPrec i 3 (concatD [doc (showString "if"), prt 5 exp1, doc (showString "then"), prt 7 exp2, doc (showString "else"), prt 7 exp3, doc (showString ";")])
+    Syntax.Abs.Case exp1 id1 exp2 id2 exp3 -> prPrec i 2 (concatD [doc (showString "case"), prt 11 exp1, doc (showString "of"), doc (showString "{"), prt 0 id1, doc (showString "->"), prt 11 exp2, doc (showString ";"), prt 0 id2, doc (showString "->"), prt 11 exp3, doc (showString "}")])
+    Syntax.Abs.Abstr lam id exp -> prPrec i 0 (concatD [prt 0 lam, prt 0 id, doc (showString "."), prt 0 exp])
+    Syntax.Abs.Rec id exp -> prPrec i 0 (concatD [doc (showString "fix"), prt 0 id, doc (showString "."), prt 0 exp])
 
 instance Print Syntax.Abs.Assignment where
   prt i e = case e of

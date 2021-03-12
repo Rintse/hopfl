@@ -15,45 +15,54 @@ newtype Ident = Ident String
 newtype Lam = Lam String
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 
-newtype Mu = Mu String
+newtype Conj = Conj String
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 
-newtype Prod = Prod String
+newtype Disj = Disj String
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 
-newtype To = To String
+newtype TLeq = TLeq String
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 
-newtype Later = Later String
+newtype TGeq = TGeq String
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 
-newtype Lapp = Lapp String
+newtype TLApp = TLApp String
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 
-data Typ
-    = TReal
-    | TVar Ident
-    | TLat Later Typ
-    | TPRod Typ Prod Typ
-    | TRec Mu Ident Typ
-    | TFun Typ To Typ
+data BConst = BTrue | BFalse
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Exp
     = Var Ident
     | Val Double
+    | BVal BConst
     | Next Exp
     | In Exp
     | Out Exp
-    | App Exp Exp
-    | LApp Exp Lapp Exp
-    | Pair Exp Exp
     | Fst Exp
     | Snd Exp
+    | InL Exp
+    | InR Exp
+    | App Exp Exp
+    | LApp Exp TLApp Exp
+    | Mul Exp Exp
+    | Div Exp Exp
+    | Add Exp Exp
+    | Sub Exp Exp
+    | Eq Exp Exp
+    | Lt Exp Exp
+    | Gt Exp Exp
+    | Leq Exp TLeq Exp
+    | Geq Exp TGeq Exp
+    | And Exp Conj Exp
+    | Or Exp Disj Exp
+    | Pair Exp Exp
     | Norm Exp
-    | Abstr Lam Exp Exp
-    | Rec Exp Exp
-    | Typed Exp Typ
+    | Ite Exp Exp Exp
+    | Case Exp Ident Exp Ident Exp
+    | Abstr Lam Ident Exp
+    | Rec Ident Exp
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Assignment = Assign Ident Exp

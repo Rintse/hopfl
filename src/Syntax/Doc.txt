@@ -33,19 +33,19 @@ followed by an unsigned or negative exponent.
 Lam literals are recognized by the regular expression
 `````["\λ"]`````
 
-Mu literals are recognized by the regular expression
-`````'μ' | {"|u"}`````
+Conj literals are recognized by the regular expression
+`````'∧' | {"and"}`````
 
-Prod literals are recognized by the regular expression
-`````["*×"]`````
+Disj literals are recognized by the regular expression
+`````'∨' | {"or"}`````
 
-To literals are recognized by the regular expression
-`````'→' | {"->"}`````
+TLeq literals are recognized by the regular expression
+`````'≤' | {"<="}`````
 
-Later literals are recognized by the regular expression
-`````'⊳' | {"|>"}`````
+TGeq literals are recognized by the regular expression
+`````'≥' | {">="}`````
 
-Lapp literals are recognized by the regular expression
+TLApp literals are recognized by the regular expression
 `````'⊙' | {"(.)"}`````
 
 
@@ -53,13 +53,17 @@ Lapp literals are recognized by the regular expression
 The set of reserved words is the set of terminals appearing in the grammar. Those reserved words that consist of non-letter characters are called symbols, and they are treated in a different way from those that are similar to identifiers. The lexer follows rules familiar from languages like Haskell, C, and Java, including longest match and spacing conventions.
 
 The reserved words used in Syntax are the following:
-  | ``fix`` | ``fst`` | ``in`` | ``next``
-  | ``normal`` | ``out`` | ``real`` | ``snd``
+  | ``case`` | ``else`` | ``false`` | ``fix``
+  | ``fst`` | ``if`` | ``in`` | ``inL``
+  | ``inR`` | ``next`` | ``normal`` | ``of``
+  | ``out`` | ``snd`` | ``then`` | ``true``
 
 The symbols used in Syntax are the following:
-  | . | ( | ) | <
-  | , | > | :: | =
-  | ; |  |  |
+  | * | / | + | -
+  | = | < | > | [
+  | , | ] | ; | {
+  | -> | } | . | (
+  | ) |  |  |
 
 ===Comments===
 Single-line comments begin with #.There are no multiple-line comments in the grammar.
@@ -70,38 +74,49 @@ The symbols -> (production),  **|**  (union)
 and **eps** (empty rule) belong to the BNF notation.
 All other symbols are terminals.
 
-  | //Typ4// | -> | ``real``
-  |  |  **|**  | //Ident//
-  |  |  **|**  | ``(`` //Typ// ``)``
-  | //Typ3// | -> | //Later// //Typ3//
-  |  |  **|**  | //Typ4//
-  | //Typ2// | -> | //Typ1// //Prod// //Typ2//
-  |  |  **|**  | //Typ3//
-  | //Typ1// | -> | //Mu// //Ident// ``.`` //Typ1//
-  |  |  **|**  | //Typ2//
-  | //Typ// | -> | //Typ1// //To// //Typ//
-  |  |  **|**  | //Typ1//
-  | //Exp6// | -> | //Ident//
+  | //BConst// | -> | ``true``
+  |  |  **|**  | ``false``
+  | //Exp11// | -> | //Ident//
   |  |  **|**  | //Double//
+  |  |  **|**  | //BConst//
   |  |  **|**  | ``(`` //Exp// ``)``
-  | //Exp5// | -> | ``next`` //Exp6//
-  |  |  **|**  | ``in`` //Exp6//
-  |  |  **|**  | ``out`` //Exp6//
+  | //Exp10// | -> | ``next`` //Exp11//
+  |  |  **|**  | ``in`` //Exp11//
+  |  |  **|**  | ``out`` //Exp11//
+  |  |  **|**  | ``fst`` //Exp11//
+  |  |  **|**  | ``snd`` //Exp11//
+  |  |  **|**  | ``inL`` //Exp11//
+  |  |  **|**  | ``inR`` //Exp11//
+  |  |  **|**  | //Exp11//
+  | //Exp9// | -> | //Exp9// //Exp10//
+  |  |  **|**  | //Exp9// //TLApp// //Exp10//
+  |  |  **|**  | //Exp10//
+  | //Exp8// | -> | //Exp8// ``*`` //Exp9//
+  |  |  **|**  | //Exp8// ``/`` //Exp9//
+  |  |  **|**  | //Exp9//
+  | //Exp7// | -> | //Exp7// ``+`` //Exp8//
+  |  |  **|**  | //Exp7// ``-`` //Exp8//
+  |  |  **|**  | //Exp8//
+  | //Exp6// | -> | //Exp6// ``=`` //Exp7//
+  |  |  **|**  | //Exp6// ``<`` //Exp7//
+  |  |  **|**  | //Exp6// ``>`` //Exp7//
+  |  |  **|**  | //Exp6// //TLeq// //Exp7//
+  |  |  **|**  | //Exp6// //TGeq// //Exp7//
+  |  |  **|**  | //Exp7//
+  | //Exp5// | -> | //Exp5// //Conj// //Exp6//
+  |  |  **|**  | //Exp5// //Disj// //Exp6//
   |  |  **|**  | //Exp6//
-  | //Exp4// | -> | //Exp4// //Exp5//
-  |  |  **|**  | //Exp4// //Lapp// //Exp4//
-  |  |  **|**  | ``<`` //Exp4// ``,`` //Exp4// ``>``
-  |  |  **|**  | ``fst`` //Exp4//
-  |  |  **|**  | ``snd`` //Exp4//
+  | //Exp4// | -> | ``[`` //Exp4// ``,`` //Exp4// ``]``
   |  |  **|**  | ``normal`` //Exp4//
   |  |  **|**  | //Exp5//
-  | //Exp1// | -> | //Lam// //Exp6// ``.`` //Exp1//
-  |  |  **|**  | ``fix`` //Exp6// ``.`` //Exp1//
-  |  |  **|**  | //Exp2//
-  | //Exp// | -> | //Exp// ``::`` //Typ//
+  | //Exp3// | -> | ``if`` //Exp5// ``then`` //Exp7// ``else`` //Exp7// ``;``
+  |  |  **|**  | //Exp4//
+  | //Exp2// | -> | ``case`` //Exp11// ``of`` ``{`` //Ident// ``->`` //Exp11// ``;`` //Ident// ``->`` //Exp11// ``}``
+  |  |  **|**  | //Exp3//
+  | //Exp// | -> | //Lam// //Ident// ``.`` //Exp//
+  |  |  **|**  | ``fix`` //Ident// ``.`` //Exp//
   |  |  **|**  | //Exp1//
-  | //Exp2// | -> | //Exp3//
-  | //Exp3// | -> | //Exp4//
+  | //Exp1// | -> | //Exp2//
   | //Assignment// | -> | //Ident// ``=`` //Exp//
   | //Environment// | -> | //[Assignment]//
   | //[Assignment]// | -> | **eps**

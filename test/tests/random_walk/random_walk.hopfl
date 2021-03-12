@@ -2,9 +2,9 @@
 
 out ( 
     (fix f . #:: ⊳ ( real × (μ X . real × ⊳ X) ) . 
-        λ x . in ( < 
+        λ x . in ( [
             x , 
-            f ⊙ next( normal <x , s> )
-        > )
+            f ⊙ next( normal [x , s] )
+        ] )
     ) x0
 )

@@ -2,9 +2,9 @@
 
 # Extracts the first 3 numbers
 ( λ g . λ g2 . λ p1 . λ p12 . λ p2 . λ x . 
-    < fst x ,  
-    < p1 ⊙ (g ⊙ (snd x)) , 
-    (next (p12 p1)) ⊙ (next (g2 g)) ⊙ (p2 ⊙ (g ⊙ (snd x))) > > 
+    [ fst x ,  
+    [ p1 ⊙ (g ⊙ (snd x)) , 
+    (next (p12 p1)) ⊙ ((next (g2 g)) ⊙ (p2 ⊙ (g ⊙ (snd x)))) ] ]
 )
 
 # Helper functions
@@ -16,11 +16,11 @@
 
 # The random walk stream
 (out ( 
-    (fix f . #:: ⊳ ( real × (μ X . real × ⊳ X) ) . 
-        λ x . in ( < 
+    (fix f . 
+        λ x . in ( [
             x , 
-            f ⊙ next( normal <x , s> )
-        > )
+            f ⊙ next( normal [x , s] )
+        ] )
     ) x0
 ) )
 
