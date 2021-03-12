@@ -32,6 +32,8 @@ $white+ ;
     { tok (\p s -> PT p (eitherResIdent (T_Conj . share) s)) }
 \∨ | o r
     { tok (\p s -> PT p (eitherResIdent (T_Disj . share) s)) }
+\¬ | n o t
+    { tok (\p s -> PT p (eitherResIdent (T_TNot . share) s)) }
 \≤ | \< \=
     { tok (\p s -> PT p (eitherResIdent (T_TLeq . share) s)) }
 \≥ | \> \=
@@ -65,6 +67,7 @@ data Tok =
  | T_Lam !String
  | T_Conj !String
  | T_Disj !String
+ | T_TNot !String
  | T_TLeq !String
  | T_TGeq !String
  | T_TLApp !String
@@ -108,6 +111,7 @@ tokenText t = case t of
   PT _ (T_Lam s) -> s
   PT _ (T_Conj s) -> s
   PT _ (T_Disj s) -> s
+  PT _ (T_TNot s) -> s
   PT _ (T_TLeq s) -> s
   PT _ (T_TGeq s) -> s
   PT _ (T_TLApp s) -> s

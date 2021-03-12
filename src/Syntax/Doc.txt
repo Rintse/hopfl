@@ -30,6 +30,7 @@ followed by an unsigned or negative exponent.
 
 
 
+
 Lam literals are recognized by the regular expression
 `````["\λ"]`````
 
@@ -38,6 +39,9 @@ Conj literals are recognized by the regular expression
 
 Disj literals are recognized by the regular expression
 `````'∨' | {"or"}`````
+
+TNot literals are recognized by the regular expression
+`````'¬' | {"not"}`````
 
 TLeq literals are recognized by the regular expression
 `````'≤' | {"<="}`````
@@ -103,20 +107,21 @@ All other symbols are terminals.
   |  |  **|**  | //Exp6// //TLeq// //Exp7//
   |  |  **|**  | //Exp6// //TGeq// //Exp7//
   |  |  **|**  | //Exp7//
-  | //Exp5// | -> | //Exp5// //Conj// //Exp6//
-  |  |  **|**  | //Exp5// //Disj// //Exp6//
+  | //Exp5// | -> | //TNot// //Exp6//
   |  |  **|**  | //Exp6//
-  | //Exp4// | -> | ``[`` //Exp4// ``,`` //Exp4// ``]``
-  |  |  **|**  | ``normal`` //Exp4//
+  | //Exp4// | -> | //Exp4// //Conj// //Exp5//
+  |  |  **|**  | //Exp4// //Disj// //Exp5//
   |  |  **|**  | //Exp5//
-  | //Exp3// | -> | ``if`` //Exp5// ``then`` //Exp7// ``else`` //Exp7// ``;``
+  | //Exp3// | -> | ``[`` //Exp3// ``,`` //Exp3// ``]``
+  |  |  **|**  | ``normal`` //Exp3//
   |  |  **|**  | //Exp4//
-  | //Exp2// | -> | ``case`` //Exp11// ``of`` ``{`` //Ident// ``->`` //Exp11// ``;`` //Ident// ``->`` //Exp11// ``}``
+  | //Exp2// | -> | ``if`` //Exp4// ``then`` //Exp7// ``else`` //Exp7// ``;``
   |  |  **|**  | //Exp3//
+  | //Exp1// | -> | ``case`` //Exp11// ``of`` ``{`` //Ident// ``->`` //Exp11// ``;`` //Ident// ``->`` //Exp11// ``}``
+  |  |  **|**  | //Exp2//
   | //Exp// | -> | //Lam// //Ident// ``.`` //Exp//
   |  |  **|**  | ``fix`` //Ident// ``.`` //Exp//
   |  |  **|**  | //Exp1//
-  | //Exp1// | -> | //Exp2//
   | //Assignment// | -> | //Ident// ``=`` //Exp//
   | //Environment// | -> | //[Assignment]//
   | //[Assignment]// | -> | **eps**

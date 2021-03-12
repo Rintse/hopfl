@@ -21,6 +21,9 @@ newtype Conj = Conj String
 newtype Disj = Disj String
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 
+newtype TNot = TNot String
+  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
+
 newtype TLeq = TLeq String
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 
@@ -55,6 +58,7 @@ data Exp
     | Gt Exp Exp
     | Leq Exp TLeq Exp
     | Geq Exp TGeq Exp
+    | Not TNot Exp
     | And Exp Conj Exp
     | Or Exp Disj Exp
     | Pair Exp Exp

@@ -5,6 +5,7 @@ comment     "#" ;
 token       Lam     ('λ' | '\\') ;
 token       Conj    ('∧' | 'a''n''d') ;
 token       Disj    ('∨' | 'o''r') ;
+token       TNot    ('¬' | 'n''o''t') ;
 token       TLeq    ('≤' | '<''=') ;
 token       TGeq    ('≥' | '>''=') ;
 token       TLApp   ('⊙' | '(''.'')') ;
@@ -32,26 +33,27 @@ App.        Exp9    ::= Exp9 Exp10 ;
 LApp.       Exp9    ::= Exp9 TLApp Exp10;
 
 -- Arithmetic
-Mul.        Exp8   ::= Exp8 "*" Exp9 ;
-Div.        Exp8   ::= Exp8 "/" Exp9 ;
-Add.        Exp7   ::= Exp7 "+" Exp8 ;
-Sub.        Exp7   ::= Exp7 "-" Exp8 ;
+Mul.        Exp8    ::= Exp8 "*" Exp9 ;
+Div.        Exp8    ::= Exp8 "/" Exp9 ;
+Add.        Exp7    ::= Exp7 "+" Exp8 ;
+Sub.        Exp7    ::= Exp7 "-" Exp8 ;
 
 -- Boolean
-Eq.         Exp6   ::= Exp6 "=" Exp7 ;
-Lt.         Exp6   ::= Exp6 "<" Exp7 ;
-Gt.         Exp6   ::= Exp6 ">" Exp7 ;
-Leq.        Exp6   ::= Exp6 TLeq Exp7 ;
-Geq.        Exp6   ::= Exp6 TGeq Exp7 ;
+Eq.         Exp6    ::= Exp6 "=" Exp7 ;
+Lt.         Exp6    ::= Exp6 "<" Exp7 ;
+Gt.         Exp6    ::= Exp6 ">" Exp7 ;
+Leq.        Exp6    ::= Exp6 TLeq Exp7 ;
+Geq.        Exp6    ::= Exp6 TGeq Exp7 ;
 
-And.        Exp5   ::= Exp5 Conj Exp6 ;
-Or.         Exp5   ::= Exp5 Disj Exp6 ;
+Not.        Exp5    ::= TNot Exp6 ;
+And.        Exp4    ::= Exp4 Conj Exp5 ;
+Or.         Exp4    ::= Exp4 Disj Exp5 ;
 
-Pair.       Exp4    ::= "[" Exp4 "," Exp4 "]";
-Norm.       Exp4    ::= "normal" Exp4 ;
+Pair.       Exp3    ::= "[" Exp3 "," Exp3 "]";
+Norm.       Exp3    ::= "normal" Exp3 ;
 
-Ite.        Exp3    ::= "if" Exp5 "then" Exp7 "else" Exp7 ";" ;
-Case.       Exp2    ::= "case" Exp11 "of" "{" Ident "->" Exp11 ";" Ident "->" Exp11 "}" ;
+Ite.        Exp2    ::= "if" Exp4 "then" Exp7 "else" Exp7 ";" ;
+Case.       Exp1    ::= "case" Exp11 "of" "{" Ident "->" Exp11 ";" Ident "->" Exp11 "}" ;
 
 Abstr.      Exp     ::= Lam Ident "." Exp ;
 Rec.        Exp     ::= "fix" Ident "." Exp ;

@@ -22,6 +22,9 @@ transConj x = case x of
 transDisj :: Syntax.Abs.Disj -> Result
 transDisj x = case x of
   Syntax.Abs.Disj string -> failure x
+transTNot :: Syntax.Abs.TNot -> Result
+transTNot x = case x of
+  Syntax.Abs.TNot string -> failure x
 transTLeq :: Syntax.Abs.TLeq -> Result
 transTLeq x = case x of
   Syntax.Abs.TLeq string -> failure x
@@ -58,6 +61,7 @@ transExp x = case x of
   Syntax.Abs.Gt exp1 exp2 -> failure x
   Syntax.Abs.Leq exp1 tleq exp2 -> failure x
   Syntax.Abs.Geq exp1 tgeq exp2 -> failure x
+  Syntax.Abs.Not tnot exp -> failure x
   Syntax.Abs.And exp1 conj exp2 -> failure x
   Syntax.Abs.Or exp1 disj exp2 -> failure x
   Syntax.Abs.Pair exp1 exp2 -> failure x

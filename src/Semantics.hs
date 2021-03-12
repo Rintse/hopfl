@@ -18,6 +18,7 @@ import Control.Monad.State
 -- Result values
 data Value
   = VVal Double
+  | VBVal Bool
   | VPair Value Value
   | VNext Value
   | VIn Value
@@ -108,7 +109,7 @@ evalExp exp@(LApp e1 _ e2) = do
         _ -> error "Invalid arguments to LApp"
 
 -- Pair creation
-evalExp exp@(Pair e1 e2) = VPair <$> evalExp e1 <*> evalExp e2 
+evalExp exp@(Pair e1 e2) = VPair <$> evalExp e1 <*> evalExp e2
 
 -- First projection
 evalExp exp@(Fst e) = do
@@ -139,9 +140,74 @@ evalExp exp@(Norm e) = do
                 _       -> error "Random draws list too small"
         _ -> error "Normal argument not a pair of real numbers"
 
+-- If then else
+evalExp exp@(Ite b e1 e2) = do
+    rb <- evalExp b 
+    case rb of 
+        VBVal True  -> evalExp e1
+        VBVal False -> evalExp e2
+        _ -> error $ "If with non boolean condition:\n" ++ show exp
+
+-- Case of ...
+evalExp exp@(Case e x1 e1 x2 e2) = failure exp
+
 -- Function abstraction
 evalExp exp@(Abstr l x e) = return $ VThunk exp
 
 -- Recursion
 evalExp exp@(Rec x e) = evalExp $ removeBinder exp (Next exp)
+
+-- Boolean and arithmetic expressions
+evalExp exp = case exp of
+    Add e1 e2   -> evalAExp e1 (+) e2
+    Sub e1 e2   -> evalAExp e1 (-) e2
+    Mul e1 e2   -> evalAExp e1 (*) e2
+    Div e1 e2   -> evalAExp e1 (/) e2
+
+    Not _ e     -> evalBExp1 not e
+    And e1 _ e2 -> evalBExp e1 (&&) e2
+    Or e1 _ e2  -> evalBExp e1 (||) e2
+
+    Eq e1 e2    -> evalRelop e1 (==) e2
+    Lt e1 e2    -> evalRelop e1 (<) e2
+    Gt e1 e2    -> evalRelop e1 (>) e2
+    Leq e1 _ e2 -> evalRelop e1 (<=) e2
+    Geq e1 _ e2 -> evalRelop e1 (>=) e2
+
+
+-- HELPERS
+-- Evaluates a binary arithmetic operation
+evalAExp :: Exp -> (Double -> Double -> Double) -> Exp -> SemEnv Value
+evalAExp e1 op e2 = do
+    r1 <- evalExp e1
+    r2 <- evalExp e2
+    case (r1, r2) of
+        (VVal d1, VVal d2) -> return $ VVal $ op d1 d2
+        _ -> error "Non-real arguments to arithmetic operator"
+
+-- Evaluates a binary boolean operation
+evalBExp :: Exp -> (Bool -> Bool -> Bool) -> Exp -> SemEnv Value
+evalBExp e1 op e2 = do
+    r1 <- evalExp e1
+    r2 <- evalExp e2
+    case (r1, r2) of
+        (VBVal b1, VBVal b2) -> return $ VBVal $ op b1 b2
+        _ -> error "Non-real arguments to arithmetic operator"
+
+-- Evaluates a unary boolean operation
+evalBExp1 :: (Bool -> Bool) -> Exp -> SemEnv Value
+evalBExp1 op e = do
+    r <- evalExp e
+    case r of
+        (VBVal b) -> return $ VBVal $ op b
+        _ -> error "Non real arguments to arithmetic operator"
+
+-- Evaluates a relative operator
+evalRelop :: Exp -> (Double -> Double -> Bool) -> Exp -> SemEnv Value
+evalRelop e1 op e2 = do
+    r1 <- evalExp e1
+    r2 <- evalExp e2
+    case (r1, r2) of
+        (VVal d1, VVal d2) -> return $ VBVal $ op d1 d2
+        _ -> error "Non real arguments to relative operator"
 

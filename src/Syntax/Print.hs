@@ -109,6 +109,9 @@ instance Print Syntax.Abs.Conj where
 instance Print Syntax.Abs.Disj where
   prt _ (Syntax.Abs.Disj i) = doc $ showString $ i
 
+instance Print Syntax.Abs.TNot where
+  prt _ (Syntax.Abs.TNot i) = doc $ showString $ i
+
 instance Print Syntax.Abs.TLeq where
   prt _ (Syntax.Abs.TLeq i) = doc $ showString $ i
 
@@ -146,12 +149,13 @@ instance Print Syntax.Abs.Exp where
     Syntax.Abs.Gt exp1 exp2 -> prPrec i 6 (concatD [prt 6 exp1, doc (showString ">"), prt 7 exp2])
     Syntax.Abs.Leq exp1 tleq exp2 -> prPrec i 6 (concatD [prt 6 exp1, prt 0 tleq, prt 7 exp2])
     Syntax.Abs.Geq exp1 tgeq exp2 -> prPrec i 6 (concatD [prt 6 exp1, prt 0 tgeq, prt 7 exp2])
-    Syntax.Abs.And exp1 conj exp2 -> prPrec i 5 (concatD [prt 5 exp1, prt 0 conj, prt 6 exp2])
-    Syntax.Abs.Or exp1 disj exp2 -> prPrec i 5 (concatD [prt 5 exp1, prt 0 disj, prt 6 exp2])
-    Syntax.Abs.Pair exp1 exp2 -> prPrec i 4 (concatD [doc (showString "["), prt 4 exp1, doc (showString ","), prt 4 exp2, doc (showString "]")])
-    Syntax.Abs.Norm exp -> prPrec i 4 (concatD [doc (showString "normal"), prt 4 exp])
-    Syntax.Abs.Ite exp1 exp2 exp3 -> prPrec i 3 (concatD [doc (showString "if"), prt 5 exp1, doc (showString "then"), prt 7 exp2, doc (showString "else"), prt 7 exp3, doc (showString ";")])
-    Syntax.Abs.Case exp1 id1 exp2 id2 exp3 -> prPrec i 2 (concatD [doc (showString "case"), prt 11 exp1, doc (showString "of"), doc (showString "{"), prt 0 id1, doc (showString "->"), prt 11 exp2, doc (showString ";"), prt 0 id2, doc (showString "->"), prt 11 exp3, doc (showString "}")])
+    Syntax.Abs.Not tnot exp -> prPrec i 5 (concatD [prt 0 tnot, prt 6 exp])
+    Syntax.Abs.And exp1 conj exp2 -> prPrec i 4 (concatD [prt 4 exp1, prt 0 conj, prt 5 exp2])
+    Syntax.Abs.Or exp1 disj exp2 -> prPrec i 4 (concatD [prt 4 exp1, prt 0 disj, prt 5 exp2])
+    Syntax.Abs.Pair exp1 exp2 -> prPrec i 3 (concatD [doc (showString "["), prt 3 exp1, doc (showString ","), prt 3 exp2, doc (showString "]")])
+    Syntax.Abs.Norm exp -> prPrec i 3 (concatD [doc (showString "normal"), prt 3 exp])
+    Syntax.Abs.Ite exp1 exp2 exp3 -> prPrec i 2 (concatD [doc (showString "if"), prt 4 exp1, doc (showString "then"), prt 7 exp2, doc (showString "else"), prt 7 exp3, doc (showString ";")])
+    Syntax.Abs.Case exp1 id1 exp2 id2 exp3 -> prPrec i 1 (concatD [doc (showString "case"), prt 11 exp1, doc (showString "of"), doc (showString "{"), prt 0 id1, doc (showString "->"), prt 11 exp2, doc (showString ";"), prt 0 id2, doc (showString "->"), prt 11 exp3, doc (showString "}")])
     Syntax.Abs.Abstr lam id exp -> prPrec i 0 (concatD [prt 0 lam, prt 0 id, doc (showString "."), prt 0 exp])
     Syntax.Abs.Rec id exp -> prPrec i 0 (concatD [doc (showString "fix"), prt 0 id, doc (showString "."), prt 0 exp])
 

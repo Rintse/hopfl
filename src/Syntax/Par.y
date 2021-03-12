@@ -50,6 +50,7 @@ import Syntax.Lex
   L_Lam { PT _ (T_Lam $$) }
   L_Conj { PT _ (T_Conj $$) }
   L_Disj { PT _ (T_Disj $$) }
+  L_TNot { PT _ (T_TNot $$) }
   L_TLeq { PT _ (T_TLeq $$) }
   L_TGeq { PT _ (T_TGeq $$) }
   L_TLApp { PT _ (T_TLApp $$) }
@@ -70,6 +71,9 @@ Conj  : L_Conj { Syntax.Abs.Conj $1 }
 
 Disj :: { Syntax.Abs.Disj}
 Disj  : L_Disj { Syntax.Abs.Disj $1 }
+
+TNot :: { Syntax.Abs.TNot}
+TNot  : L_TNot { Syntax.Abs.TNot $1 }
 
 TLeq :: { Syntax.Abs.TLeq}
 TLeq  : L_TLeq { Syntax.Abs.TLeq $1 }
@@ -124,30 +128,30 @@ Exp6 : Exp6 '=' Exp7 { Syntax.Abs.Eq $1 $3 }
      | Exp7 { $1 }
 
 Exp5 :: { Syntax.Abs.Exp }
-Exp5 : Exp5 Conj Exp6 { Syntax.Abs.And $1 $2 $3 }
-     | Exp5 Disj Exp6 { Syntax.Abs.Or $1 $2 $3 }
-     | Exp6 { $1 }
+Exp5 : TNot Exp6 { Syntax.Abs.Not $1 $2 } | Exp6 { $1 }
 
 Exp4 :: { Syntax.Abs.Exp }
-Exp4 : '[' Exp4 ',' Exp4 ']' { Syntax.Abs.Pair $2 $4 }
-     | 'normal' Exp4 { Syntax.Abs.Norm $2 }
+Exp4 : Exp4 Conj Exp5 { Syntax.Abs.And $1 $2 $3 }
+     | Exp4 Disj Exp5 { Syntax.Abs.Or $1 $2 $3 }
      | Exp5 { $1 }
 
 Exp3 :: { Syntax.Abs.Exp }
-Exp3 : 'if' Exp5 'then' Exp7 'else' Exp7 ';' { Syntax.Abs.Ite $2 $4 $6 }
+Exp3 : '[' Exp3 ',' Exp3 ']' { Syntax.Abs.Pair $2 $4 }
+     | 'normal' Exp3 { Syntax.Abs.Norm $2 }
      | Exp4 { $1 }
 
 Exp2 :: { Syntax.Abs.Exp }
-Exp2 : 'case' Exp11 'of' '{' Ident '->' Exp11 ';' Ident '->' Exp11 '}' { Syntax.Abs.Case $2 $5 $7 $9 $11 }
+Exp2 : 'if' Exp4 'then' Exp7 'else' Exp7 ';' { Syntax.Abs.Ite $2 $4 $6 }
      | Exp3 { $1 }
+
+Exp1 :: { Syntax.Abs.Exp }
+Exp1 : 'case' Exp11 'of' '{' Ident '->' Exp11 ';' Ident '->' Exp11 '}' { Syntax.Abs.Case $2 $5 $7 $9 $11 }
+     | Exp2 { $1 }
 
 Exp :: { Syntax.Abs.Exp }
 Exp : Lam Ident '.' Exp { Syntax.Abs.Abstr $1 $2 $4 }
     | 'fix' Ident '.' Exp { Syntax.Abs.Rec $2 $4 }
     | Exp1 { $1 }
-
-Exp1 :: { Syntax.Abs.Exp }
-Exp1 : Exp2 { $1 }
 
 Assignment :: { Syntax.Abs.Assignment }
 Assignment : Ident '=' Exp { Syntax.Abs.Assign $1 $3 }
