@@ -140,7 +140,7 @@ Exp3 : '[' Exp3 ',' Exp3 ']' { Syntax.Abs.Pair $2 $4 }
      | Exp4 { $1 }
 
 Exp2 :: { Syntax.Abs.Exp }
-Exp2 : 'if' Exp4 'then' Exp7 'else' Exp7 ';' { Syntax.Abs.Ite $2 $4 $6 }
+Exp2 : 'if' Exp4 'then' Exp7 'else' Exp7 { Syntax.Abs.Ite $2 $4 $6 }
      | Exp3 { $1 }
 
 Exp1 :: { Syntax.Abs.Exp }

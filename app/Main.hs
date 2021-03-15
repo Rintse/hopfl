@@ -13,20 +13,21 @@ import System.Exit ( exitFailure, exitSuccess )
 import System.Directory
 import Data.List.Split
 import Data.Maybe
+import Data.Char
 import Text.Read
 import Control.Monad (when)
 import Control.Monad.Reader
 import Control.Monad.State
-
+import Debug.Trace
 
 type ParseFun a = [Token] -> Err a
 myLLexer = myLexer
 
 -- Parses a user-provided random-draws list
 parseList :: String -> Err [Double]
-parseList s = let l = map (readMaybe :: String -> Maybe Double) (splitOn "," s)
-    in if Nothing `elem` l then Bad []
-    else Ok (catMaybes l)
+parseList s = let l = filter (not . all isSpace) $ splitOn "," s 
+    in let parsed = map (readMaybe :: String -> Maybe Double) l
+    in if Nothing `elem` parsed then Bad [] else Ok (catMaybes parsed)
 
 type Verbosity = Int
 putStrV :: Verbosity -> String -> IO ()

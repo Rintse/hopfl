@@ -43,6 +43,8 @@ reName e = case e of
     Pair e1 e2      -> liftA2 Pair (reName e1) (reName e2)
     Fst e           -> Fst <$> reName e
     Snd e           -> Snd <$> reName e
+    InL e           -> InL <$> reName e
+    InR e           -> InR <$> reName e
     Norm e          -> Norm <$> reName e
     Ite b e1 e2     -> liftA3 Ite (reName b) (reName e1) (reName e2)
     Match e x l y r -> do 
@@ -89,6 +91,8 @@ recName exp = case exp of
     Pair e1 e2          -> Pair (recName e1) (recName e2)
     Fst e               -> Fst $ recName e
     Snd e               -> Snd $ recName e
+    InL e               -> InL $ recName e
+    InR e               -> InR $ recName e
     Norm e              -> Norm $ recName e
     Ite b e1 e2         -> Ite (recName b) (recName e1) (recName e2)
     Match e (Ident x) l (Ident y) r -> Match (recName e)
@@ -122,6 +126,8 @@ subst exp = case exp of
     Pair e1 e2      -> liftA2 Pair (subst e1) (subst e2)
     Fst e           -> Fst <$> subst e
     Snd e           -> Snd <$> subst e
+    InL e           -> InL <$> subst e
+    InR e           -> InR <$> subst e
     Norm e          -> Norm <$> subst e
     Ite b e1 e2     -> liftA3 Ite (subst b) (subst e1) (subst e2)
     Match e x l y r  -> Match <$> subst e <*> 

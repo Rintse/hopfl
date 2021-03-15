@@ -15,7 +15,6 @@ token       TLApp   ('⊙' | '(''.'')') ;
 BTrue.      BConst  ::= "true" ;
 BFalse.     BConst  ::= "false" ;
 
-
 -- Terms
 Var.        Exp11   ::= Ident ;
 Val.        Exp11   ::= Double ;
@@ -52,8 +51,8 @@ Or.         Exp4    ::= Exp4 Disj Exp5 ;
 Pair.       Exp3    ::= "[" Exp3 "," Exp3 "]";
 Norm.       Exp3    ::= "normal" Exp3 ;
 
-Ite.        Exp2    ::= "if" Exp4 "then" Exp7 "else" Exp7 ";" ;
-Match.       Exp1    ::= "match" Exp11 "{" Ident "->" Exp11 ";" Ident "->" Exp11 "}" ;
+Ite.        Exp2    ::= "if" Exp4 "then" Exp7 "else" Exp7 ;
+Match.      Exp1    ::= "match" Exp11 "{" Ident "->" Exp11 ";" Ident "->" Exp11 "}" ;
 
 Abstr.      Exp     ::= Lam Ident "." Exp ;
 Rec.        Exp     ::= "fix" Ident "." Exp ;

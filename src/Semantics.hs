@@ -153,6 +153,10 @@ evalExp exp@(Ite b e1 e2) = do
         VBVal False -> evalExp e2
         _ -> error $ "If with non boolean condition:\n" ++ show exp
 
+-- Coproduct injection
+evalExp exp@(InL e) = VInL <$> evalExp e
+evalExp exp@(InR e) = VInR <$> evalExp e
+
 -- Case of ...
 evalExp exp@(Match e (Ident x1) e1 (Ident x2) e2) = do
     re <- evalExp e
@@ -160,7 +164,6 @@ evalExp exp@(Match e (Ident x1) e1 (Ident x2) e2) = do
         VInL l  -> evalExp $ runReader (subst e1) (x1, toExp l)
         VInR r  -> evalExp $ runReader (subst e2) (x2, toExp r)
         _       -> error $ "Match on non-coproduct:\n" ++ show exp
-    failure exp
 
 -- Function abstraction
 evalExp exp@(Abstr l x e) = return $ VThunk exp
