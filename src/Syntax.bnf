@@ -53,7 +53,7 @@ Pair.       Exp3    ::= "[" Exp3 "," Exp3 "]";
 Norm.       Exp3    ::= "normal" Exp3 ;
 
 Ite.        Exp2    ::= "if" Exp4 "then" Exp7 "else" Exp7 ";" ;
-Case.       Exp1    ::= "case" Exp11 "of" "{" Ident "->" Exp11 ";" Ident "->" Exp11 "}" ;
+Match.       Exp1    ::= "match" Exp11 "{" Ident "->" Exp11 ";" Ident "->" Exp11 "}" ;
 
 Abstr.      Exp     ::= Lam Ident "." Exp ;
 Rec.        Exp     ::= "fix" Ident "." Exp ;

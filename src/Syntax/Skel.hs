@@ -67,7 +67,7 @@ transExp x = case x of
   Syntax.Abs.Pair exp1 exp2 -> failure x
   Syntax.Abs.Norm exp -> failure x
   Syntax.Abs.Ite exp1 exp2 exp3 -> failure x
-  Syntax.Abs.Case exp1 ident1 exp2 ident2 exp3 -> failure x
+  Syntax.Abs.Match exp1 ident1 exp2 ident2 exp3 -> failure x
   Syntax.Abs.Abstr lam ident exp -> failure x
   Syntax.Abs.Rec ident exp -> failure x
 transAssignment :: Syntax.Abs.Assignment -> Result

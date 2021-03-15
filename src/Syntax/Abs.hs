@@ -64,7 +64,7 @@ data Exp
     | Pair Exp Exp
     | Norm Exp
     | Ite Exp Exp Exp
-    | Case Exp Ident Exp Ident Exp
+    | Match Exp Ident Exp Ident Exp
     | Abstr Lam Ident Exp
     | Rec Ident Exp
   deriving (C.Eq, C.Ord, C.Show, C.Read)

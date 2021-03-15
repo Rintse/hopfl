@@ -27,24 +27,23 @@ import Syntax.Lex
   '>' { PT _ (TS _ 13) }
   '[' { PT _ (TS _ 14) }
   ']' { PT _ (TS _ 15) }
-  'case' { PT _ (TS _ 16) }
-  'else' { PT _ (TS _ 17) }
-  'false' { PT _ (TS _ 18) }
-  'fix' { PT _ (TS _ 19) }
-  'fst' { PT _ (TS _ 20) }
-  'if' { PT _ (TS _ 21) }
-  'in' { PT _ (TS _ 22) }
-  'inL' { PT _ (TS _ 23) }
-  'inR' { PT _ (TS _ 24) }
+  'else' { PT _ (TS _ 16) }
+  'false' { PT _ (TS _ 17) }
+  'fix' { PT _ (TS _ 18) }
+  'fst' { PT _ (TS _ 19) }
+  'if' { PT _ (TS _ 20) }
+  'in' { PT _ (TS _ 21) }
+  'inL' { PT _ (TS _ 22) }
+  'inR' { PT _ (TS _ 23) }
+  'match' { PT _ (TS _ 24) }
   'next' { PT _ (TS _ 25) }
   'normal' { PT _ (TS _ 26) }
-  'of' { PT _ (TS _ 27) }
-  'out' { PT _ (TS _ 28) }
-  'snd' { PT _ (TS _ 29) }
-  'then' { PT _ (TS _ 30) }
-  'true' { PT _ (TS _ 31) }
-  '{' { PT _ (TS _ 32) }
-  '}' { PT _ (TS _ 33) }
+  'out' { PT _ (TS _ 27) }
+  'snd' { PT _ (TS _ 28) }
+  'then' { PT _ (TS _ 29) }
+  'true' { PT _ (TS _ 30) }
+  '{' { PT _ (TS _ 31) }
+  '}' { PT _ (TS _ 32) }
   L_Ident  { PT _ (TV $$) }
   L_doubl  { PT _ (TD $$) }
   L_Lam { PT _ (T_Lam $$) }
@@ -145,7 +144,7 @@ Exp2 : 'if' Exp4 'then' Exp7 'else' Exp7 ';' { Syntax.Abs.Ite $2 $4 $6 }
      | Exp3 { $1 }
 
 Exp1 :: { Syntax.Abs.Exp }
-Exp1 : 'case' Exp11 'of' '{' Ident '->' Exp11 ';' Ident '->' Exp11 '}' { Syntax.Abs.Case $2 $5 $7 $9 $11 }
+Exp1 : 'match' Exp11 '{' Ident '->' Exp11 ';' Ident '->' Exp11 '}' { Syntax.Abs.Match $2 $4 $6 $8 $10 }
      | Exp2 { $1 }
 
 Exp :: { Syntax.Abs.Exp }

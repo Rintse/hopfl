@@ -130,7 +130,7 @@ eitherResIdent tv s = treeFind resWords
                               | s == a = t
 
 resWords :: BTree
-resWords = b "else" 17 (b "/" 9 (b "," 5 (b "*" 3 (b ")" 2 (b "(" 1 N N) N) (b "+" 4 N N)) (b "->" 7 (b "-" 6 N N) (b "." 8 N N))) (b ">" 13 (b "<" 11 (b ";" 10 N N) (b "=" 12 N N)) (b "]" 15 (b "[" 14 N N) (b "case" 16 N N)))) (b "normal" 26 (b "in" 22 (b "fst" 20 (b "fix" 19 (b "false" 18 N N) N) (b "if" 21 N N)) (b "inR" 24 (b "inL" 23 N N) (b "next" 25 N N))) (b "then" 30 (b "out" 28 (b "of" 27 N N) (b "snd" 29 N N)) (b "{" 32 (b "true" 31 N N) (b "}" 33 N N))))
+resWords = b "false" 17 (b "/" 9 (b "," 5 (b "*" 3 (b ")" 2 (b "(" 1 N N) N) (b "+" 4 N N)) (b "->" 7 (b "-" 6 N N) (b "." 8 N N))) (b ">" 13 (b "<" 11 (b ";" 10 N N) (b "=" 12 N N)) (b "]" 15 (b "[" 14 N N) (b "else" 16 N N)))) (b "next" 25 (b "in" 21 (b "fst" 19 (b "fix" 18 N N) (b "if" 20 N N)) (b "inR" 23 (b "inL" 22 N N) (b "match" 24 N N))) (b "then" 29 (b "out" 27 (b "normal" 26 N N) (b "snd" 28 N N)) (b "{" 31 (b "true" 30 N N) (b "}" 32 N N))))
    where b s n = let bs = s
                  in  B bs (TS bs n)
 

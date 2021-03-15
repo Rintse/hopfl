@@ -12,7 +12,7 @@ import Data.Char
 
 -- Renames all variables to unique names to make substitution trivial
 uniqNames :: Exp -> Exp
-uniqNames e = evalState (reName e) (0, HM.empty)
+uniqNames e = runReader (reName e) (0, HM.empty)
 
 -- State environment contains a counter and a hashmap in which the values 
 -- track all the names that we are currently substituting the key for.
@@ -23,11 +23,6 @@ type NameMap = (Integer, HashMap String [String])
 pushVar :: Ident -> NameMap -> NameMap
 pushVar (Ident x) (c, m) = (c+1, HM.insertWith (++) x [show (c+1) ++ x] m)
 
--- Pops the latest substitute for x off m[x]
-popVar :: Ident -> NameMap -> NameMap
-popVar (Ident x) = second (HM.adjust tail x)
--- popVar (Var (Ident x)) (c, m) = (c, HM.adjust tail x m)
-
 -- Gets the latest substitute for x from m[x] (returns x if none are found)
 getSub :: Ident -> NameMap -> Ident
 getSub (Ident x) (_, m) = Ident (
@@ -36,9 +31,9 @@ getSub (Ident x) (_, m) = Ident (
     _          -> x )
 
 -- TODO check for faulty programs
-reName :: Exp -> State NameMap Exp
+reName :: Exp -> Reader NameMap Exp
 reName e = case e of
-    Var v           -> gets (Var . getSub v)
+    Var v           -> asks (Var . getSub v)
     Val v           -> return $ Val v
     Next e          -> Next <$> reName e
     In e            -> In <$> reName e
@@ -50,28 +45,20 @@ reName e = case e of
     Snd e           -> Snd <$> reName e
     Norm e          -> Norm <$> reName e
     Ite b e1 e2     -> liftA3 Ite (reName b) (reName e1) (reName e2)
-    Case e x l y r -> do -- TODO
-        s   <- reName e
-        modify (pushVar x)
-        rx <- gets (getSub x)
-        rl  <- reName l
-        modify (popVar x)
-        modify (pushVar y)
-        ry <- gets (getSub y)
-        rr  <- reName r
-        modify (popVar y)
-        return $ Case s rx rl ry rr
+    Match e x l y r -> do 
+        re <- reName e
+        rx <- asks (getSub x . pushVar x)
+        rl <- local (pushVar x) $ reName l
+        ry <- asks (getSub y . pushVar y)
+        rr <- local (pushVar y) $ reName r
+        return $ Match re rx rl ry rr
     Abstr l x e     -> do
-        modify (pushVar x)
-        r1 <- gets (getSub x)
-        r2 <- reName e
-        modify (popVar x)
+        r1 <- asks (getSub x . pushVar x)
+        r2 <- local (pushVar x) $ reName e
         return $ Abstr l r1 r2
     Rec x e         -> do
-        modify (pushVar x)
-        r1 <- gets (getSub x)
-        r2 <- reName e
-        modify (popVar x)
+        r1 <- asks (getSub x . pushVar x)
+        r2 <- local (pushVar x) $ reName e
         return $ Rec r1 r2
     Add e1 e2       -> liftA2 Add (reName e1) (reName e2)
     Sub e1 e2       -> liftA2 Sub (reName e1) (reName e2)
@@ -104,10 +91,9 @@ recName exp = case exp of
     Snd e               -> Snd $ recName e
     Norm e              -> Norm $ recName e
     Ite b e1 e2         -> Ite (recName b) (recName e1) (recName e2)
-    Case e (Ident x) l (Ident y) r -> Case -- TODO
-        (recName e)
-        (Ident $ "$" ++ x) (recName l)
-        (Ident $ "$" ++ y) (recName r)
+    Match e (Ident x) l (Ident y) r -> Match (recName e)
+                                       (Ident $ "$" ++ x) (recName l) 
+                                       (Ident $ "$" ++ y) (recName r)
     Abstr l (Ident v) e -> Abstr l (Ident $ "$" ++ v) (recName e)
     Rec (Ident v) e     -> Rec (Ident $ "$" ++ v) (recName e)
     Add e1 e2           -> Add (recName e1) (recName e2)
@@ -138,9 +124,8 @@ subst exp = case exp of
     Snd e           -> Snd <$> subst e
     Norm e          -> Norm <$> subst e
     Ite b e1 e2     -> liftA3 Ite (subst b) (subst e1) (subst e2)
-    Case e x l y r  -> Case <$> subst e <*> -- TODO 
-                       return x <*> subst l <*> 
-                       return y <*> subst r
+    Match e x l y r  -> Match <$> subst e <*> 
+                        return x <*> subst l <*> return y <*> subst r
     Abstr l v e     -> Abstr l v <$> subst e
     Rec v e         -> Rec v <$> subst e
     Add e1 e2       -> liftA2 Add (subst e1) (subst e2)

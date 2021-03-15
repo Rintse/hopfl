@@ -22,12 +22,16 @@ data Value
   | VPair Value Value
   | VNext Value
   | VIn Value
+  | VInL Value
+  | VInR Value
   | VThunk Exp
   deriving (Eq, Show)
 
 toExp :: Value -> Exp
 toExp (VVal v) = Val v
 toExp (VIn e) = In $ toExp e
+toExp (VInL e) = InL $ toExp e
+toExp (VInR e) = InR $ toExp e
 toExp (VThunk e) = e
 toExp (VPair e1 e2) = Pair (toExp e1) (toExp e2)
 toExp (VNext e) = Next $ toExp e
@@ -134,11 +138,12 @@ evalExp exp@(Norm e) = do
             case l of
                 (c:l2) -> do -- Todo: rename l2
                     let density = pdfNorm (m,s) c in
-                        if isNaN density then error "PDF not defined for given values"
+                        if isNaN density 
+                        then error $ "PDF not defined:\n" ++ show exp
                         else modify (\(w, l) -> (w * density, l2))
                     return $ VVal c
                 _       -> error "Random draws list too small"
-        _ -> error "Normal argument not a pair of real numbers"
+        _ -> error $ "Normal argument not a pair of reals:\n" ++ show exp
 
 -- If then else
 evalExp exp@(Ite b e1 e2) = do
@@ -149,7 +154,13 @@ evalExp exp@(Ite b e1 e2) = do
         _ -> error $ "If with non boolean condition:\n" ++ show exp
 
 -- Case of ...
-evalExp exp@(Case e x1 e1 x2 e2) = failure exp
+evalExp exp@(Match e (Ident x1) e1 (Ident x2) e2) = do
+    re <- evalExp e
+    case re of
+        VInL l  -> evalExp $ runReader (subst e1) (x1, toExp l)
+        VInR r  -> evalExp $ runReader (subst e2) (x2, toExp r)
+        _       -> error $ "Match on non-coproduct:\n" ++ show exp
+    failure exp
 
 -- Function abstraction
 evalExp exp@(Abstr l x e) = return $ VThunk exp
