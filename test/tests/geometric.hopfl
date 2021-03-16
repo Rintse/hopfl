@@ -1,0 +1,12 @@
+# Geometric series function
+( λ flip . λ p . ((fix f . λ n . 
+    if flip p
+    then in (inL n)
+    else in (inR (f ⊙ next (n + 1.0)))) 0.0)
+)
+
+# Flip function (using simulated [0,1] with normal)
+( λ p . (normal [0.5, 0.25]) < p )
+
+# p supplied by user
+p

@@ -61,7 +61,8 @@ eval v prog n s env = do
         Bad s -> do
             putStrLn "Evaluation failed"
             putStrLn s
-        Ok (s, (w,_)) -> putStrLn $ "Evaluation result (with density " ++ show w ++ "): \n" ++ show s
+        Ok (s, (w,_)) -> putStrLn $ 
+            "\nEvaluation result (with density " ++ show w ++ "): \n" ++ show s
 
 -- Prints help message regarding program usage
 usage :: IO ()
@@ -87,7 +88,7 @@ main = do
         file <- readFile $ last args -- Last arg should be the file
         putStrLn "Parsing program"
         prog <- parse v pExp file
-        showTree v prog
+        showTree v (uniqNames prog)
 
         case args of
             -- Parse and evaluate with given environment

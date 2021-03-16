@@ -44,10 +44,12 @@ mkEnv :: Environment -> Env
 mkEnv (Env e) = fromList $ fmap mkAssign e
     where mkAssign (Assign (Ident x) exp) = (x, exp)
 
-
 -- Probability density function of the gaussian distribution
 pdfNorm :: (Double, Double) -> Double -> Double
-pdfNorm (m,s) c = (1 / (s * sqrt (2 * pi))) * exp (-0.5 * (((c - m) / s) ^^ 2))
+pdfNorm (m,v) c = let sd = sqrt v -- variance is σ^2
+    in let density = (1 / (sd * sqrt (2 * pi))) * exp (-0.5 * (((c - m) / sd) ^^ 2)) in
+    trace ("Random draw " ++ show c ++ " has density " ++ show density ++ 
+           " for the guassian (" ++ show m ++ "," ++ show v ++ ")") density 
 
 
 -- A monad containing:
@@ -133,16 +135,16 @@ evalExp exp@(Snd e) = do
 evalExp exp@(Norm e) = do
     r <- evalExp e
     case r of
-        VPair (VVal m) (VVal s) -> do
-            (w, l) <- get
+        VPair (VVal m) (VVal v) -> do
+            l <- gets snd
             case l of
                 (c:l2) -> do -- Todo: rename l2
-                    let density = pdfNorm (m,s) c in
+                    let density = pdfNorm (m,v) c in
                         if isNaN density 
                         then error $ "PDF not defined:\n" ++ show exp
                         else modify (\(w, l) -> (w * density, l2))
                     return $ VVal c
-                _       -> error "Random draws list too small"
+                _ -> error "Random draws list too small"
         _ -> error $ "Normal argument not a pair of reals:\n" ++ show exp
 
 -- If then else
