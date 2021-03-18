@@ -1,3 +1,5 @@
+# Simple test for match statements
+
 match (
     if (test < 1.0) then (inL (λ x . x + 1.0)) else (inR 3.0)
 ) {

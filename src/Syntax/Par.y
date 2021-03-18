@@ -144,7 +144,7 @@ Exp2 : 'if' Exp4 'then' Exp7 'else' Exp7 { Syntax.Abs.Ite $2 $4 $6 }
      | Exp3 { $1 }
 
 Exp1 :: { Syntax.Abs.Exp }
-Exp1 : 'match' Exp11 '{' Ident '->' Exp11 ';' Ident '->' Exp11 '}' { Syntax.Abs.Match $2 $4 $6 $8 $10 }
+Exp1 : 'match' Exp11 '{' Ident '->' Exp1 ';' Ident '->' Exp1 '}' { Syntax.Abs.Match $2 $4 $6 $8 $10 }
      | Exp2 { $1 }
 
 Exp :: { Syntax.Abs.Exp }

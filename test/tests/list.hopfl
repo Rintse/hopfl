@@ -1,0 +1,24 @@
+# Taking the last element of a list-like type:
+# μ X . |R + |R x X
+
+# Gets the last item by means of matching on the size of the list
+( fix f . λ l .
+match (out l) {
+    last -> last ;
+    list -> f ⊙ next (snd list)
+} )
+
+# The user can choose from multiple lists using the "test" env variable
+( if (test = 0.0) 
+    
+    # [1.0]
+    then in (inL 1.0)
+    
+    else (if (test = 1.0)
+        
+        # [1.0, 2.0] 
+        then in (inR ([ 1.0 , in (inL 2.0) ]))
+
+        # [1.0, 2.0, 3.0] 
+        else in ( inR ([ 1.0 , in (inR ([ 2.0 , in (inL 3.0) ])) ]) )
+))

@@ -117,7 +117,7 @@ All other symbols are terminals.
   |  |  **|**  | //Exp4//
   | //Exp2// | -> | ``if`` //Exp4// ``then`` //Exp7// ``else`` //Exp7//
   |  |  **|**  | //Exp3//
-  | //Exp1// | -> | ``match`` //Exp11// ``{`` //Ident// ``->`` //Exp11// ``;`` //Ident// ``->`` //Exp11// ``}``
+  | //Exp1// | -> | ``match`` //Exp11// ``{`` //Ident// ``->`` //Exp1// ``;`` //Ident// ``->`` //Exp1// ``}``
   |  |  **|**  | //Exp2//
   | //Exp// | -> | //Lam// //Ident// ``.`` //Exp//
   |  |  **|**  | ``fix`` //Ident// ``.`` //Exp//

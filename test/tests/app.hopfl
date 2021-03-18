@@ -1,0 +1,24 @@
+# Takes arguments of the type:
+# μ X . |R + later X + later (X -> X)
+
+# app
+( fix A . λ s . λ t .
+    match (out s) {
+        x -> ( fix B . in (inR B) ) ;
+        y -> match y {
+            x -> in ( inR ( inL ( A ⊙ x ⊙ next t ) ) ) ;
+            y -> in ( inR ( inL ( f ⊙ next t ) ) )
+        } 
+    }
+)
+
+# s
+( if (test = 0.0) 
+    then (inL 5) 
+    else if (test = 1.0) 
+        then (inR (inL ))
+        else (inR (inR ) )
+)
+
+# t
+5
