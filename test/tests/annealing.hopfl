@@ -1,0 +1,75 @@
+# Simulated annealing on the max-cut problem
+# Solutions are represented as bitstrings where the boolean values
+# indicate in which of the two sets a vertex ends up
+
+# The simulated annealing algorithm
+( λ mutate . λ rand . λ k_max . λ k . λ T_max . λ T . λ f . λ s .
+    if (k = 0) then s else ( # Max iterations reached
+        
+    )
+)
+
+# Mutation function, generates a neighbour
+( ( λ rand_idx . λ flip . λ s . 
+    flip rand_idx s
+)
+( ( λ draw . # rand_idx
+    if (draw < 0.25) then 0.0
+    else if (draw < 0.5) then 1.0
+    else if (draw < 0.75) then 2.0
+    else 3.0
+  ) normal [0.5, 0,25]
+)
+
+( λ idx . λ s . 
+    if (idx = 0.0) then
+        [ !(fst s), snd s ]
+    else if (idx == 1) then 
+        [ fst s,  [!()]]
+)
+)
+
+
+# Random function, returns value in [0,1] (but not uniformly)
+(
+( λ x . if (x > 1) then 1 else if (x < 0) then 0 else x )
+( normal [0.5, 0.25] )
+)
+
+# Maximum number of steps
+max_steps   # (k_max)
+0           # (k)
+
+# Temperature function (linearly to 0)
+( ( λ init_temp . λ k . λ k_max . 
+    init_temp * (1 - ((k + 1) / k_max))
+) 
+20 # Initial temperature
+)
+
+# Function to optimize: points for each edge cut
+(
+( λ adj_list . λ s .
+    
+)
+
+# We want to optimize for the following graph:
+# 0 - 1     Here the optimal solution is obviously
+# |   |     to cut such that the two partitions
+# 2 - 3     are {0, 3} and {1, 2} (4 cuts), as adjacency list:
+( [ 
+    [ [0,1], 1 ]
+    [ [1,0], 1 ]
+    [ [0,2], 1 ]
+    [ [2,0], 1 ]
+    [ [0,3], 0 ]
+    [ [3,0], 0 ]
+] ) )
+
+# Initial solution (all the same partition)
+[   
+    true, [
+    true, [
+    true, 
+    true
+]]]

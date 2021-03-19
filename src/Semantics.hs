@@ -27,8 +27,16 @@ data Value
   | VThunk Exp
   deriving (Eq, Show)
 
+fromBool :: Bool -> BConst
+fromBool b = if b then BTrue else BFalse 
+toBool :: BConst -> Bool
+toBool b = case b of 
+    BTrue -> True
+    BFalse -> False
+
 toExp :: Value -> Exp
 toExp (VVal v) = Val v
+toExp (VBVal v) = BVal (fromBool v)
 toExp (VIn e) = In $ toExp e
 toExp (VInL e) = InL $ toExp e
 toExp (VInR e) = InR $ toExp e
@@ -175,6 +183,8 @@ evalExp exp@(Rec x e) = evalExp $ removeBinder exp (Next exp)
 
 -- Boolean and arithmetic expressions
 evalExp exp = case exp of
+    BVal v      -> return $ VBVal $ toBool v
+    Val v       -> return $ VVal v
     Add e1 e2   -> evalAExp e1 (+) e2
     Sub e1 e2   -> evalAExp e1 (-) e2
     Mul e1 e2   -> evalAExp e1 (*) e2

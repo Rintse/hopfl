@@ -5,7 +5,7 @@ comment     "#" ;
 token       Lam     ('λ' | '\\') ;
 token       Conj    ('∧' | 'a''n''d') ;
 token       Disj    ('∨' | 'o''r') ;
-token       TNot    ('¬' | 'n''o''t') ;
+token       TNot    ('¬' | '!') ;
 token       TLeq    ('≤' | '<''=') ;
 token       TGeq    ('≥' | '>''=') ;
 token       TLApp   ('⊙' | '(''.'')') ;

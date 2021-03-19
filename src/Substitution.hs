@@ -32,9 +32,10 @@ getSub (Ident x) (_, m) = Ident (
 
 -- TODO check for faulty programs
 reName :: Exp -> Reader NameMap Exp
-reName e = case e of
+reName exp = case exp of
     Var v           -> asks (Var . getSub v)
-    Val v           -> return $ Val v
+    Val v           -> return exp
+    BVal v          -> return exp
     Next e          -> Next <$> reName e
     In e            -> In <$> reName e
     Out e           -> Out <$> reName e
@@ -47,7 +48,7 @@ reName e = case e of
     InR e           -> InR <$> reName e
     Norm e          -> Norm <$> reName e
     Ite b e1 e2     -> liftA3 Ite (reName b) (reName e1) (reName e2)
-    Match e x l y r -> do 
+    Match e x l y r -> do
         re <- reName e
         rx <- asks (getSub x . pushVar x)
         rl <- local (pushVar x) $ reName l
@@ -68,6 +69,7 @@ reName e = case e of
     Div e1 e2       -> liftA2 Div (reName e1) (reName e2)
     And e1 o e2     -> liftA3 And (reName e1) (return o) (reName e2)
     Or e1 o e2      -> liftA3 Or (reName e1) (return o) (reName e2)
+    Not n e         -> fmap (Not n) (reName e)
     Eq e1 e2        -> liftA2 Eq (reName e1) (reName e2)
     Lt e1 e2        -> liftA2 Lt (reName e1) (reName e2)
     Gt e1 e2        -> liftA2 Gt (reName e1) (reName e2)
@@ -83,6 +85,7 @@ recName :: Exp -> Exp
 recName exp = case exp of
     Var (Ident v)       -> if isFree v then exp else Var (Ident $ "$" ++ v)
     Val v               -> exp
+    BVal v               -> exp
     Next e              -> Next $ recName e
     In e                -> In $ recName e
     Out e               -> Out $ recName e
@@ -96,7 +99,7 @@ recName exp = case exp of
     Norm e              -> Norm $ recName e
     Ite b e1 e2         -> Ite (recName b) (recName e1) (recName e2)
     Match e (Ident x) l (Ident y) r -> Match (recName e)
-                                       (Ident $ "$" ++ x) (recName l) 
+                                       (Ident $ "$" ++ x) (recName l)
                                        (Ident $ "$" ++ y) (recName r)
     Abstr l (Ident v) e -> Abstr l (Ident $ "$" ++ v) (recName e)
     Rec (Ident v) e     -> Rec (Ident $ "$" ++ v) (recName e)
@@ -106,6 +109,7 @@ recName exp = case exp of
     Div e1 e2           -> Div (recName e1) (recName e2)
     And e1 o e2         -> And (recName e1) o (recName e2)
     Or e1 o e2          -> Or (recName e1) o (recName e2)
+    Not n e             -> Not n (recName e)
     Eq e1 e2            -> Eq (recName e1) (recName e2)
     Lt e1 e2            -> Lt (recName e1) (recName e2)
     Gt e1 e2            -> Gt (recName e1) (recName e2)
@@ -118,6 +122,7 @@ subst :: Exp -> Reader (String, Exp) Exp
 subst exp = case exp of
     Var (Ident v)   -> asks (\(x,s) -> if v == x then s else exp)
     Val v           -> return exp
+    BVal v          -> return exp
     Next e          -> Next <$> subst e
     In e            -> In <$> subst e
     Out e           -> Out <$> subst e
@@ -130,7 +135,7 @@ subst exp = case exp of
     InR e           -> InR <$> subst e
     Norm e          -> Norm <$> subst e
     Ite b e1 e2     -> liftA3 Ite (subst b) (subst e1) (subst e2)
-    Match e x l y r  -> Match <$> subst e <*> 
+    Match e x l y r  -> Match <$> subst e <*>
                         return x <*> subst l <*> return y <*> subst r
     Abstr l v e     -> Abstr l v <$> subst e
     Rec v e         -> Rec v <$> subst e
@@ -140,6 +145,7 @@ subst exp = case exp of
     Div e1 e2       -> liftA2 Div (subst e1) (subst e2)
     And e1 o e2     -> liftA3 And (subst e1) (return o) (subst e2)
     Or e1 o e2      -> liftA3 Or (subst e1) (return o) (subst e2)
+    Not n e         -> fmap (Not n) (subst e)
     Eq e1 e2        -> liftA2 Eq (subst e1) (subst e2)
     Lt e1 e2        -> liftA2 Lt (subst e1) (subst e2)
     Gt e1 e2        -> liftA2 Gt (subst e1) (subst e2)

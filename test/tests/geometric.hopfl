@@ -1,4 +1,7 @@
 # Geometric series function
+# Example run:
+# -e "p=0.2" 5 "0.7,0.6,0.55,0.4,0.1" test/tests/geometric.hopfl 
+
 ( λ flip . λ p . ((fix f . λ n . 
     if flip p
     then in (inL n)

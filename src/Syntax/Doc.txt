@@ -41,7 +41,7 @@ Disj literals are recognized by the regular expression
 `````'∨' | {"or"}`````
 
 TNot literals are recognized by the regular expression
-`````'¬' | {"not"}`````
+`````["!¬"]`````
 
 TLeq literals are recognized by the regular expression
 `````'≤' | {"<="}`````

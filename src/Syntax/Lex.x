@@ -32,7 +32,7 @@ $white+ ;
     { tok (\p s -> PT p (eitherResIdent (T_Conj . share) s)) }
 \∨ | o r
     { tok (\p s -> PT p (eitherResIdent (T_Disj . share) s)) }
-\¬ | n o t
+[\! \¬]
     { tok (\p s -> PT p (eitherResIdent (T_TNot . share) s)) }
 \≤ | \< \=
     { tok (\p s -> PT p (eitherResIdent (T_TLeq . share) s)) }
