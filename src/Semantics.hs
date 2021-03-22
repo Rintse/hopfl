@@ -11,6 +11,7 @@ import Syntax.Fail
 
 import Data.HashMap.Lazy as HM
 import Data.Bifunctor
+import Control.Applicative
 import Debug.Trace
 import Control.Monad.Reader
 import Control.Monad.State
@@ -19,10 +20,10 @@ import Control.Monad.State
 data Value
   = VVal Double
   | VBVal Bool
-  | VPair Value Value
-  | VIn Value
-  | VInL Value
-  | VInR Value
+  | VPair Exp Exp
+  | VIn Exp
+  | VInL Exp
+  | VInR Exp
   | VNext Exp
   | VOut Exp
   | VThunk Exp
@@ -38,11 +39,11 @@ toBool b = case b of
 toExp :: Value -> Exp
 toExp (VVal v) = Val v
 toExp (VBVal v) = BVal (fromBool v)
-toExp (VIn e) = In $ toExp e
-toExp (VInL e) = InL $ toExp e
-toExp (VInR e) = InR $ toExp e
+toExp (VIn e) = In e
+toExp (VInL e) = InL e
+toExp (VInR e) = InR e
 toExp (VThunk e) = e
-toExp (VPair e1 e2) = Pair (toExp e1) (toExp e2)
+toExp (VPair e1 e2) = Pair e1 e2
 toExp (VNext e) = Next e
 toExp (VOut e) = Out e
 
@@ -99,13 +100,13 @@ evalExp exp@(Next e) = do
     else local (second $ subtract 1) (VNext <$> (toExp <$> evalExp e))
 
 -- Put into fixpoint
-evalExp exp@(In e) = VIn <$> evalExp e
+evalExp exp@(In e) = return $ VIn e
 
 -- Extract from fixpoint
 evalExp exp@(Out e) = do
     r <- evalExp e
     case r of
-        VIn v -> return v
+        VIn v -> evalExp v
         _ -> return $ VOut exp
 
 -- Function application
@@ -113,7 +114,7 @@ evalExp exp@(App e1 e2) = do
     r1 <- evalExp e1
     r2 <- evalExp e2
     case r1 of
-        VThunk Abstr {} -> evalExp $ removeBinder (toExp r1) (toExp r2)
+        VThunk (Abstr l (Ident x) e) -> evalExp $ substitute e x $ toExp r2
         _ -> error $ show r1 ++ " is not a function"
 
 -- Delayed function application
@@ -121,41 +122,41 @@ evalExp exp@(LApp e1 _ e2) = do
     r1 <- evalExp e1
     r2 <- evalExp e2
     case (r1, r2) of
-        (VNext e, VNext s) -> evalExp $ Next $ App e s -- TODO: this?
+        (VNext (Abstr _ (Ident x) e), VNext s) -> do
+            sp <- evalExp s
+            r <- evalExp $ substitute e x $ toExp sp
+            return $ VNext $ toExp r
         _ -> error "Invalid arguments to LApp"
 
 -- Pair creation
-evalExp exp@(Pair e1 e2) = VPair <$> evalExp e1 <*> evalExp e2
+evalExp exp@(Pair e1 e2) = return $ VPair e1 e2
 
 -- First projection
 evalExp exp@(Fst e) = do
     r <- evalExp e
     case r of
-        VPair v1 v2 -> return v1
+        VPair v1 v2 -> evalExp v1
         _ -> error $ "Took fst of non-pair " ++ show r
 
 -- Second projection
 evalExp exp@(Snd e) = do
     r <- evalExp e
     case r of
-        VPair v1 v2 -> return v2
+        VPair v1 v2 -> evalExp v2
         _ -> error $ "Took snd of non-pair " ++ show r
 
 -- Normal distribtion sampling
 evalExp exp@(Norm e) = do
     r <- evalExp e
-    case r of
-        VPair (VVal m) (VVal v) -> do
-            l <- gets snd
-            case l of
-                (c:l2) -> do -- Todo: rename l2
-                    let density = pdfNorm (m,v) c in
-                        if isNaN density
-                        then error $ "PDF not defined:\n" ++ show exp
-                        else modify (\(w, l) -> (w * density, l2))
-                    return $ VVal c
-                _ -> error "Random draws list too small"
-        _ -> error $ "Normal argument not a pair of reals:\n" ++ show exp
+    case r of -- Todo this case needed?
+        VPair e1 e2 -> do
+            r1 <- evalExp e1
+            r2 <- evalExp e2
+            case (r1,r2) of
+                (VVal m, VVal v) -> do
+                    join $ gets (performDraw m v)
+                _ -> error "Normal pair does not contain reals"
+        _ -> error $ "Normal argument not a pair: \n" ++ show exp
 
 -- If then else
 evalExp exp@(Ite b e1 e2) = do
@@ -166,26 +167,29 @@ evalExp exp@(Ite b e1 e2) = do
         _ -> error $ "If with non boolean condition:\n" ++ show exp
 
 -- Coproduct injection
-evalExp exp@(InL e) = VInL <$> evalExp e
-evalExp exp@(InR e) = VInR <$> evalExp e
+evalExp exp@(InL e) = return $ VInL e
+evalExp exp@(InR e) = return $ VInR e
 
--- Case of ...
+-- Matching coproducts
 evalExp exp@(Match e (Ident x1) e1 (Ident x2) e2) = do
     re <- evalExp e
     case re of
         VInL l -> do
-            r1 <- evalExp $ toExp l
-            evalExp $ runReader (subst e1) (x1, toExp r1)
+            r1 <- evalExp l
+            trace ("inL result: " ++ show r1 )(
+                trace ("body: " ++ show e1) (
+                let sub = substitute e1 x1 $ toExp r1 in
+                    trace ("sub: " ++ show sub) (evalExp sub)))
         VInR r -> do
-            r2 <- evalExp $ toExp r
-            evalExp $ runReader (subst e2) (x2, toExp r2)
+            r2 <- evalExp r
+            evalExp $ substitute e2 x2 $ toExp r2
         _       -> error $ "Match on non-coproduct:\n" ++ show exp
 
 -- Function abstraction
 evalExp exp@(Abstr l x e) = return $ VThunk exp
 
 -- Recursion
-evalExp exp@(Rec x e) = evalExp $ removeBinder exp (Next exp)
+evalExp exp@(Rec (Ident x) e) = evalExp $ substitute e x $ recName (Next exp)
 
 -- Boolean and arithmetic expressions
 evalExp exp = case exp of
@@ -242,4 +246,14 @@ evalRelop e1 op e2 = do
     case (r1, r2) of
         (VVal d1, VVal d2) -> return $ VBVal $ op d1 d2
         _ -> error "Non real arguments to relative operator"
+
+performDraw :: Double -> Double -> (Double, [Double]) -> SemEnv Value
+performDraw m v env = case snd env of
+    (c:l) -> do -- Todo: rename l2
+        let density = pdfNorm (m,v) c in
+            if isNaN density
+            then error "PDF not defined\n"
+            else modify (\(w, _) -> (w * density, l))
+        return $ VVal c
+    _ -> error "Random draws list too small"
 

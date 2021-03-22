@@ -1,6 +1,14 @@
-# Takes the first and second number of a random walk
+# Takes one of the first three numbers of a random walk
+
+# The test env variable selects which number
+( λ x . 
+if (test = 0.0) then fst x
+else ( if (test = 1.0) then fst (snd x)
+else snd (snd x)
+))
 
 # Extracts the first 3 numbers
+(
 ( λ g . λ g2 . λ p1 . λ p12 . λ p2 . λ x . 
     [ fst x ,  
     [ p1 ⊙ (g ⊙ (snd x)) , 
@@ -23,4 +31,5 @@
         ] )
     ) x0
 ) )
+)
 

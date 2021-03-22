@@ -152,11 +152,6 @@ subst exp = case exp of
     Leq e1 o e2     -> liftA3 Leq (subst e1) (return o) (subst e2)
     Geq e1 o e2     -> liftA3 Geq (subst e1) (return o) (subst e2)
 
--- Removes a binder and substitutes the bound occurances
--- Used for performing application and recursion
-removeBinder :: Exp -> Exp -> Exp
-removeBinder exp s = case exp of
-    Abstr l (Ident x) e   -> runReader (subst e) (x, s)
-    Rec (Ident x) e       -> runReader (subst e) (x, recName s)
-    _ -> exp
-
+-- Substitutes in exp, s for x
+substitute :: Exp -> String -> Exp -> Exp
+substitute exp x s = runReader (subst exp) (x,s)
