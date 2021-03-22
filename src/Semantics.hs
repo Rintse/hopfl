@@ -20,18 +20,18 @@ data Value
   = VVal Double
   | VBVal Bool
   | VPair Value Value
-  | VNext Value
   | VIn Value
   | VInL Value
   | VInR Value
+  | VNext Exp
   | VOut Exp
   | VThunk Exp
   deriving (Eq, Show)
 
 fromBool :: Bool -> BConst
-fromBool b = if b then BTrue else BFalse 
+fromBool b = if b then BTrue else BFalse
 toBool :: BConst -> Bool
-toBool b = case b of 
+toBool b = case b of
     BTrue -> True
     BFalse -> False
 
@@ -43,8 +43,8 @@ toExp (VInL e) = InL $ toExp e
 toExp (VInR e) = InR $ toExp e
 toExp (VThunk e) = e
 toExp (VPair e1 e2) = Pair (toExp e1) (toExp e2)
-toExp (VNext e) = Next $ toExp e
-toExp (VOut e) = Out $ e
+toExp (VNext e) = Next e
+toExp (VOut e) = Out e
 
 -- Environment as hashmap
 type Env = HashMap String Exp
@@ -58,8 +58,8 @@ mkEnv (Env e) = fromList $ fmap mkAssign e
 pdfNorm :: (Double, Double) -> Double -> Double
 pdfNorm (m,v) c = let sd = sqrt v -- variance is σ^2
     in let density = (1 / (sd * sqrt (2 * pi))) * exp (-0.5 * (((c - m) / sd) ^^ 2)) in
-    trace ("Random draw " ++ show c ++ " has density " ++ show density ++ 
-           " for the guassian (" ++ show m ++ "," ++ show v ++ ")") density 
+    trace ("Random draw " ++ show c ++ " has density " ++ show density ++
+           " for the guassian (" ++ show m ++ "," ++ show v ++ ")") density
 
 
 -- A monad containing:
@@ -95,8 +95,8 @@ evalExp exp@(Val v) = return $ VVal v
 -- Do no allow calculation past n (param) nexts
 evalExp exp@(Next e) = do
     depth <- asks snd
-    if depth == 0 then return $ VNext $ VThunk e
-    else local (second $ subtract 1) (VNext <$> evalExp e)
+    if depth == 0 then return $ VNext e
+    else local (second $ subtract 1) (VNext <$> (toExp <$> evalExp e))
 
 -- Put into fixpoint
 evalExp exp@(In e) = VIn <$> evalExp e
@@ -121,7 +121,7 @@ evalExp exp@(LApp e1 _ e2) = do
     r1 <- evalExp e1
     r2 <- evalExp e2
     case (r1, r2) of
-        (VNext e, VNext s) -> evalExp $ Next $ App (toExp e) (toExp s) -- TODO: this?
+        (VNext e, VNext s) -> evalExp $ Next $ App e s -- TODO: this?
         _ -> error "Invalid arguments to LApp"
 
 -- Pair creation
@@ -150,7 +150,7 @@ evalExp exp@(Norm e) = do
             case l of
                 (c:l2) -> do -- Todo: rename l2
                     let density = pdfNorm (m,v) c in
-                        if isNaN density 
+                        if isNaN density
                         then error $ "PDF not defined:\n" ++ show exp
                         else modify (\(w, l) -> (w * density, l2))
                     return $ VVal c
@@ -159,8 +159,8 @@ evalExp exp@(Norm e) = do
 
 -- If then else
 evalExp exp@(Ite b e1 e2) = do
-    rb <- evalExp b 
-    case rb of 
+    rb <- evalExp b
+    case rb of
         VBVal True  -> evalExp e1
         VBVal False -> evalExp e2
         _ -> error $ "If with non boolean condition:\n" ++ show exp
