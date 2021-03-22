@@ -28,6 +28,7 @@ Snd.        Exp10   ::= "snd" Exp11 ;
 InL.        Exp10   ::= "inL" Exp11 ;
 InR.        Exp10   ::= "inR" Exp11 ;
 
+-- TODO: make right associative?
 App.        Exp9    ::= Exp9 Exp10 ;
 LApp.       Exp9    ::= Exp9 TLApp Exp10;
 

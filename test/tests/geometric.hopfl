@@ -1,33 +1,16 @@
 # Geometric series function
-# Example run:
-# -e "p=0.2" 5 "0.7,0.6,0.55,0.4,0.1" test/tests/geometric.hopfl 
-(
-( λ one . λ two . λ three . λ x . 
-    if (test = 0.0) then one x  # InL v 
-    else ( if (test = 1.0)
-        then two x              # in (InR (next (in (InL v))))
-        else three x            # in (InR (next (in (InR (next (in (InL v)))))))
-    )
-)
-( λ x . match (out x) { x -> x ; x -> x } )
-( λ x . match (out x) { 
-    x -> x ; 
-    #v -> (next (λ y . match (out y) { x -> x ; x -> x} )) ⊙ v } 
-    v -> (next (λ y . out y)) ⊙ v } 
-)
-( λ x . match (out x) { v -> match (out v) { v -> out v ; x -> x} ; x -> x})
-)
 
-(
-    ( λ flip . λ p . ((fix f . λ n . 
-        if flip p
-        then in (inL n)
-        else in (inR (f ⊙ next (n + 1.0)))) 0.0)
-    )
+# Extracts the computed value from the coproduct
+( fix f . λ x . match (out x) {
+    left -> left; 
+    right -> f ⊙ right
+} )
 
-    # Flip function (using simulated [0,1] with normal)
-    ( λ p . (normal [0.5, 0.25]) < p )
-
-    # p supplied by user
-    p
+# Performs a flip until a value below p is reached
+( ( λ flip . λ p . ((fix f . λ n . 
+    if flip p
+    then in (inL n)
+    else in (inR (f ⊙ next (n + 1.0)))) 0.0)
 )
+# Flip function (using simulated [0,1] with normal)
+( λ p . (normal [0.5, 0.25]) < p ) p )

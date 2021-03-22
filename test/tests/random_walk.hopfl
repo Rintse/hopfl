@@ -1,35 +1,34 @@
 # Takes one of the first three numbers of a random walk
 
 # The test env variable selects which number
-( λ x . 
-if (test = 0.0) then fst x
-else ( if (test = 1.0) then fst (snd x)
-else snd (snd x)
-))
+# ( λ x . 
+# if (test = 0.0) then fst x
+# else ( if (test = 1.0) then fst (snd x)
+# else snd (snd x)
+# ))
 
-# Extracts the first 3 numbers
-(
-( λ g . λ g2 . λ p1 . λ p12 . λ p2 . λ x . 
-    [ fst x ,  
-    [ p1 ⊙ (g ⊙ (snd x)) , 
-    (next (p12 p1)) ⊙ ((next (g2 g)) ⊙ (p2 ⊙ (g ⊙ (snd x)))) ] ]
-)
+# # Extracts the first 3 numbers
+# (
+# ( λ g . λ g2 . λ p1 . λ p12 . λ p2 . λ x . 
+    # [ fst x ,  
+    # [ p1 ⊙ (g ⊙ (snd x)) , 
+    # (next (p12 p1)) ⊙ ((next (g2 g)) ⊙ (p2 ⊙ (g ⊙ (snd x)))) ] ]
+# )
 
-# Helper functions
-( next ( λ x . out x ) )    # g:    Extracts new value (1 next deep)
-( λ g . λ x . g ⊙ x )       # g2:   Extracts new value (2 nexts deep)
-( next ( λ x . fst x ) )    # p1:   First projection (1 next deep)
-( λ p1 . λ x . p1 ⊙ x )     # p12:  First projection (2 nexts deep)
-( next ( λ x . snd x ) )    # p2:   Second projection (1 next deep)
+# # Helper functions
+# ( next ( λ x . out x ) )    # g:    Extracts new value (1 next deep)
+# ( λ g . λ x . g ⊙ x )       # g2:   Extracts new value (2 nexts deep)
+# ( next ( λ x . fst x ) )    # p1:   First projection (1 next deep)
+# ( λ p1 . λ x . p1 ⊙ x )     # p12:  First projection (2 nexts deep)
+# ( next ( λ x . snd x ) )    # p2:   Second projection (1 next deep)
+
+( fix f . λ idx . λ rw .
+    if ( idx <= 0.0 ) then fst (out rw)
+    else f ⊙ next idx ⊙ (snd (out rw))
+) idx
 
 # The random walk stream
-(out ( 
-    (fix f . 
-        λ x . in ( [
-            x , 
-            f ⊙ next( normal [x , s] )
-        ] )
-    ) x0
-) )
-)
+( (fix f . 
+    λ x . in ( [ x , f ⊙ next( normal [x , s] ) ] )
+) x0 ) 
 

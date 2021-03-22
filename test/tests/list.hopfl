@@ -5,20 +5,12 @@
 ( fix f . λ l .
 match (out l) {
     last -> last ;
-    list -> f ⊙ next (snd list)
+    list -> f ⊙ (snd list)
 } )
 
-# The user can choose from multiple lists using the "test" env variable
-( if (test = 0.0) 
-    
-    # [1.0]
-    then in (inL 1.0)
-    
-    else (if (test = 1.0)
-        
-        # [1.0, 2.0] 
-        then in (inR ([ 1.0 , in (inL 2.0) ]))
+# Builds a list with size increasing elements: [1.0, [2.0. [3.0..]]]
+(( fix f . λ max . λ size .
+    if ( size >= max ) then in (inL size)
+    else in (inR ([size, f ⊙ (next max) ⊙ (next (size + 1.0))] ))
+) 0.0 size )
 
-        # [1.0, 2.0, 3.0] 
-        else in ( inR ([ 1.0 , in (inR ([ 2.0 , in (inL 3.0) ])) ]) )
-))

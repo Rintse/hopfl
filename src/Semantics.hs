@@ -67,11 +67,11 @@ pdfNorm (m,v) c = let sd = sqrt v -- variance is σ^2
 --   - A reader with (a map from vars to their values, and the evaluation depth)
 --   - A State with (a list of random draws, and the density of this execution)
 --   - An error monad to express evaluation failure
-newtype SemEnv a = SemEnv
-  { runSem :: ReaderT (Env, Integer) (StateT (Double, [Double]) Err) a
-  } deriving (  Functor, Applicative, Monad,
-                MonadState (Double, [Double]),
-                MonadReader (Env, Integer))
+newtype SemEnv a = SemEnv { 
+    runSem :: ReaderT (Env, Integer) (StateT (Double, [Double]) Err) a
+} deriving (    Functor, Applicative, Monad,
+                MonadReader (Env, Integer),
+                MonadState (Double, [Double])   )
 
 -- Evaluation function: 
 -- Takes an AST and calculates the result of the program using small
@@ -126,7 +126,7 @@ evalExp exp@(LApp e1 _ e2) = do
             sp <- evalExp s
             r <- evalExp $ substitute e x $ toExp sp
             return $ VNext $ toExp r
-        _ -> error "Invalid arguments to LApp"
+        _ -> error $ "Invalid arguments to LApp:\n" ++ show exp
 
 -- Pair creation
 evalExp exp@(Pair e1 e2) = return $ VPair e1 e2
@@ -177,12 +177,12 @@ evalExp exp@(Match e (Ident x1) e1 (Ident x2) e2) = do
         VInL l -> do
             r1 <- evalExp l
             trace ("inL result: " ++ show r1 )(
-                trace ("body: " ++ show e1) (
-                let sub = substitute e1 x1 $ toExp r1 in
-                    trace ("sub: " ++ show sub) (evalExp sub)))
-        VInR r -> do
+                trace ("body: " ++ show e1) ( do
+                sub <- evalExp $ substitute e1 x1 $ toExp r1 
+                trace ("sub: " ++ show sub) (return sub)))
+        VInR r -> trace ("inR") (do
             r2 <- evalExp r
-            evalExp $ substitute e2 x2 $ toExp r2
+            evalExp $ substitute e2 x2 $ toExp r2)
         _       -> error $ "Match on non-coproduct:\n" ++ show exp
 
 -- Function abstraction
