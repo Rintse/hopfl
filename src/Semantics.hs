@@ -67,7 +67,7 @@ pdfNorm (m,v) c = let sd = sqrt v -- variance is σ^2
 --   - A reader with (a map from vars to their values, and the evaluation depth)
 --   - A State with (a list of random draws, and the density of this execution)
 --   - An error monad to express evaluation failure
-newtype SemEnv a = SemEnv { 
+newtype SemEnv a = SemEnv {
     runSem :: ReaderT (Env, Integer) (StateT (Double, [Double]) Err) a
 } deriving (    Functor, Applicative, Monad,
                 MonadReader (Env, Integer),
@@ -96,8 +96,9 @@ evalExp exp@(Val v) = return $ VVal v
 -- Do no allow calculation past n (param) nexts
 evalExp exp@(Next e) = do
     depth <- asks snd
-    if depth == 0 then return $ VNext e
-    else local (second $ subtract 1) (VNext <$> (toExp <$> evalExp e))
+    trace ("NEXT (" ++ show depth ++ ")") (
+        if depth == 0 then return $ VNext e
+        else local (second $ subtract 1) (VNext . toExp <$> evalExp e))
 
 -- Put into fixpoint
 evalExp exp@(In e) = return $ VIn e
@@ -123,9 +124,7 @@ evalExp exp@(LApp e1 _ e2) = do
     r2 <- evalExp e2
     case (r1, r2) of
         (VNext (Abstr _ (Ident x) e), VNext s) -> do
-            sp <- evalExp s
-            r <- evalExp $ substitute e x $ toExp sp
-            return $ VNext $ toExp r
+            evalExp $ toExp $ VNext $ substitute e x s
         _ -> error $ "Invalid arguments to LApp:\n" ++ show exp
 
 -- Pair creation
@@ -175,12 +174,12 @@ evalExp exp@(Match e (Ident x1) e1 (Ident x2) e2) = do
     re <- evalExp e
     case re of
         VInL l -> do
-            r1 <- evalExp l
-            trace ("inL result: " ++ show r1 )(
+            l2 <- evalExp l
+            trace ("inL result: " ++ show l2 )(
                 trace ("body: " ++ show e1) ( do
-                sub <- evalExp $ substitute e1 x1 $ toExp r1 
+                sub <- evalExp $ substitute e1 x1 $ toExp l2
                 trace ("sub: " ++ show sub) (return sub)))
-        VInR r -> trace ("inR") (do
+        VInR r -> trace "inR" (do
             r2 <- evalExp r
             evalExp $ substitute e2 x2 $ toExp r2)
         _       -> error $ "Match on non-coproduct:\n" ++ show exp
@@ -255,5 +254,5 @@ performDraw m v env = case snd env of
             then error "PDF not defined\n"
             else modify (\(w, _) -> (w * density, l))
         return $ VVal c
-    _ -> error "Random draws list too small"
+    _ -> error $ "Draws list too small (" ++ show m ++ ", " ++ show v ++ ")"
 
