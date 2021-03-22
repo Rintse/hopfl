@@ -24,6 +24,7 @@ data Value
   | VIn Value
   | VInL Value
   | VInR Value
+  | VOut Exp
   | VThunk Exp
   deriving (Eq, Show)
 
@@ -43,6 +44,7 @@ toExp (VInR e) = InR $ toExp e
 toExp (VThunk e) = e
 toExp (VPair e1 e2) = Pair (toExp e1) (toExp e2)
 toExp (VNext e) = Next $ toExp e
+toExp (VOut e) = Out $ e
 
 -- Environment as hashmap
 type Env = HashMap String Exp
@@ -104,7 +106,7 @@ evalExp exp@(Out e) = do
     r <- evalExp e
     case r of
         VIn v -> return v
-        _ -> return $ VThunk exp
+        _ -> return $ VOut exp
 
 -- Function application
 evalExp exp@(App e1 e2) = do
@@ -171,8 +173,12 @@ evalExp exp@(InR e) = VInR <$> evalExp e
 evalExp exp@(Match e (Ident x1) e1 (Ident x2) e2) = do
     re <- evalExp e
     case re of
-        VInL l  -> evalExp $ runReader (subst e1) (x1, toExp l)
-        VInR r  -> evalExp $ runReader (subst e2) (x2, toExp r)
+        VInL l -> do
+            r1 <- evalExp $ toExp l
+            evalExp $ runReader (subst e1) (x1, toExp r1)
+        VInR r -> do
+            r2 <- evalExp $ toExp r
+            evalExp $ runReader (subst e2) (x2, toExp r2)
         _       -> error $ "Match on non-coproduct:\n" ++ show exp
 
 -- Function abstraction
