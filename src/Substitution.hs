@@ -163,3 +163,4 @@ subst exp = case exp of
 -- Substitutes in exp, s for x
 substitute :: Exp -> String -> Exp -> Exp
 substitute exp x s = runReader (subst exp) (x,s)
+

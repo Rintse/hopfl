@@ -28,11 +28,8 @@ mkEnv (Env e) = fromList $ fmap mkAssign e
 
 -- Probability density function of the gaussian distribution
 pdfNorm :: (Double, Double) -> Double -> Double
-pdfNorm (m,v) c = let sd = sqrt v -- variance is σ^2
-    in let density = (1 / (sd * sqrt (2 * pi))) * exp (-0.5 * (((c - m) / sd) ^^ 2)) in
-    trace ("Random draw " ++ show c ++ " has density " ++ show density ++
-           " for the guassian (" ++ show m ++ "," ++ show v ++ ")") density
-
+pdfNorm (m,v) c = let sd = sqrt v in -- variance is σ^2
+    (1 / (sd * sqrt (2 * pi))) * exp (-0.5 * (((c - m) / sd) ^^ 2)) 
 
 -- A monad containing:
 --   - A reader with (a map from vars to their values, and the evaluation depth)
@@ -45,12 +42,7 @@ newtype SemEnv a = SemEnv {
                 MonadState (Double, [Double])   )
 
 -- Evaluation function: 
--- Takes an AST and calculates the result of the program using small
--- step semantics. Uses an error monad to allow for evaluation error logging
--- The first argument is the allowed depth for evaluating nexts. 
--- The second argument is the expression to be evaluated.
--- TODO: do not include tokens into the datatypes
--- TODO: something like LEFTFIRST?
+-- Takes an AST and calculates the result of the program using big step semantics
 evalExp :: Exp -> SemEnv Value
 
 -- Variables
@@ -67,9 +59,8 @@ evalExp exp@(Val v) = return $ VVal v
 -- Do no allow calculation past n (param) nexts
 evalExp exp@(Next e) = do
     depth <- asks snd
-    trace ("NEXT (" ++ show depth ++ ")") (
-        if depth == 0 then return $ VNext e
-        else local (second $ subtract 1) (VNext . toExp <$> evalExp e))
+    if depth == 0 then return $ VNext e
+    else local (second $ subtract 1) (VNext . toExp <$> evalExp e)
 
 -- Put into fixpoint
 evalExp exp@(In e) = return $ VIn e
@@ -95,7 +86,7 @@ evalExp exp@(LApp e1 _ e2) = do
     r2 <- evalExp e2
     case (r1, r2) of
         (VNext (Abstr _ (Ident x) e), VNext s) -> do
-            evalExp $ toExp $ VNext $ substitute e x s
+            evalExp $ Next $ substitute e x s
         _ -> error $ "Invalid arguments to LApp:\n" ++ treeTerm exp
 
 -- Pair creation
@@ -123,8 +114,7 @@ evalExp exp@(Norm e) = do
             r1 <- evalExp e1
             r2 <- evalExp e2
             case (r1,r2) of
-                (VVal m, VVal v) -> do
-                    join $ gets (performDraw m v)
+                (VVal m, VVal v) -> performDraw m v
                 _ -> error "Normal pair does not contain reals"
         _ -> error $ "Normal argument not a pair: \n" ++ treeTerm exp
 
@@ -156,9 +146,7 @@ evalExp exp@(Match e (Ident x1) e1 (Ident x2) e2) = do
 evalExp exp@(Abstr l x e) = return $ VThunk exp
 
 -- Recursion
-evalExp exp@(Rec (Ident x) e) = do 
-    r <- evalExp $ substitute e x $ recName (Next exp)
-    trace ("fix: " ++ treeValue r ++ "\n") return r
+evalExp exp@(Rec (Ident x) e) = evalExp $ substitute e x $ recName (Next exp)
 
 -- Boolean and arithmetic expressions
 evalExp exp = case exp of
@@ -196,7 +184,7 @@ evalBExp e1 op e2 = do
     r2 <- evalExp e2
     case (r1, r2) of
         (VBVal b1, VBVal b2) -> return $ VBVal $ op b1 b2
-        _ -> error "Non-real arguments to arithmetic operator"
+        _ -> error "Non-bool arguments to boolean operator"
 
 -- Evaluates a unary boolean operation
 evalBExp1 :: (Bool -> Bool) -> Exp -> SemEnv Value
@@ -204,7 +192,7 @@ evalBExp1 op e = do
     r <- evalExp e
     case r of
         (VBVal b) -> return $ VBVal $ op b
-        _ -> error "Non real arguments to arithmetic operator"
+        _ -> error "Non-bool arguments to boolean"
 
 -- Evaluates a relative operator
 evalRelop :: Exp -> (Double -> Double -> Bool) -> Exp -> SemEnv Value
@@ -215,13 +203,15 @@ evalRelop e1 op e2 = do
         (VVal d1, VVal d2) -> return $ VBVal $ op d1 d2
         _ -> error "Non real arguments to relative operator"
 
-performDraw :: Double -> Double -> (Double, [Double]) -> SemEnv Value
-performDraw m v env = case snd env of
-    (c:l) -> do -- Todo: rename l2
-        let density = pdfNorm (m,v) c in
-            if isNaN density
-            then error "PDF not defined\n"
-            else modify (\(w, _) -> (w * density, l))
-        return $ VVal c
-    _ -> error $ "Draws list too small (" ++ show m ++ ", " ++ show v ++ ")"
+performDraw :: Double -> Double -> SemEnv Value
+performDraw m v = do
+    env <- get
+    case snd env of
+        (c:l) -> do -- Todo: rename l2
+            let density = pdfNorm (m,v) c in 
+                if isNaN density
+                then error "PDF not defined\n"
+                else modify (\(w, _) -> (w * density, l))
+            return $ VVal c
+        _ -> error $ "Draws list too small (" ++ show m ++ ", " ++ show v ++ ")"
 

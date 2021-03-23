@@ -7,6 +7,7 @@ import Syntax.ErrM
 import Syntax.Abs
 import Semantics
 import Substitution
+import Treeify
 
 import System.Environment ( getArgs, getProgName )
 import System.Exit ( exitFailure, exitSuccess )
@@ -72,6 +73,7 @@ usage = do
         [ "usage: " ++ progName ++ " [options] file"
         , "  -h                                 Display this help message."
         , "  -s                                 Parse silently"
+        , "  -t                                 Just show a tree of the program"
         , "  -e (environment) depth draws       Evaluate with environment " ++
             "up to depth using optional comma seperated draws"
         ]
@@ -101,5 +103,7 @@ main = do
                             eval v (uniqNames prog) n s env
                         _    -> putStrLn "Invalid draws list"
                     Nothing -> putStrLn "Invalid depth"
+            "-t":f -> putStrLn $ treeTerm prog
+            _ -> putStrLn "Invalid usage"
 
 
