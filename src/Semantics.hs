@@ -8,6 +8,8 @@ import Substitution
 import Syntax.Abs
 import Syntax.ErrM
 import Syntax.Fail
+import Values
+import Print
 
 import Data.HashMap.Lazy as HM
 import Data.Bifunctor
@@ -15,37 +17,6 @@ import Control.Applicative
 import Debug.Trace
 import Control.Monad.Reader
 import Control.Monad.State
-
--- Result values
-data Value
-  = VVal Double
-  | VBVal Bool
-  | VPair Exp Exp
-  | VIn Exp
-  | VInL Exp
-  | VInR Exp
-  | VNext Exp
-  | VOut Exp
-  | VThunk Exp
-  deriving (Eq, Show)
-
-fromBool :: Bool -> BConst
-fromBool b = if b then BTrue else BFalse
-toBool :: BConst -> Bool
-toBool b = case b of
-    BTrue -> True
-    BFalse -> False
-
-toExp :: Value -> Exp
-toExp (VVal v) = Val v
-toExp (VBVal v) = BVal (fromBool v)
-toExp (VIn e) = In e
-toExp (VInL e) = InL e
-toExp (VInR e) = InR e
-toExp (VThunk e) = e
-toExp (VPair e1 e2) = Pair e1 e2
-toExp (VNext e) = Next e
-toExp (VOut e) = Out e
 
 -- Environment as hashmap
 type Env = HashMap String Exp
@@ -188,7 +159,9 @@ evalExp exp@(Match e (Ident x1) e1 (Ident x2) e2) = do
 evalExp exp@(Abstr l x e) = return $ VThunk exp
 
 -- Recursion
-evalExp exp@(Rec (Ident x) e) = evalExp $ substitute e x $ recName (Next exp)
+evalExp exp@(Rec (Ident x) e) = do 
+    r <- evalExp $ substitute e x $ recName (Next exp)
+    trace ("fix: " ++ printValue r ++ "\n") return r
 
 -- Boolean and arithmetic expressions
 evalExp exp = case exp of
@@ -208,7 +181,6 @@ evalExp exp = case exp of
     Gt e1 e2    -> evalRelop e1 (>) e2
     Leq e1 _ e2 -> evalRelop e1 (<=) e2
     Geq e1 _ e2 -> evalRelop e1 (>=) e2
-
 
 -- HELPERS
 -- Evaluates a binary arithmetic operation
