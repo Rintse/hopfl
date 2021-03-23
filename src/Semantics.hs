@@ -96,7 +96,7 @@ evalExp exp@(LApp e1 _ e2) = do
     case (r1, r2) of
         (VNext (Abstr _ (Ident x) e), VNext s) -> do
             evalExp $ toExp $ VNext $ substitute e x s
-        _ -> error $ "Invalid arguments to LApp:\n" ++ show exp
+        _ -> error $ "Invalid arguments to LApp:\n" ++ printTerm exp
 
 -- Pair creation
 evalExp exp@(Pair e1 e2) = return $ VPair e1 e2
