@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: d3ccb2e11aed3ca910b8449c6871c4150a9ea96aa82e36d12e84f43e75b07c81
+-- hash: e654d9d74358bcabfd8c37423e64df7c1627478d56a685da83315b47692cb112
 
 name:           hopfl
 version:        0.1.0.0
@@ -25,7 +25,6 @@ source-repository head
 
 library
   exposed-modules:
-      Print
       Semantics
       Substitution
       Syntax.Abs
@@ -35,6 +34,7 @@ library
       Syntax.Par
       Syntax.Print
       Syntax.Skel
+      Treeify
       Values
   other-modules:
       Paths_hopfl

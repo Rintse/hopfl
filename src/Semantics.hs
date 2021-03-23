@@ -9,7 +9,7 @@ import Syntax.Abs
 import Syntax.ErrM
 import Syntax.Fail
 import Values
-import Print
+import Treeify
 
 import Data.HashMap.Lazy as HM
 import Data.Bifunctor
@@ -87,7 +87,7 @@ evalExp exp@(App e1 e2) = do
     r2 <- evalExp e2
     case r1 of
         VThunk (Abstr l (Ident x) e) -> evalExp $ substitute e x $ toExp r2
-        _ -> error $ show r1 ++ " is not a function"
+        _ -> error $ " Application on non-function:\n" ++ treeTerm exp
 
 -- Delayed function application
 evalExp exp@(LApp e1 _ e2) = do
@@ -96,7 +96,7 @@ evalExp exp@(LApp e1 _ e2) = do
     case (r1, r2) of
         (VNext (Abstr _ (Ident x) e), VNext s) -> do
             evalExp $ toExp $ VNext $ substitute e x s
-        _ -> error $ "Invalid arguments to LApp:\n" ++ printTerm exp
+        _ -> error $ "Invalid arguments to LApp:\n" ++ treeTerm exp
 
 -- Pair creation
 evalExp exp@(Pair e1 e2) = return $ VPair e1 e2
@@ -106,14 +106,14 @@ evalExp exp@(Fst e) = do
     r <- evalExp e
     case r of
         VPair v1 v2 -> evalExp v1
-        _ -> error $ "Took fst of non-pair " ++ show r
+        _ -> error $ "Took fst of non-pair " ++ treeTerm exp
 
 -- Second projection
 evalExp exp@(Snd e) = do
     r <- evalExp e
     case r of
         VPair v1 v2 -> evalExp v2
-        _ -> error $ "Took snd of non-pair " ++ show r
+        _ -> error $ "Took snd of non-pair " ++ treeTerm exp
 
 -- Normal distribtion sampling
 evalExp exp@(Norm e) = do
@@ -126,7 +126,7 @@ evalExp exp@(Norm e) = do
                 (VVal m, VVal v) -> do
                     join $ gets (performDraw m v)
                 _ -> error "Normal pair does not contain reals"
-        _ -> error $ "Normal argument not a pair: \n" ++ show exp
+        _ -> error $ "Normal argument not a pair: \n" ++ treeTerm exp
 
 -- If then else
 evalExp exp@(Ite b e1 e2) = do
@@ -134,7 +134,7 @@ evalExp exp@(Ite b e1 e2) = do
     case rb of
         VBVal True  -> evalExp e1
         VBVal False -> evalExp e2
-        _ -> error $ "If with non boolean condition:\n" ++ show exp
+        _ -> error $ "If with non boolean condition:\n" ++ treeTerm exp
 
 -- Coproduct injection
 evalExp exp@(InL e) = return $ VInL e
@@ -146,14 +146,11 @@ evalExp exp@(Match e (Ident x1) e1 (Ident x2) e2) = do
     case re of
         VInL l -> do
             l2 <- evalExp l
-            trace ("inL result: " ++ show l2 )(
-                trace ("body: " ++ show e1) ( do
-                sub <- evalExp $ substitute e1 x1 $ toExp l2
-                trace ("sub: " ++ show sub) (return sub)))
-        VInR r -> trace "inR" (do
+            evalExp $ substitute e1 x1 $ toExp l2
+        VInR r -> do
             r2 <- evalExp r
-            evalExp $ substitute e2 x2 $ toExp r2)
-        _       -> error $ "Match on non-coproduct:\n" ++ show exp
+            evalExp $ substitute e2 x2 $ toExp r2
+        _       -> error $ "Match on non-coproduct:\n" ++ treeTerm exp
 
 -- Function abstraction
 evalExp exp@(Abstr l x e) = return $ VThunk exp
@@ -161,7 +158,7 @@ evalExp exp@(Abstr l x e) = return $ VThunk exp
 -- Recursion
 evalExp exp@(Rec (Ident x) e) = do 
     r <- evalExp $ substitute e x $ recName (Next exp)
-    trace ("fix: " ++ printValue r ++ "\n") return r
+    trace ("fix: " ++ treeValue r ++ "\n") return r
 
 -- Boolean and arithmetic expressions
 evalExp exp = case exp of
