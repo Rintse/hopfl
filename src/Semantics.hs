@@ -85,8 +85,8 @@ evalExp exp@(LApp e1 _ e2) = do
     r1 <- evalExp e1
     r2 <- evalExp e2
     case (r1, r2) of
-        (VNext (Abstr _ (Ident x) e), VNext s) -> do
-            evalExp $ Next $ substitute e x s
+        (VNext t, VNext s) -> do
+            evalExp $ Next $ App t s
         _ -> error $ "Invalid arguments to LApp:\n" ++ treeTerm exp
 
 -- Pair creation
@@ -201,7 +201,8 @@ evalRelop e1 op e2 = do
     r2 <- evalExp e2
     case (r1, r2) of
         (VVal d1, VVal d2) -> return $ VBVal $ op d1 d2
-        _ -> error "Non real arguments to relative operator"
+        _ -> error $ "Non real arguments to relative operator:\n" ++
+            treeValue r1 ++ "\n" ++ treeValue r2
 
 performDraw :: Double -> Double -> SemEnv Value
 performDraw m v = do
