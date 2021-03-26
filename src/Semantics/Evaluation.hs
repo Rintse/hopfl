@@ -2,15 +2,15 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
 -- Small step semantics for guarded HOPFL
-module Semantics where
+module Semantics.Evaluation where
 
-import Substitution
+import Semantics.Substitution
 import Syntax.Abs
 import Syntax.ErrM
 import Syntax.Fail
-import Values
-import Treeify
-import VerbPrint
+import Semantics.Values
+import Tools.Treeify
+import Tools.VerbPrint
 
 import Data.HashMap.Lazy as HM
 import Data.Bifunctor

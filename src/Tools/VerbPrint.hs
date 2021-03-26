@@ -1,4 +1,4 @@
-module VerbPrint where 
+module Tools.VerbPrint where 
 
 import Control.Monad (when)
 

@@ -3,9 +3,9 @@ module Main where
 import Syntax.Par
 import Syntax.Abs
 import Syntax.ErrM
-import Semantics
-import Substitution
-import VerbPrint
+import Semantics.Evaluation
+import Semantics.Substitution
+import Tools.VerbPrint
 import Args
 
 import System.Environment ( getArgs )

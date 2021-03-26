@@ -1,8 +1,8 @@
-module Treeify where
+module Tools.Treeify where
 
 import Syntax.Abs
-import Values
-import VerbPrint
+import Semantics.Values
+import Tools.VerbPrint
 
 import Data.Tree
 

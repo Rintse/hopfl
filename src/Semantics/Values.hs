@@ -1,4 +1,4 @@
-module Values where
+module Semantics.Values where
 
 import Syntax.Abs
 

@@ -1,5 +1,5 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-module Substitution where
+module Semantics.Substitution where
 
 import Syntax.Abs
 
