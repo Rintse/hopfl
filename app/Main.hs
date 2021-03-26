@@ -6,6 +6,7 @@ import Syntax.ErrM
 import Semantics.Evaluation
 import Semantics.Substitution
 import Tools.VerbPrint
+import Tools.Treeify
 import Args
 
 import System.Environment ( getArgs )
@@ -16,13 +17,16 @@ import System.Exit
 -- Parses contents of given input file
 parse :: Bool -> String -> IO Exp
 parse v s = do
-    putStrLn "Parsing program"
+    putStrV v "Parsing program"
     let ts = myLLexer s
     case pExp ts of
-        Bad r   -> do 
+        Bad r -> do 
             putStrLn $"Parse failed:\n" ++ show r
             exitFailure
-        Ok r    -> return r
+        Ok r -> do 
+            putStrV v "Parse successful"
+            showTree v r
+            return r
 
 -- Parses the arguments, input and performs the requested actions
 main :: IO ()

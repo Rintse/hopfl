@@ -5,6 +5,7 @@
 module Semantics.Evaluation where
 
 import Semantics.Substitution
+import Semantics.Tools
 import Syntax.Abs
 import Syntax.ErrM
 import Syntax.Fail
@@ -23,9 +24,9 @@ import Control.Monad.State
 -- To be called from Main.hs
 evaluate :: Bool -> Exp -> Integer -> [Double] -> Environment -> IO ()
 evaluate v prog n s env = do
-    putStrV v ("Evaluating with random draws: " ++ show s)
-    putStrV v ("Using the environment: " ++ show (mkEnv env))
-    putStrV v ("Up to depth: " ++ show n ++ "\n")
+    putStrV v ("Evaluating...\n- with random draws: " ++ show s)
+    putStrV v ("- using the environment: " ++ printEnv (mkEnv env))
+    putStrV v ("- up to depth: " ++ show n ++ "\n")
     
     let startEnv = (mkEnv env, n)
     let startDraws = (1.0, s)
@@ -37,19 +38,6 @@ evaluate v prog n s env = do
             putStrLn s
         Ok (s, (w,_)) -> putStrLn $
             "Evaluation result (with density " ++ show w ++ "): \n" ++ show s
-
--- Environment as hashmap
-type Env = HashMap String Exp
-
--- Transform the environment AST into a hashmap
-mkEnv :: Environment -> Env
-mkEnv (Env e) = fromList $ fmap mkAssign e
-    where mkAssign (Assign (Ident x) exp) = (x, exp)
-
--- Probability density function of the gaussian distribution
-pdfNorm :: (Double, Double) -> Double -> Double
-pdfNorm (m,v) c = let sd = sqrt v in -- variance is σ^2
-    (1 / (sd * sqrt (2 * pi))) * exp (-0.5 * (((c - m) / sd) ^^ 2)) 
 
 -- A monad containing:
 --   - A reader with (a map from vars to their values, and the evaluation depth)
@@ -187,7 +175,8 @@ evalExp exp = case exp of
     Leq e1 _ e2 -> evalRelop e1 (<=) e2
     Geq e1 _ e2 -> evalRelop e1 (>=) e2
 
--- HELPERS
+
+-- Helper functions to evaluate boolean and aritmetic expresions
 -- Evaluates a binary arithmetic operation
 evalAExp :: Exp -> (Double -> Double -> Double) -> Exp -> SemEnv Value
 evalAExp e1 op e2 = do
@@ -224,15 +213,18 @@ evalRelop e1 op e2 = do
         _ -> error $ "Non real arguments to relative operator:\n" ++
             treeValue r1 ++ "\n" ++ treeValue r2
 
+-- Performs a random draw and updates the state monad
 performDraw :: Double -> Double -> SemEnv Value
 performDraw m v = do
     env <- get
     case snd env of
-        (c:l) -> do -- Todo: rename l2
-            let density = pdfNorm (m,v) c in 
-                if isNaN density
-                then error "PDF not defined\n"
-                else modify (\(w, _) -> (w * density, l))
+        (c:l) -> do
+            let density = pdfNorm (m,v) c
+            
+            if isNaN density
+            then error "PDF not defined\n"
+            else modify (\(w, _) -> (w * density, l))
+            
             return $ VVal c
         _ -> error $ "Draws list too small (" ++ show m ++ ", " ++ show v ++ ")"
 
