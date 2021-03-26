@@ -21,33 +21,28 @@ parse v s = do
     let ts = myLLexer s
     case pExp ts of
         Bad r -> do 
-            putStrLn $"Parse failed:\n" ++ show r
+            putStrLn $"Parse failed: " ++ r
             exitFailure
         Ok r -> do 
             putStrV v "Parse successful"
-            showTree v r
+            showProg v r
             return r
 
 -- Parses the arguments, input and performs the requested actions
 main :: IO ()
 main = do
-    -- Get and parse options
-    args <- getArgs
+    args <- getArgs -- Get and parse options
     let (optArgs, nonOpts, errs) = getOpt RequireOrder Args.options args
     opts <- foldl (>>=) (return defaultOpts) optArgs
 
-    let Options {
-        optVerbose  = verb,
-        optInput    = input,
-        optEval     = eval,
-        optEnv      = env,
-        optDraws    = draws,
-        optDepth    = depth
-    } = opts
+    let Options {   optVerbose  = verb,
+                    optInput    = input,
+                    optEval     = eval,
+                    optEnv      = env,
+                    optDraws    = draws,
+                    optDepth    = depth     } = opts
 
+    -- Parse input
     prog <- parse verb input
-
-    if eval
-        then evaluate verb (uniqNames prog) depth draws env
-        else putStrLn ""
-
+    -- Evaluate if requested
+    when eval $ evaluate verb (uniqNames prog) depth draws env
