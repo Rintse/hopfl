@@ -10,6 +10,7 @@ import Syntax.ErrM
 import Syntax.Fail
 import Values
 import Treeify
+import VerbPrint
 
 import Data.HashMap.Lazy as HM
 import Data.Bifunctor
@@ -17,6 +18,25 @@ import Control.Applicative
 import Debug.Trace
 import Control.Monad.Reader
 import Control.Monad.State
+
+-- Evaluates a program given a maximum eval depth, and environment
+-- To be called from Main.hs
+evaluate :: Bool -> Exp -> Integer -> [Double] -> Environment -> IO ()
+evaluate v prog n s env = do
+    putStrV v ("Evaluating with random draws: " ++ show s)
+    putStrV v ("Using the environment: " ++ show (mkEnv env))
+    putStrV v ("Up to depth: " ++ show n ++ "\n")
+    
+    let startEnv = (mkEnv env, n)
+    let startDraws = (1.0, s)
+    let r = runStateT (runReaderT (runSem (evalExp prog)) startEnv) startDraws
+    
+    case r of
+        Bad s -> do
+            putStrLn "Evaluation failed:"
+            putStrLn s
+        Ok (s, (w,_)) -> putStrLn $
+            "Evaluation result (with density " ++ show w ++ "): \n" ++ show s
 
 -- Environment as hashmap
 type Env = HashMap String Exp

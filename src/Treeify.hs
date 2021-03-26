@@ -2,6 +2,7 @@ module Treeify where
 
 import Syntax.Abs
 import Values
+import VerbPrint
 
 import Data.Tree
 
@@ -57,3 +58,9 @@ treeValue val = ( case val of
     VOut t      -> "VOut:\n" ++ treeTerm t
     VThunk t    -> "VThunk: \n" ++ treeTerm t
     ) ++ "\n"
+
+showTree :: Bool -> Exp -> IO ()
+showTree v prog = do
+    putStrV v $ "[Abstract Syntax]\n" ++ show prog ++ "\n"
+    putStrV v $ "[Tree]\n" ++ treeTerm prog ++ "\n"
+

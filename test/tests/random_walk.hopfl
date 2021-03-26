@@ -7,5 +7,5 @@
 # The random walk stream
 ( (fix f . 
     λ x . in ( [ x , f ⊙ next( normal [x , s] ) ] )
-) x0 ) 
+) x0 )  
 
