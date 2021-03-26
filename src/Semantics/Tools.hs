@@ -1,3 +1,4 @@
+
 module Semantics.Tools where
 
 import Syntax.Abs
@@ -7,6 +8,7 @@ import Semantics.Values
 import Data.HashMap.Lazy as HM
 import Control.Monad.Reader
 import Control.Monad.State
+import Control.Monad.Except
 
 -- Environment as hashmap from names to values
 type Env = HashMap String Exp
