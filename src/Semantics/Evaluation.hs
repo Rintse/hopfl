@@ -7,7 +7,8 @@ module Semantics.Evaluation where
 
 import Semantics.Substitution
 import Semantics.Tools
-import Syntax.Abs
+import Syntax.IdAbs
+import qualified Syntax.Abs as Raw
 import Syntax.ErrM
 import Semantics.Values
 import Tools.Treeify
@@ -34,7 +35,7 @@ newtype EvalMonad a = EvalMonad {
 
 -- Evaluates a program given a maximum eval depth, and environment
 -- To be called from Main.hs
-evaluate :: Bool -> Exp -> Integer -> [Double] -> Environment -> IO ()
+evaluate :: Bool -> Exp -> Integer -> [Double] -> Raw.Environment -> IO ()
 evaluate v prog n s env = do
     putStrV v ("Evaluating...\n- with random draws: " ++ show s)
     putStrV v ("- using the environment: " ++ printEnv (mkEnv env))
@@ -58,7 +59,7 @@ match2 e1 e2 = (,) <$> evalExp e1 <*> evalExp e2
 evalExp :: Exp -> EvalMonad Value
 
 -- Variables
-evalExp exp@(Var (Ident v)) = asks (HM.lookup v . fst) >>= \case
+evalExp exp@(Var (Ident v _ _)) = asks (HM.lookup v . fst) >>= \case
     Just (Val v) -> return $ VVal v
     Nothing -> throwError $ "Undefined free variable: " ++ show v
 
@@ -80,7 +81,7 @@ evalExp exp@(Out e) = evalExp e >>= \case
 
 -- Function application
 evalExp exp@(App e1 e2) = match2 e1 e2 >>= \case
-    (VThunk (Abstr l (Ident x) e), r2) -> evalExp $ substitute e x $ toExp r2
+    (VThunk (Abstr l x e), r2) -> evalExp $ substitute e x $ toExp r2
     _ -> throwError $ " Application on non-function:\n" ++ treeTerm exp
 
 -- Delayed function application
@@ -119,7 +120,7 @@ evalExp exp@(InL e) = return $ VInL e
 evalExp exp@(InR e) = return $ VInR e
 
 -- Matching coproducts
-evalExp exp@(Match e (Ident x1) e1 (Ident x2) e2) = evalExp e >>= \case
+evalExp exp@(Match e x1 e1 x2 e2) = evalExp e >>= \case
     VInL l  -> evalExp l >>= evalExp . substitute e1 x1 . toExp
     VInR r  -> evalExp r >>= evalExp . substitute e2 x2 . toExp
     _       -> throwError $ "Match on non-coproduct:\n" ++ treeTerm exp
@@ -128,7 +129,7 @@ evalExp exp@(Match e (Ident x1) e1 (Ident x2) e2) = evalExp e >>= \case
 evalExp exp@(Abstr l x e) = return $ VThunk exp
 
 -- Recursion
-evalExp exp@(Rec (Ident x) e) = evalExp $ substitute e x $ recName (Next exp)
+evalExp exp@(Rec x e) = evalExp $ substitute e x $ recName (Next exp)
 
 -- Boolean and arithmetic expressions
 evalExp exp = case exp of

@@ -32,7 +32,7 @@ myLLexer = myLexer
 -- The option list
 data Options = Options
     { optVerbose    :: Bool
-    , optInput      :: String
+    , optInput      :: IO String
     , optEval       :: Bool 
     , optEnv        :: Environment 
     , optDraws      :: [Double]
@@ -42,7 +42,7 @@ data Options = Options
 defaultOpts :: Options
 defaultOpts = Options  
     { optVerbose    = False
-    , optInput      = ""
+    , optInput      = getContents
     , optEval       = True 
     , optEnv        = Env [] 
     , optDraws      = [] 
@@ -56,7 +56,7 @@ readFile arg opt = do
         Left ex -> do 
             putStrLn $ "Error opening file:\n" ++ show ex
             exitFailure
-        Right content -> return opt { optInput = content }
+        Right content -> return opt { optInput = return content }
 
 -- Parses the environment if such an argument is given
 parseEnv :: String -> IO Environment

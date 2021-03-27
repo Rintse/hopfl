@@ -1,6 +1,7 @@
 module Semantics.Values where
 
-import Syntax.Abs
+import Syntax.IdAbs
+import qualified Syntax.Abs as Raw
 
 -- Result values
 data Value
@@ -15,12 +16,12 @@ data Value
   | VThunk Exp
   deriving (Eq, Show)
 
-fromBool :: Bool -> BConst
-fromBool b = if b then BTrue else BFalse
-toBool :: BConst -> Bool
+fromBool :: Bool -> Raw.BConst
+fromBool b = if b then Raw.BTrue else Raw.BFalse
+toBool :: Raw.BConst -> Bool
 toBool b = case b of
-    BTrue -> True
-    BFalse -> False
+    Raw.BTrue -> True
+    Raw.BFalse -> False
 
 toExp :: Value -> Exp
 toExp (VVal v) = Val v

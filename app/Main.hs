@@ -1,7 +1,8 @@
 module Main where
 
 import Syntax.Par
-import Syntax.Abs
+import Syntax.IdAbs
+import qualified Syntax.Abs as Raw
 import Syntax.ErrM
 import Semantics.Evaluation
 import Semantics.Substitution
@@ -15,17 +16,17 @@ import Control.Monad.Except
 import System.Exit
 
 -- Parses contents of given input file
-parse :: Bool -> String -> IO Exp
+parse :: Bool -> String -> IO Raw.Exp
 parse v s = do
     putStrV v "Parsing program"
     let ts = myLLexer s
     case pExp ts of
-        Bad r -> do 
+        Bad r -> do
             putStrLn $"Parse failed: " ++ r
+            putStrV v $ "Tokens still in stream:\n" ++ show ts
             exitFailure
-        Ok r -> do 
+        Ok r -> do
             putStrV v "Parse successful"
-            showProg v r
             return r
 
 -- Parses the arguments, input and performs the requested actions
@@ -41,8 +42,13 @@ main = do
                     optEnv      = env,
                     optDraws    = draws,
                     optDepth    = depth     } = opts
-
+    
     -- Parse input
-    prog <- parse verb input
+    prog <- input >>= parse verb
+
+    -- Annotate identifiers with a unique id
+    let annotated = idExp prog
+    showProg verb annotated
+
     -- Evaluate if requested
-    when eval $ evaluate verb (uniqNames prog) depth draws env
+    when eval $ evaluate verb annotated depth draws env

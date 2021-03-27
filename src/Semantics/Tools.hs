@@ -1,7 +1,8 @@
 
 module Semantics.Tools where
 
-import Syntax.Abs
+import Syntax.IdAbs
+import qualified Syntax.Abs as Raw
 import Syntax.ErrM
 import Semantics.Values
 
@@ -14,9 +15,9 @@ import Control.Monad.Except
 type Env = HashMap String Exp
 
 -- Transform the environment AST into a hashmap
-mkEnv :: Environment -> Env
-mkEnv (Env e) = fromList $ fmap mkAssign e
-    where mkAssign (Assign (Ident x) exp) = (x, exp)
+mkEnv :: Raw.Environment -> Env
+mkEnv (Raw.Env e) = fromList $ fmap mkAssign e
+    where mkAssign (Raw.Assign (Raw.Ident x) exp) = (x, idExp exp)
 
 printEnv :: Env -> String
 printEnv m = show $ Prelude.map (\x -> 
