@@ -5,14 +5,13 @@ import Syntax.IdAbs
 import qualified Syntax.Abs as Raw
 import Syntax.ErrM
 import Semantics.Evaluation
-import Semantics.Substitution
 import Tools.VerbPrint
 import Tools.Treeify
 import Args
 
 import System.Environment ( getArgs )
 import System.Console.GetOpt
-import Control.Monad.Except
+import Control.Monad (when)
 import System.Exit
 
 -- Parses contents of given input file

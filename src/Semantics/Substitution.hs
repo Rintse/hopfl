@@ -1,3 +1,6 @@
+-- Defines some substitution functions needed for evaluating 
+-- recursion, function application and match statements
+
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module Semantics.Substitution where
 

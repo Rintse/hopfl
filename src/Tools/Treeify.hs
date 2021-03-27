@@ -1,3 +1,6 @@
+-- Defines a function to turn expressions into trees which in turn 
+-- leads to prettier printing using the pre-existing drawTree function
+
 module Tools.Treeify where
 
 import Syntax.IdAbs

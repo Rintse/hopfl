@@ -1,3 +1,8 @@
+-- Defines a custom datastructure to contain the program, which is 
+-- nearly identical to the raw parsed data, except that identifiers
+-- are annotated with a unique id to aid in substitution. Also defines a 
+-- function that transforms raw expressions into their annotated versions
+
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module Syntax.IdAbs where
 

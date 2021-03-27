@@ -1,3 +1,6 @@
+-- Syntax of GHOPFL defined in LBNF format
+-- To be processed into a parser and lexer using BNFC
+
 entrypoints Exp, Environment ;
 comment     "#" ;
 

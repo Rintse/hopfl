@@ -1,3 +1,6 @@
+-- Module that defines the arguments to the program as getOpt
+-- data types such that parameters can be easily parsed in Main
+
 module Args where
 
 import Syntax.Abs
@@ -88,14 +91,13 @@ readDepth arg opt = do
             exitFailure
         Right n  -> return opt { optDepth = n }
 
--- Parses the environment if such an argument is given
+-- Parses the random draws if such an argument is given
 parseDraws :: String -> IO [Double]
 parseDraws s = let l = filter (not . all isSpace) $ splitOn ";" s 
     in let parsed = map (readMaybe :: String -> Maybe Double) l
     in if Nothing `elem` parsed 
     then throw DrawListException
     else return $ catMaybes parsed
-
 
 readDraws :: String -> Options -> IO Options
 readDraws arg opt = do

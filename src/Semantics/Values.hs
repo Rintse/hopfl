@@ -1,3 +1,6 @@
+-- Defines the values for the big-step semantics 
+-- implemented in the Evaluation module
+
 module Semantics.Values where
 
 import Syntax.IdAbs
