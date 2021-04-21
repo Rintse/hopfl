@@ -12,7 +12,7 @@ token       TNot    ('¬' | '!') ;
 token       TLeq    ('≤' | '<''=') ;
 token       TGeq    ('≥' | '>''=') ;
 token       TLApp   ('⊙' | '(''.'')') ;
-
+token       TSub    ('←' | '<''-') ;
 
 -- Boolean expressions
 BTrue.      BConst  ::= "true" ;
@@ -23,15 +23,30 @@ Var.        Exp11   ::= Ident ;
 Val.        Exp11   ::= Double ;
 BVal.       Exp11   ::= BConst ;
 
+-- Later modality (with applicative function LApp)
 Next.       Exp10   ::= "next" Exp11 ;
+Prev.       Exp10   ::= "prev" SubL "." Exp11 ;
+-- Syntactic sugar for empty sublist
+PrevE.      Exp10   ::= "prev" Exp11;
+-- Syntactic sugar for prev{\x ← \x}.t with \x being all free vars in t
+PrevF.      Exp10   ::= "prevF" Exp11;
+
+Box.        Exp10   ::= "box" SubL "." Exp11 ;
+Unbox.      Exp10   ::= "unbox" Exp11 ;
+
+-- Recursion
 In.         Exp10   ::= "in" Exp11 ;
 Out.        Exp10   ::= "out" Exp11 ;
+
+-- Projections
 Fst.        Exp10   ::= "fst" Exp11 ;
 Snd.        Exp10   ::= "snd" Exp11 ;
+
+-- Injections
 InL.        Exp10   ::= "inL" Exp11 ;
 InR.        Exp10   ::= "inR" Exp11 ;
 
--- TODO: make right associative?
+-- (Delayed) application
 App.        Exp9    ::= Exp9 Exp10 ;
 LApp.       Exp9    ::= Exp9 TLApp Exp10;
 
@@ -62,8 +77,10 @@ Abstr.      Exp     ::= Lam Ident "." Exp ;
 Rec.        Exp     ::= "fix" Ident "." Exp ;
 coercions Exp 11 ;
 
+-- Explicit substitution lists, reuse environment
+SubList.    SubL    ::= "{" Environment "}" ;
 
 -- Environment passing
-Assign.     Assignment  ::= Ident "=" Exp ;
+Assign.     Assignment  ::= Ident TSub Exp ;
 Env.        Environment ::= [Assignment] ;
 separator   Assignment ";" ;

@@ -21,6 +21,11 @@ data Exp
     | Val Double
     | BVal Raw.BConst
     | Next Exp
+    | Box Raw.SubL Exp
+    | Unbox Exp
+    | Prev SubL Exp
+    | PrevE Exp
+    | PrevF Exp
     | In Exp
     | Out Exp
     | Fst Exp
@@ -49,25 +54,69 @@ data Exp
     | Rec Ident Exp
     deriving (Eq, Ord, Show, Read)
 
+newtype SubL = SubList Environment
+  deriving (Eq, Ord, Show, Read)
 
-type IdMap = HashMap String [Integer]
+data Assignment = Assign Ident Exp
+  deriving (Eq, Ord, Show, Read)
+
+newtype Environment = Env [Assignment]
+  deriving (Eq, Ord, Show, Read)
+
+-- Get the ID from an assignment
+getIDA :: Raw.Assignment -> Raw.Ident
+getIDA (Raw.Assign x _ _) = x
+
+-- Get the term from an assignment
+getTermA :: Raw.Assignment -> Raw.Exp
+getTermA (Raw.Assign _ _ t) = t
 
 -- State environment contains a counter and a hashmap in which the values 
 -- track all the names that we are currently substituting the key for.
 -- The last element in the sequence is the name to substitute the key for.
+type IdMap = HashMap String [Integer]
 newtype IdMonad a = IdMonad {
     runId :: StateT Integer (Reader IdMap) a
-} deriving (    Functor, Applicative, Monad, 
-                MonadState Integer, 
+} deriving (    Functor, Applicative, Monad,
+                MonadState Integer,
                 MonadReader IdMap   )
+
+-- Returns an empty substitution list
+emptySubL :: Raw.SubL
+emptySubL = Raw.SubList $ Raw.Env []
+
+-- Returns a sublist with the freevars in some term
+-- TODO: How do you get the free vars preemptively?
+freeSubL :: Raw.SubL
+freeSubL = Raw.SubList $ Raw.Env []
 
 -- Increments counter and pushes new substitute for x onto m[x]
 pushVar :: Raw.Ident -> Integer -> IdMap -> IdMap
 pushVar (Raw.Ident x) c = HM.insertWith (++) x [c]
 
+-- Pushes all variables in a substitution list
+pushVars :: Raw.SubL -> Integer -> IdMap -> IdMap
+pushVars (Raw.SubList (Raw.Env l)) c m = Prelude.foldl f m l
+    where f = \m1 x -> pushVar (getIDA x) c m1
+
 -- Gets the latest substitute for x from m[x] (returns x if none are found)
 getSub :: Raw.Ident -> IdMap -> Ident
-getSub v@(Raw.Ident x) m = Ident x (head $ HM.findWithDefault [0] x m) 0
+getSub (Raw.Ident x) m = Ident x (head $ HM.findWithDefault [0] x m) 0
+
+-- Gets all the subs from a substituion list
+getSubs :: Raw.SubL -> IdMap -> [Ident]
+getSubs (Raw.SubList (Raw.Env l)) m = Prelude.map f l
+    where f = \(Raw.Assign x o t) -> getSub x m
+
+-- Rename an entire list of substitutions
+-- !!! Not bound by variables in sub list
+reNameTermList :: Raw.SubL -> IdMonad [Exp]
+reNameTermList (Raw.SubList (Raw.Env l)) = mapM f l
+    where f = reName . getTermA
+
+-- Merges the ids and terms from a renamed sublist
+zipSubL :: [Ident] -> [Exp] -> SubL
+zipSubL xs ts = SubList $ Env $ zipWith Assign xs ts
 
 -- TODO check for faulty programs
 reName :: Raw.Exp -> IdMonad Exp
@@ -76,6 +125,9 @@ reName exp = case exp of
     Raw.Val v           -> return $ Val v
     Raw.BVal v          -> return $ BVal v
     Raw.Next e          -> Next <$> reName e
+    Raw.PrevE e         -> reName $ Raw.Prev emptySubL e
+    Raw.PrevF e         -> reName $ Raw.Prev freeSubL e
+    Raw.Box l e         -> Box l <$> reName e
     Raw.In e            -> In <$> reName e
     Raw.Out e           -> Out <$> reName e
     Raw.App e1 e2       -> liftA2 App (reName e1) (reName e2)
@@ -87,6 +139,12 @@ reName exp = case exp of
     Raw.InR e           -> InR <$> reName e
     Raw.Norm e          -> Norm <$> reName e
     Raw.Ite b e1 e2     -> liftA3 Ite (reName b) (reName e1) (reName e2)
+    Raw.Prev l e        -> do
+        cur <- modify (+1) >> get
+        rl <- asks (getSubs l . pushVars l cur)
+        rt <- reNameTermList l
+        re <- local (pushVars l cur) $ reName e
+        return $ Prev (zipSubL rl rt) re
     Raw.Match e x l y r -> do
         cur <- modify (+1) >> get
         re <- reName e

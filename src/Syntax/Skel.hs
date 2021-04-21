@@ -34,6 +34,9 @@ transTGeq x = case x of
 transTLApp :: Syntax.Abs.TLApp -> Result
 transTLApp x = case x of
   Syntax.Abs.TLApp string -> failure x
+transTSub :: Syntax.Abs.TSub -> Result
+transTSub x = case x of
+  Syntax.Abs.TSub string -> failure x
 transBConst :: Syntax.Abs.BConst -> Result
 transBConst x = case x of
   Syntax.Abs.BTrue -> failure x
@@ -44,6 +47,11 @@ transExp x = case x of
   Syntax.Abs.Val double -> failure x
   Syntax.Abs.BVal bconst -> failure x
   Syntax.Abs.Next exp -> failure x
+  Syntax.Abs.Prev subl exp -> failure x
+  Syntax.Abs.PrevE exp -> failure x
+  Syntax.Abs.PrevF exp -> failure x
+  Syntax.Abs.Box subl exp -> failure x
+  Syntax.Abs.Unbox exp -> failure x
   Syntax.Abs.In exp -> failure x
   Syntax.Abs.Out exp -> failure x
   Syntax.Abs.Fst exp -> failure x
@@ -70,9 +78,12 @@ transExp x = case x of
   Syntax.Abs.Match exp1 ident1 exp2 ident2 exp3 -> failure x
   Syntax.Abs.Abstr lam ident exp -> failure x
   Syntax.Abs.Rec ident exp -> failure x
+transSubL :: Syntax.Abs.SubL -> Result
+transSubL x = case x of
+  Syntax.Abs.SubList environment -> failure x
 transAssignment :: Syntax.Abs.Assignment -> Result
 transAssignment x = case x of
-  Syntax.Abs.Assign ident exp -> failure x
+  Syntax.Abs.Assign ident tsub exp -> failure x
 transEnvironment :: Syntax.Abs.Environment -> Result
 transEnvironment x = case x of
   Syntax.Abs.Env assignments -> failure x

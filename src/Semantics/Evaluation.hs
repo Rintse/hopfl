@@ -119,6 +119,11 @@ eval exp@(Abstr l x e) = return $ VThunk exp
 -- Recursion
 eval exp@(Rec x e) = eval $ substitute e x $ recName (Next exp)
 
+-- Unboxing
+eval exp@(Unbox e) = eval e >>= \case
+    VBox l e1 -> throwError "lel" -- substL l e1
+    _ -> throwError $ "Unbox on non-box:\n" ++ treeTerm exp
+
 -- Boolean and arithmetic expressions
 eval exp = case exp of
     BVal v      -> return $ VBVal $ toBool v

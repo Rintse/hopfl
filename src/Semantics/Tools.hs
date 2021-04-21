@@ -33,7 +33,7 @@ type Env = HashMap String Exp
 -- Transform the environment AST into a hashmap
 mkEnv :: Raw.Environment -> Env
 mkEnv (Raw.Env e) = fromList $ fmap mkAssign e
-    where mkAssign (Raw.Assign (Raw.Ident x) exp) = (x, idExp exp)
+    where mkAssign (Raw.Assign (Raw.Ident x) _ exp) = (x, idExp exp)
 
 printEnv :: Env -> String
 printEnv m = show $ Prelude.map (\x -> 

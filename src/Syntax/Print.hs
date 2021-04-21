@@ -121,6 +121,9 @@ instance Print Syntax.Abs.TGeq where
 instance Print Syntax.Abs.TLApp where
   prt _ (Syntax.Abs.TLApp i) = doc $ showString $ i
 
+instance Print Syntax.Abs.TSub where
+  prt _ (Syntax.Abs.TSub i) = doc $ showString $ i
+
 instance Print Syntax.Abs.BConst where
   prt i e = case e of
     Syntax.Abs.BTrue -> prPrec i 0 (concatD [doc (showString "true")])
@@ -132,6 +135,11 @@ instance Print Syntax.Abs.Exp where
     Syntax.Abs.Val d -> prPrec i 11 (concatD [prt 0 d])
     Syntax.Abs.BVal bconst -> prPrec i 11 (concatD [prt 0 bconst])
     Syntax.Abs.Next exp -> prPrec i 10 (concatD [doc (showString "next"), prt 11 exp])
+    Syntax.Abs.Prev subl exp -> prPrec i 10 (concatD [doc (showString "prev"), prt 0 subl, doc (showString "."), prt 11 exp])
+    Syntax.Abs.PrevE exp -> prPrec i 10 (concatD [doc (showString "prev"), prt 11 exp])
+    Syntax.Abs.PrevF exp -> prPrec i 10 (concatD [doc (showString "prevF"), prt 11 exp])
+    Syntax.Abs.Box subl exp -> prPrec i 10 (concatD [doc (showString "box"), prt 0 subl, doc (showString "."), prt 11 exp])
+    Syntax.Abs.Unbox exp -> prPrec i 10 (concatD [doc (showString "unbox"), prt 11 exp])
     Syntax.Abs.In exp -> prPrec i 10 (concatD [doc (showString "in"), prt 11 exp])
     Syntax.Abs.Out exp -> prPrec i 10 (concatD [doc (showString "out"), prt 11 exp])
     Syntax.Abs.Fst exp -> prPrec i 10 (concatD [doc (showString "fst"), prt 11 exp])
@@ -159,9 +167,13 @@ instance Print Syntax.Abs.Exp where
     Syntax.Abs.Abstr lam id exp -> prPrec i 0 (concatD [prt 0 lam, prt 0 id, doc (showString "."), prt 0 exp])
     Syntax.Abs.Rec id exp -> prPrec i 0 (concatD [doc (showString "fix"), prt 0 id, doc (showString "."), prt 0 exp])
 
+instance Print Syntax.Abs.SubL where
+  prt i e = case e of
+    Syntax.Abs.SubList environment -> prPrec i 0 (concatD [doc (showString "{"), prt 0 environment, doc (showString "}")])
+
 instance Print Syntax.Abs.Assignment where
   prt i e = case e of
-    Syntax.Abs.Assign id exp -> prPrec i 0 (concatD [prt 0 id, doc (showString "="), prt 0 exp])
+    Syntax.Abs.Assign id tsub exp -> prPrec i 0 (concatD [prt 0 id, prt 0 tsub, prt 0 exp])
   prtList _ [] = concatD []
   prtList _ [x] = concatD [prt 0 x]
   prtList _ (x:xs) = concatD [prt 0 x, doc (showString ";"), prt 0 xs]

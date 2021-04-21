@@ -33,6 +33,9 @@ newtype TGeq = TGeq String
 newtype TLApp = TLApp String
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 
+newtype TSub = TSub String
+  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
+
 data BConst = BTrue | BFalse
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
@@ -41,6 +44,11 @@ data Exp
     | Val Double
     | BVal BConst
     | Next Exp
+    | Prev SubL Exp
+    | PrevE Exp
+    | PrevF Exp
+    | Box SubL Exp
+    | Unbox Exp
     | In Exp
     | Out Exp
     | Fst Exp
@@ -69,7 +77,10 @@ data Exp
     | Rec Ident Exp
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data Assignment = Assign Ident Exp
+data SubL = SubList Environment
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
+data Assignment = Assign Ident TSub Exp
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Environment = Env [Assignment]

@@ -31,6 +31,7 @@ followed by an unsigned or negative exponent.
 
 
 
+
 Lam literals are recognized by the regular expression
 `````["\λ"]`````
 
@@ -52,21 +53,25 @@ TGeq literals are recognized by the regular expression
 TLApp literals are recognized by the regular expression
 `````'⊙' | {"(.)"}`````
 
+TSub literals are recognized by the regular expression
+`````'←' | {"<-"}`````
+
 
 ===Reserved words and symbols===
 The set of reserved words is the set of terminals appearing in the grammar. Those reserved words that consist of non-letter characters are called symbols, and they are treated in a different way from those that are similar to identifiers. The lexer follows rules familiar from languages like Haskell, C, and Java, including longest match and spacing conventions.
 
 The reserved words used in Syntax are the following:
-  | ``else`` | ``false`` | ``fix`` | ``fst``
-  | ``if`` | ``in`` | ``inL`` | ``inR``
-  | ``match`` | ``next`` | ``normal`` | ``out``
-  | ``snd`` | ``then`` | ``true`` |
+  | ``box`` | ``else`` | ``false`` | ``fix``
+  | ``fst`` | ``if`` | ``in`` | ``inL``
+  | ``inR`` | ``match`` | ``next`` | ``normal``
+  | ``out`` | ``prev`` | ``prevF`` | ``snd``
+  | ``then`` | ``true`` | ``unbox`` |
 
 The symbols used in Syntax are the following:
-  | * | / | + | -
-  | = | < | > | [
-  | , | ] | { | ->
-  | ; | } | . | (
+  | . | * | / | +
+  | - | = | < | >
+  | [ | , | ] | {
+  | -> | ; | } | (
   | ) |  |  |
 
 ===Comments===
@@ -85,6 +90,11 @@ All other symbols are terminals.
   |  |  **|**  | //BConst//
   |  |  **|**  | ``(`` //Exp// ``)``
   | //Exp10// | -> | ``next`` //Exp11//
+  |  |  **|**  | ``prev`` //SubL// ``.`` //Exp11//
+  |  |  **|**  | ``prev`` //Exp11//
+  |  |  **|**  | ``prevF`` //Exp11//
+  |  |  **|**  | ``box`` //SubL// ``.`` //Exp11//
+  |  |  **|**  | ``unbox`` //Exp11//
   |  |  **|**  | ``in`` //Exp11//
   |  |  **|**  | ``out`` //Exp11//
   |  |  **|**  | ``fst`` //Exp11//
@@ -122,7 +132,8 @@ All other symbols are terminals.
   | //Exp// | -> | //Lam// //Ident// ``.`` //Exp//
   |  |  **|**  | ``fix`` //Ident// ``.`` //Exp//
   |  |  **|**  | //Exp1//
-  | //Assignment// | -> | //Ident// ``=`` //Exp//
+  | //SubL// | -> | ``{`` //Environment// ``}``
+  | //Assignment// | -> | //Ident// //TSub// //Exp//
   | //Environment// | -> | //[Assignment]//
   | //[Assignment]// | -> | **eps**
   |  |  **|**  | //Assignment//

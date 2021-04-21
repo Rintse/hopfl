@@ -14,6 +14,8 @@ import System.Console.GetOpt
 import Control.Monad (when)
 import System.Exit
 
+import Control.Monad.Reader
+
 -- Parses contents of given input file
 parse :: Bool -> String -> IO Raw.Exp
 parse v s = do
@@ -41,7 +43,7 @@ main = do
                     optEnv      = env,
                     optDraws    = draws,
                     optDepth    = depth     } = opts
-    
+
     -- Parse input
     prog <- input >>= parse verb
 
