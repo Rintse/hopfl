@@ -37,6 +37,9 @@ transTLApp x = case x of
 transTSub :: Syntax.Abs.TSub -> Result
 transTSub x = case x of
   Syntax.Abs.TSub string -> failure x
+transTMatch :: Syntax.Abs.TMatch -> Result
+transTMatch x = case x of
+  Syntax.Abs.TMatch string -> failure x
 transBConst :: Syntax.Abs.BConst -> Result
 transBConst x = case x of
   Syntax.Abs.BTrue -> failure x
@@ -75,7 +78,7 @@ transExp x = case x of
   Syntax.Abs.Pair exp1 exp2 -> failure x
   Syntax.Abs.Norm exp -> failure x
   Syntax.Abs.Ite exp1 exp2 exp3 -> failure x
-  Syntax.Abs.Match exp1 ident1 exp2 ident2 exp3 -> failure x
+  Syntax.Abs.Match exp1 ident1 tmatch1 exp2 ident2 tmatch2 exp3 -> failure x
   Syntax.Abs.Abstr lam ident exp -> failure x
   Syntax.Abs.Rec ident exp -> failure x
 transSubL :: Syntax.Abs.SubL -> Result

@@ -15,7 +15,7 @@ data Value
   | VInL Exp
   | VInR Exp
   | VNext Exp
-  | VBox Raw.SubL Exp
+  | VBox SubL Exp
   | VOut Exp
   | VThunk Exp
   deriving (Eq, Show)

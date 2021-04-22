@@ -29,7 +29,7 @@ recName exp = case exp of
     In e                -> In $ recName e
     Out e               -> Out $ recName e
     App e1 e2           -> App (recName e1) (recName e2)
-    LApp e1 o e2        -> LApp (recName e1) o (recName e2)
+    LApp e1 e2          -> LApp (recName e1) (recName e2)
     Pair e1 e2          -> Pair (recName e1) (recName e2)
     Fst e               -> Fst $ recName e
     Snd e               -> Snd $ recName e
@@ -40,20 +40,20 @@ recName exp = case exp of
     Match e x l y r     -> Match (recName e)
         (incDepth x) (recName l)
         (incDepth y) (recName r)
-    Abstr l x e         -> Abstr l (incDepth x) (recName e)
+    Abstr x e           -> Abstr (incDepth x) (recName e)
     Rec x e             -> Rec (incDepth x) (recName e)
     Add e1 e2           -> Add (recName e1) (recName e2)
     Sub e1 e2           -> Sub (recName e1) (recName e2)
     Mul e1 e2           -> Mul (recName e1) (recName e2)
     Div e1 e2           -> Div (recName e1) (recName e2)
-    And e1 o e2         -> And (recName e1) o (recName e2)
-    Or e1 o e2          -> Or (recName e1) o (recName e2)
-    Not n e             -> Not n (recName e)
+    And e1 e2           -> And (recName e1) (recName e2)
+    Or e1 e2            -> Or (recName e1) (recName e2)
+    Not e               -> Not (recName e)
     Eq e1 e2            -> Eq (recName e1) (recName e2)
     Lt e1 e2            -> Lt (recName e1) (recName e2)
     Gt e1 e2            -> Gt (recName e1) (recName e2)
-    Leq e1 o e2         -> Leq (recName e1) o (recName e2)
-    Geq e1 o e2         -> Geq (recName e1) o (recName e2)
+    Leq e1 e2           -> Leq (recName e1) (recName e2)
+    Geq e1 e2           -> Geq (recName e1) (recName e2)
 
 -- Performs substitution
 -- Variables are the same if they have the same name, id and depth
@@ -72,7 +72,7 @@ subst exp = case exp of
     In e            -> In <$> subst e
     Out e           -> Out <$> subst e
     App e1 e2       -> liftA2 App (subst e1) (subst e2)
-    LApp e1 o e2    -> liftA3 LApp (subst e1) (return o) (subst e2)
+    LApp e1 e2      -> liftA2 LApp (subst e1) (subst e2)
     Pair e1 e2      -> liftA2 Pair (subst e1) (subst e2)
     Fst e           -> Fst <$> subst e
     Snd e           -> Snd <$> subst e
@@ -82,22 +82,25 @@ subst exp = case exp of
     Ite b e1 e2     -> liftA3 Ite (subst b) (subst e1) (subst e2)
     Match e x l y r  -> Match <$> subst e <*>
                         return x <*> subst l <*> return y <*> subst r
-    Abstr l v e     -> Abstr l v <$> subst e
+    Abstr v e       -> Abstr v <$> subst e
     Rec v e         -> Rec v <$> subst e
-    Add e1 e2       -> liftA2 Add (subst e1) (subst e2)
-    Sub e1 e2       -> liftA2 Sub (subst e1) (subst e2)
-    Mul e1 e2       -> liftA2 Mul (subst e1) (subst e2)
-    Div e1 e2       -> liftA2 Div (subst e1) (subst e2)
-    And e1 o e2     -> liftA3 And (subst e1) (return o) (subst e2)
-    Or e1 o e2      -> liftA3 Or (subst e1) (return o) (subst e2)
-    Not n e         -> fmap (Not n) (subst e)
-    Eq e1 e2        -> liftA2 Eq (subst e1) (subst e2)
-    Lt e1 e2        -> liftA2 Lt (subst e1) (subst e2)
-    Gt e1 e2        -> liftA2 Gt (subst e1) (subst e2)
-    Leq e1 o e2     -> liftA3 Leq (subst e1) (return o) (subst e2)
-    Geq e1 o e2     -> liftA3 Geq (subst e1) (return o) (subst e2)
+    Not e           -> fmap Not     (subst e)
+    Add e1 e2       -> liftA2 Add   (subst e1) (subst e2)
+    Sub e1 e2       -> liftA2 Sub   (subst e1) (subst e2)
+    Mul e1 e2       -> liftA2 Mul   (subst e1) (subst e2)
+    Div e1 e2       -> liftA2 Div   (subst e1) (subst e2)
+    And e1 e2       -> liftA2 And   (subst e1) (subst e2)
+    Or e1 e2        -> liftA2 Or    (subst e1) (subst e2)
+    Eq e1 e2        -> liftA2 Eq    (subst e1) (subst e2)
+    Lt e1 e2        -> liftA2 Lt    (subst e1) (subst e2)
+    Gt e1 e2        -> liftA2 Gt    (subst e1) (subst e2)
+    Leq e1 e2       -> liftA2 Leq   (subst e1) (subst e2)
+    Geq e1 e2       -> liftA2 Geq   (subst e1) (subst e2)
 
 -- Substitutes in exp, s for x
 substitute :: Exp -> Ident -> Exp -> Exp
 substitute exp x s = runReader (subst exp) (x,s)
 
+-- Perform substitution for a list of subs
+substL :: Exp -> [Assignment] -> Exp
+substL = Prelude.foldl (\e (Assign x t) -> substitute e x t)

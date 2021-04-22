@@ -51,6 +51,7 @@ extra-deps: [
     "transformers-compat-0.6.6@sha256:510709db2b12d1510d70de824ee544ca0a9e6f27aa7e299218cbacc0750b4a5e,5560",
     "primitive-0.7.1.0@sha256:f6357d5720c1c665096c3e011467daf443198b786a708d2ff926958a24d508d4,2728",
     "split-0.2.3.4@sha256:bad9bfc9e8e0aca4ac1f7b3a2767ee6b1c199d4a1b6960db5cc3d7674aee5d73,2564",
+    "ilist-0.4.0.1@sha256:a4f1f0f5084a8c08cd1fbf290d064d81ca889351ddb44422d37e078ac4a783a7,3129"
     ]
 
 # Override default flag values for local packages and extra-deps

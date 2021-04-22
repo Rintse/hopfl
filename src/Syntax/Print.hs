@@ -124,6 +124,9 @@ instance Print Syntax.Abs.TLApp where
 instance Print Syntax.Abs.TSub where
   prt _ (Syntax.Abs.TSub i) = doc $ showString $ i
 
+instance Print Syntax.Abs.TMatch where
+  prt _ (Syntax.Abs.TMatch i) = doc $ showString $ i
+
 instance Print Syntax.Abs.BConst where
   prt i e = case e of
     Syntax.Abs.BTrue -> prPrec i 0 (concatD [doc (showString "true")])
@@ -163,7 +166,7 @@ instance Print Syntax.Abs.Exp where
     Syntax.Abs.Pair exp1 exp2 -> prPrec i 3 (concatD [doc (showString "["), prt 3 exp1, doc (showString ","), prt 3 exp2, doc (showString "]")])
     Syntax.Abs.Norm exp -> prPrec i 3 (concatD [doc (showString "normal"), prt 3 exp])
     Syntax.Abs.Ite exp1 exp2 exp3 -> prPrec i 2 (concatD [doc (showString "if"), prt 4 exp1, doc (showString "then"), prt 7 exp2, doc (showString "else"), prt 7 exp3])
-    Syntax.Abs.Match exp1 id1 exp2 id2 exp3 -> prPrec i 1 (concatD [doc (showString "match"), prt 11 exp1, doc (showString "{"), prt 0 id1, doc (showString "->"), prt 1 exp2, doc (showString ";"), prt 0 id2, doc (showString "->"), prt 1 exp3, doc (showString "}")])
+    Syntax.Abs.Match exp1 id1 tmatch1 exp2 id2 tmatch2 exp3 -> prPrec i 1 (concatD [doc (showString "match"), prt 11 exp1, doc (showString "{"), prt 0 id1, prt 0 tmatch1, prt 1 exp2, doc (showString ";"), prt 0 id2, prt 0 tmatch2, prt 1 exp3, doc (showString "}")])
     Syntax.Abs.Abstr lam id exp -> prPrec i 0 (concatD [prt 0 lam, prt 0 id, doc (showString "."), prt 0 exp])
     Syntax.Abs.Rec id exp -> prPrec i 0 (concatD [doc (showString "fix"), prt 0 id, doc (showString "."), prt 0 exp])
 

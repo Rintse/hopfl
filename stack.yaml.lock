@@ -67,4 +67,11 @@ packages:
       sha256: d931baa404f6867a23ed342c11ef27613227a7a82ba2324f95da184fffad0bd9
   original:
     hackage: split-0.2.3.4@sha256:bad9bfc9e8e0aca4ac1f7b3a2767ee6b1c199d4a1b6960db5cc3d7674aee5d73,2564
+- completed:
+    hackage: ilist-0.4.0.1@sha256:a4f1f0f5084a8c08cd1fbf290d064d81ca889351ddb44422d37e078ac4a783a7,3129
+    pantry-tree:
+      size: 438
+      sha256: aa71fc3f97fc5b640315b3f343e9b898aeac0f3d34a0f6e5659c913fd54d6839
+  original:
+    hackage: ilist-0.4.0.1@sha256:a4f1f0f5084a8c08cd1fbf290d064d81ca889351ddb44422d37e078ac4a783a7,3129
 snapshots: []

@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 88e350be460ce46b38b0014fa04957dd62a7c0845eac1890a8b7aeb0fb2a8d8b
+-- hash: 31ae7241b9277c1674fcbd3647cc8eadb8876abcbc060029bd8cb5d07127a1c1
 
 name:           hopfl
 version:        0.1.0.0
@@ -50,6 +50,7 @@ library
     , containers
     , directory
     , hashable
+    , ilist
     , mtl
     , normaldistribution
     , random
@@ -72,6 +73,7 @@ executable hopfl-exe
     , directory
     , hashable
     , hopfl
+    , ilist
     , mtl
     , normaldistribution
     , random
@@ -95,6 +97,7 @@ test-suite hopfl-test
     , directory
     , hashable
     , hopfl
+    , ilist
     , mtl
     , normaldistribution
     , random

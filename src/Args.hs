@@ -46,7 +46,7 @@ defaultOpts :: Options
 defaultOpts = Options  
     { optVerbose    = False
     , optInput      = getContents
-    , optEval       = True 
+    , optEval       = False 
     , optEnv        = Env [] 
     , optDraws      = [] 
     , optDepth      = 0 }
@@ -146,8 +146,5 @@ options =
 
     , Option "h" ["help"] (NoArg putHelp) 
         "Display help message" 
-
-    , Option "h" ["help"] (NoArg putHelp)
-        "Display help message"
     ]
 

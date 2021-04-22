@@ -18,36 +18,35 @@ import Syntax.Lex
   '+' { PT _ (TS _ 4) }
   ',' { PT _ (TS _ 5) }
   '-' { PT _ (TS _ 6) }
-  '->' { PT _ (TS _ 7) }
-  '.' { PT _ (TS _ 8) }
-  '/' { PT _ (TS _ 9) }
-  ';' { PT _ (TS _ 10) }
-  '<' { PT _ (TS _ 11) }
-  '=' { PT _ (TS _ 12) }
-  '>' { PT _ (TS _ 13) }
-  '[' { PT _ (TS _ 14) }
-  ']' { PT _ (TS _ 15) }
-  'box' { PT _ (TS _ 16) }
-  'else' { PT _ (TS _ 17) }
-  'false' { PT _ (TS _ 18) }
-  'fix' { PT _ (TS _ 19) }
-  'fst' { PT _ (TS _ 20) }
-  'if' { PT _ (TS _ 21) }
-  'in' { PT _ (TS _ 22) }
-  'inL' { PT _ (TS _ 23) }
-  'inR' { PT _ (TS _ 24) }
-  'match' { PT _ (TS _ 25) }
-  'next' { PT _ (TS _ 26) }
-  'normal' { PT _ (TS _ 27) }
-  'out' { PT _ (TS _ 28) }
-  'prev' { PT _ (TS _ 29) }
-  'prevF' { PT _ (TS _ 30) }
-  'snd' { PT _ (TS _ 31) }
-  'then' { PT _ (TS _ 32) }
-  'true' { PT _ (TS _ 33) }
-  'unbox' { PT _ (TS _ 34) }
-  '{' { PT _ (TS _ 35) }
-  '}' { PT _ (TS _ 36) }
+  '.' { PT _ (TS _ 7) }
+  '/' { PT _ (TS _ 8) }
+  ';' { PT _ (TS _ 9) }
+  '<' { PT _ (TS _ 10) }
+  '=' { PT _ (TS _ 11) }
+  '>' { PT _ (TS _ 12) }
+  '[' { PT _ (TS _ 13) }
+  ']' { PT _ (TS _ 14) }
+  'box' { PT _ (TS _ 15) }
+  'else' { PT _ (TS _ 16) }
+  'false' { PT _ (TS _ 17) }
+  'fix' { PT _ (TS _ 18) }
+  'fst' { PT _ (TS _ 19) }
+  'if' { PT _ (TS _ 20) }
+  'in' { PT _ (TS _ 21) }
+  'inL' { PT _ (TS _ 22) }
+  'inR' { PT _ (TS _ 23) }
+  'match' { PT _ (TS _ 24) }
+  'next' { PT _ (TS _ 25) }
+  'normal' { PT _ (TS _ 26) }
+  'out' { PT _ (TS _ 27) }
+  'prev' { PT _ (TS _ 28) }
+  'prevF' { PT _ (TS _ 29) }
+  'snd' { PT _ (TS _ 30) }
+  'then' { PT _ (TS _ 31) }
+  'true' { PT _ (TS _ 32) }
+  'unbox' { PT _ (TS _ 33) }
+  '{' { PT _ (TS _ 34) }
+  '}' { PT _ (TS _ 35) }
   L_Ident  { PT _ (TV $$) }
   L_doubl  { PT _ (TD $$) }
   L_Lam { PT _ (T_Lam $$) }
@@ -58,6 +57,7 @@ import Syntax.Lex
   L_TGeq { PT _ (T_TGeq $$) }
   L_TLApp { PT _ (T_TLApp $$) }
   L_TSub { PT _ (T_TSub $$) }
+  L_TMatch { PT _ (T_TMatch $$) }
 
 %%
 
@@ -90,6 +90,9 @@ TLApp  : L_TLApp { Syntax.Abs.TLApp $1 }
 
 TSub :: { Syntax.Abs.TSub}
 TSub  : L_TSub { Syntax.Abs.TSub $1 }
+
+TMatch :: { Syntax.Abs.TMatch}
+TMatch  : L_TMatch { Syntax.Abs.TMatch $1 }
 
 BConst :: { Syntax.Abs.BConst }
 BConst : 'true' { Syntax.Abs.BTrue }
@@ -157,7 +160,7 @@ Exp2 : 'if' Exp4 'then' Exp7 'else' Exp7 { Syntax.Abs.Ite $2 $4 $6 }
      | Exp3 { $1 }
 
 Exp1 :: { Syntax.Abs.Exp }
-Exp1 : 'match' Exp11 '{' Ident '->' Exp1 ';' Ident '->' Exp1 '}' { Syntax.Abs.Match $2 $4 $6 $8 $10 }
+Exp1 : 'match' Exp11 '{' Ident TMatch Exp1 ';' Ident TMatch Exp1 '}' { Syntax.Abs.Match $2 $4 $5 $6 $8 $9 $10 }
      | Exp2 { $1 }
 
 Exp :: { Syntax.Abs.Exp }

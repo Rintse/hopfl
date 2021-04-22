@@ -36,6 +36,9 @@ newtype TLApp = TLApp String
 newtype TSub = TSub String
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 
+newtype TMatch = TMatch String
+  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
+
 data BConst = BTrue | BFalse
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
@@ -72,7 +75,7 @@ data Exp
     | Pair Exp Exp
     | Norm Exp
     | Ite Exp Exp Exp
-    | Match Exp Ident Exp Ident Exp
+    | Match Exp Ident TMatch Exp Ident TMatch Exp
     | Abstr Lam Ident Exp
     | Rec Ident Exp
   deriving (C.Eq, C.Ord, C.Show, C.Read)

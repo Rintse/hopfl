@@ -32,6 +32,7 @@ followed by an unsigned or negative exponent.
 
 
 
+
 Lam literals are recognized by the regular expression
 `````["\λ"]`````
 
@@ -56,6 +57,9 @@ TLApp literals are recognized by the regular expression
 TSub literals are recognized by the regular expression
 `````'←' | {"<-"}`````
 
+TMatch literals are recognized by the regular expression
+`````'→' | {"->"}`````
+
 
 ===Reserved words and symbols===
 The set of reserved words is the set of terminals appearing in the grammar. Those reserved words that consist of non-letter characters are called symbols, and they are treated in a different way from those that are similar to identifiers. The lexer follows rules familiar from languages like Haskell, C, and Java, including longest match and spacing conventions.
@@ -71,8 +75,7 @@ The symbols used in Syntax are the following:
   | . | * | / | +
   | - | = | < | >
   | [ | , | ] | {
-  | -> | ; | } | (
-  | ) |  |  |
+  | ; | } | ( | )
 
 ===Comments===
 Single-line comments begin with #.There are no multiple-line comments in the grammar.
@@ -127,7 +130,7 @@ All other symbols are terminals.
   |  |  **|**  | //Exp4//
   | //Exp2// | -> | ``if`` //Exp4// ``then`` //Exp7// ``else`` //Exp7//
   |  |  **|**  | //Exp3//
-  | //Exp1// | -> | ``match`` //Exp11// ``{`` //Ident// ``->`` //Exp1// ``;`` //Ident// ``->`` //Exp1// ``}``
+  | //Exp1// | -> | ``match`` //Exp11// ``{`` //Ident// //TMatch// //Exp1// ``;`` //Ident// //TMatch// //Exp1// ``}``
   |  |  **|**  | //Exp2//
   | //Exp// | -> | //Lam// //Ident// ``.`` //Exp//
   |  |  **|**  | ``fix`` //Ident// ``.`` //Exp//

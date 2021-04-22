@@ -17,7 +17,7 @@ $d = [0-9]           -- digit
 $i = [$l $d _ ']     -- identifier character
 $u = [. \n]          -- universal: any character
 @rsyms =    -- symbols and non-identifier-like reserved words
-   \. | \* | \/ | \+ | \- | \= | \< | \> | \[ | \, | \] | \{ | \- \> | \; | \} | \( | \)
+   \. | \* | \/ | \+ | \- | \= | \< | \> | \[ | \, | \] | \{ | \; | \} | \( | \)
 :-
 
 -- Line comments
@@ -42,6 +42,8 @@ $white+ ;
     { tok (\p s -> PT p (eitherResIdent (T_TLApp . share) s)) }
 \← | \< \-
     { tok (\p s -> PT p (eitherResIdent (T_TSub . share) s)) }
+\→ | \- \>
+    { tok (\p s -> PT p (eitherResIdent (T_TMatch . share) s)) }
 
 $l $i*
     { tok (\p s -> PT p (eitherResIdent (TV . share) s)) }
@@ -74,6 +76,7 @@ data Tok =
  | T_TGeq !String
  | T_TLApp !String
  | T_TSub !String
+ | T_TMatch !String
 
  deriving (Eq,Show,Ord)
 
@@ -119,6 +122,7 @@ tokenText t = case t of
   PT _ (T_TGeq s) -> s
   PT _ (T_TLApp s) -> s
   PT _ (T_TSub s) -> s
+  PT _ (T_TMatch s) -> s
 
 prToken :: Token -> String
 prToken t = tokenText t
@@ -134,7 +138,7 @@ eitherResIdent tv s = treeFind resWords
                               | s == a = t
 
 resWords :: BTree
-resWords = b "fix" 19 (b ";" 10 (b "," 5 (b "*" 3 (b ")" 2 (b "(" 1 N N) N) (b "+" 4 N N)) (b "." 8 (b "->" 7 (b "-" 6 N N) N) (b "/" 9 N N))) (b "]" 15 (b ">" 13 (b "=" 12 (b "<" 11 N N) N) (b "[" 14 N N)) (b "else" 17 (b "box" 16 N N) (b "false" 18 N N)))) (b "out" 28 (b "inR" 24 (b "in" 22 (b "if" 21 (b "fst" 20 N N) N) (b "inL" 23 N N)) (b "next" 26 (b "match" 25 N N) (b "normal" 27 N N))) (b "true" 33 (b "snd" 31 (b "prevF" 30 (b "prev" 29 N N) N) (b "then" 32 N N)) (b "{" 35 (b "unbox" 34 N N) (b "}" 36 N N))))
+resWords = b "fix" 18 (b ";" 9 (b "," 5 (b "*" 3 (b ")" 2 (b "(" 1 N N) N) (b "+" 4 N N)) (b "." 7 (b "-" 6 N N) (b "/" 8 N N))) (b "]" 14 (b ">" 12 (b "=" 11 (b "<" 10 N N) N) (b "[" 13 N N)) (b "else" 16 (b "box" 15 N N) (b "false" 17 N N)))) (b "out" 27 (b "inR" 23 (b "in" 21 (b "if" 20 (b "fst" 19 N N) N) (b "inL" 22 N N)) (b "next" 25 (b "match" 24 N N) (b "normal" 26 N N))) (b "true" 32 (b "snd" 30 (b "prevF" 29 (b "prev" 28 N N) N) (b "then" 31 N N)) (b "{" 34 (b "unbox" 33 N N) (b "}" 35 N N))))
    where b s n = let bs = s
                  in  B bs (TS bs n)
 

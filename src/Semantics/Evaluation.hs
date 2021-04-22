@@ -69,11 +69,11 @@ eval exp@(Out e) = eval e >>= \case
 
 -- Function application
 eval exp@(App e1 e2) = match2 eval e1 e2 >>= \case
-    (VThunk (Abstr l x e), r2) -> eval $ substitute e x $ toExp r2
+    (VThunk (Abstr x e), r2) -> eval $ substitute e x $ toExp r2
     _ -> throwError $ " Application on non-function:\n" ++ treeTerm exp
 
 -- Delayed function application
-eval exp@(LApp e1 _ e2) = match2 eval e1 e2 >>= \case
+eval exp@(LApp e1 e2) = match2 eval e1 e2 >>= \case
     (VNext t, VNext s) -> eval $ Next $ App t s
     _ -> throwError $ "Invalid arguments to LApp:\n" ++ treeTerm exp
 
@@ -114,14 +114,14 @@ eval exp@(Match e x1 e1 x2 e2) = eval e >>= \case
     _       -> throwError $ "Match on non-coproduct:\n" ++ treeTerm exp
 
 -- Function abstraction
-eval exp@(Abstr l x e) = return $ VThunk exp
+eval exp@(Abstr x e) = return $ VThunk exp
 
 -- Recursion
 eval exp@(Rec x e) = eval $ substitute e x $ recName (Next exp)
 
 -- Unboxing
 eval exp@(Unbox e) = eval e >>= \case
-    VBox l e1 -> throwError "lel" -- substL l e1
+    VBox (SubList (Env l)) e1 -> eval $ substL e1 l
     _ -> throwError $ "Unbox on non-box:\n" ++ treeTerm exp
 
 -- Boolean and arithmetic expressions
@@ -133,13 +133,13 @@ eval exp = case exp of
     Mul e1 e2   -> evalAExp eval e1 (*) e2
     Div e1 e2   -> evalAExp eval e1 (/) e2
 
-    Not _ e     -> evalBExp1 eval not e
-    And e1 _ e2 -> evalBExp eval e1 (&&) e2
-    Or e1 _ e2  -> evalBExp eval e1 (||) e2
+    Not e       -> evalBExp1 eval not e
+    And e1 e2   -> evalBExp eval e1 (&&) e2
+    Or e1 e2    -> evalBExp eval e1 (||) e2
 
     Eq e1 e2    -> evalRelop eval e1 (==) e2
     Lt e1 e2    -> evalRelop eval e1 (<) e2
     Gt e1 e2    -> evalRelop eval e1 (>) e2
-    Leq e1 _ e2 -> evalRelop eval e1 (<=) e2
-    Geq e1 _ e2 -> evalRelop eval e1 (>=) e2
+    Leq e1 e2   -> evalRelop eval e1 (<=) e2
+    Geq e1 e2   -> evalRelop eval e1 (>=) e2
 
