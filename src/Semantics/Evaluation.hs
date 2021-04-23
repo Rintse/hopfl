@@ -121,7 +121,7 @@ eval exp@(Rec x e) = eval $ substitute e x $ recName (Next exp)
 
 -- Unboxing
 eval exp@(Unbox e) = eval e >>= \case
-    VBox (SubList (Env l)) e1 -> eval $ substL e1 l
+    VBox (Env l) e1 -> eval $ substL e1 l
     _ -> throwError $ "Unbox on non-box:\n" ++ treeTerm exp
 
 -- Boolean and arithmetic expressions

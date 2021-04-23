@@ -1,7 +1,7 @@
 -- Syntax of GHOPFL defined in LBNF format
 -- To be processed into a parser and lexer using BNFC
 
-entrypoints Exp, Environment ;
+entrypoints Environment, Exp, Prg;
 comment     "#" ;
 
 -- Tokens
@@ -26,13 +26,13 @@ BVal.       Exp11   ::= BConst ;
 
 -- Later modality (with applicative function LApp)
 Next.       Exp10   ::= "next" Exp11 ;
-Prev.       Exp10   ::= "prev" SubL "." Exp11 ;
+Prev.       Exp10   ::= "prev" "{" Environment "}" "." Exp11 ;
 -- Syntactic sugar for empty sublist
 PrevE.      Exp10   ::= "prev" Exp11;
 -- Syntactic sugar for prev{\x ← \x}.t with \x being all free vars in t
 PrevF.      Exp10   ::= "prevF" Exp11;
 
-Box.        Exp10   ::= "box" SubL "." Exp11 ;
+Box.        Exp10   ::= "box" "{" Environment "}" "." Exp11 ;
 Unbox.      Exp10   ::= "unbox" Exp11 ;
 
 -- Recursion
@@ -78,10 +78,12 @@ Abstr.      Exp     ::= Lam Ident "." Exp ;
 Rec.        Exp     ::= "fix" Ident "." Exp ;
 coercions Exp 11 ;
 
--- Explicit substitution lists, reuse environment
-SubList.    SubL    ::= "{" Environment "}" ;
+-- Program with definitions
+DefProg.    Prg     ::= "let" Environment "in:" Exp ;
+Prog.       Prg     ::= Exp ;
 
 -- Environment passing
 Assign.     Assignment  ::= Ident TSub Exp ;
 Env.        Environment ::= [Assignment] ;
 separator   Assignment ";" ;
+

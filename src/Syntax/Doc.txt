@@ -67,15 +67,16 @@ The set of reserved words is the set of terminals appearing in the grammar. Thos
 The reserved words used in Syntax are the following:
   | ``box`` | ``else`` | ``false`` | ``fix``
   | ``fst`` | ``if`` | ``in`` | ``inL``
-  | ``inR`` | ``match`` | ``next`` | ``normal``
-  | ``out`` | ``prev`` | ``prevF`` | ``snd``
-  | ``then`` | ``true`` | ``unbox`` |
+  | ``inR`` | ``let`` | ``match`` | ``next``
+  | ``normal`` | ``out`` | ``prev`` | ``prevF``
+  | ``snd`` | ``then`` | ``true`` | ``unbox``
 
 The symbols used in Syntax are the following:
-  | . | * | / | +
-  | - | = | < | >
-  | [ | , | ] | {
-  | ; | } | ( | )
+  | { | } | . | *
+  | / | + | - | =
+  | < | > | [ | ,
+  | ] | ; | ( | )
+  | in: |  |  |
 
 ===Comments===
 Single-line comments begin with #.There are no multiple-line comments in the grammar.
@@ -93,10 +94,10 @@ All other symbols are terminals.
   |  |  **|**  | //BConst//
   |  |  **|**  | ``(`` //Exp// ``)``
   | //Exp10// | -> | ``next`` //Exp11//
-  |  |  **|**  | ``prev`` //SubL// ``.`` //Exp11//
+  |  |  **|**  | ``prev`` ``{`` //Environment// ``}`` ``.`` //Exp11//
   |  |  **|**  | ``prev`` //Exp11//
   |  |  **|**  | ``prevF`` //Exp11//
-  |  |  **|**  | ``box`` //SubL// ``.`` //Exp11//
+  |  |  **|**  | ``box`` ``{`` //Environment// ``}`` ``.`` //Exp11//
   |  |  **|**  | ``unbox`` //Exp11//
   |  |  **|**  | ``in`` //Exp11//
   |  |  **|**  | ``out`` //Exp11//
@@ -135,7 +136,8 @@ All other symbols are terminals.
   | //Exp// | -> | //Lam// //Ident// ``.`` //Exp//
   |  |  **|**  | ``fix`` //Ident// ``.`` //Exp//
   |  |  **|**  | //Exp1//
-  | //SubL// | -> | ``{`` //Environment// ``}``
+  | //Prg// | -> | ``let`` //Environment// ``in:`` //Exp//
+  |  |  **|**  | //Exp//
   | //Assignment// | -> | //Ident// //TSub// //Exp//
   | //Environment// | -> | //[Assignment]//
   | //[Assignment]// | -> | **eps**

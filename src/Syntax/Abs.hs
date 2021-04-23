@@ -47,10 +47,10 @@ data Exp
     | Val Double
     | BVal BConst
     | Next Exp
-    | Prev SubL Exp
+    | Prev Environment Exp
     | PrevE Exp
     | PrevF Exp
-    | Box SubL Exp
+    | Box Environment Exp
     | Unbox Exp
     | In Exp
     | Out Exp
@@ -80,7 +80,7 @@ data Exp
     | Rec Ident Exp
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data SubL = SubList Environment
+data Prg = DefProg Environment Exp | Prog Exp
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Assignment = Assign Ident TSub Exp

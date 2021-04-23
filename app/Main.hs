@@ -7,6 +7,7 @@ import Syntax.ErrM
 import Semantics.Evaluation
 import Tools.VerbPrint
 import Tools.Treeify
+import Tools.Preprocess
 import Args
 
 import System.Environment ( getArgs )
@@ -17,11 +18,11 @@ import System.Exit
 import Control.Monad.Reader
 
 -- Parses contents of given input file
-parse :: Bool -> String -> IO Raw.Exp
+parse :: Bool -> String -> IO Raw.Prg
 parse v s = do
     putStrV v "Parsing program"
     let ts = myLLexer s
-    case pExp ts of
+    case pPrg ts of
         Bad r -> do
             putStrLn $"Parse failed: " ++ r
             putStrV v $ "Tokens still in stream:\n" ++ show ts
@@ -46,9 +47,10 @@ main = do
 
     -- Parse input
     prog <- input >>= parse verb
-
+    -- Preprocess definitions
+    let exp = handleDefs prog
     -- Annotate identifiers with a unique id
-    let annotated = idExp prog
+    let annotated = idExp exp
     showProg verb annotated
 
     -- Evaluate if requested

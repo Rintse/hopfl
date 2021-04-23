@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 31ae7241b9277c1674fcbd3647cc8eadb8876abcbc060029bd8cb5d07127a1c1
+-- hash: 7da6b8575640a20f87838e1b7ee28cb4d309515ea72291583b123f71cd3096e7
 
 name:           hopfl
 version:        0.1.0.0
@@ -37,6 +37,7 @@ library
       Syntax.Par
       Syntax.Print
       Syntax.Skel
+      Tools.Preprocess
       Tools.Treeify
       Tools.VerbPrint
   other-modules:

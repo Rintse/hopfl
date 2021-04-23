@@ -1,16 +1,22 @@
-# Geometric series function
+# Samples the geometric series
+# Free variables to pass through the environment:
+#   p:  The coinflip threshold
 
-# Extracts the computed value from the coproduct
-( fix f . λ x . match (out x) {
-    left -> left; 
-    right -> f ⊙ right
-} )
+let
+    # Extracts the computed value from the coproduct
+    extract ← ( 
+        fix f . λ x . match (out x) {
+            left -> left; 
+            right -> f ⊙ right
+        } 
+    );
 
-# Performs a flip until a value below p is reached
-( ( λ flip . λ p . ((fix f . λ n . 
-    if flip p
-    then in (inL n)
-    else in (inR (f ⊙ next (n + 1.0)))) 0.0)
-)
-# Flip function (using simulated [0,1] with normal)
-( λ p . (normal [0.5, 0.25]) < p ) p )
+   # Performs a flip until a value below p is reached
+    geometric ← ( 
+        λ p . ( ( fix f . λ n . if ( ( normal [0.5, 0.25] ) < p)
+            then in ( inL n )
+            else in ( inR ( f ⊙ next ( n + 1.0 ) ) ) ) 0.0 )
+    )
+
+# Result will be inside of next guards
+in: extract (geometric p)

@@ -15,8 +15,8 @@ class Treeish a where
 instance Treeish Ident where
     toTree (Ident x id _) = Node (x ++ " (" ++ show id ++ ")") []
 
-instance Treeish SubL where
-    toTree (SubList (Env l)) = Node "Substitution List" (map toTree l)
+instance Treeish Environment where
+    toTree (Env l) = Node "Substitution List" (map toTree l)
 
 instance Treeish Assignment where
     toTree (Assign x t) = Node "Substitution" [ toTree x, toTree t ]

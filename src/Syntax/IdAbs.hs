@@ -23,9 +23,9 @@ data Exp
     | Val Double
     | BVal Raw.BConst
     | Next Exp
-    | Box Raw.SubL Exp
+    | Box Environment Exp
     | Unbox Exp
-    | Prev SubL Exp
+    | Prev Environment Exp
     | PrevE Exp
     | PrevF Exp
     | In Exp
@@ -56,22 +56,11 @@ data Exp
     | Rec Ident Exp
     deriving (Eq, Ord, Show, Read)
 
-newtype SubL = SubList Environment
-  deriving (Eq, Ord, Show, Read)
-
 data Assignment = Assign Ident Exp
   deriving (Eq, Ord, Show, Read)
 
 newtype Environment = Env [Assignment]
   deriving (Eq, Ord, Show, Read)
-
--- Get the ID from an assignment
-getIDA :: Raw.Assignment -> Raw.Ident
-getIDA (Raw.Assign x _ _) = x
-
--- Get the term from an assignment
-getTermA :: Raw.Assignment -> Raw.Exp
-getTermA (Raw.Assign _ _ t) = t
 
 -- State environment contains a counter and a hashmap in which the values 
 -- track all the names that we are currently substituting the key for.
@@ -84,13 +73,13 @@ newtype IdMonad a = IdMonad {
                 MonadReader IdMap   )
 
 -- Returns an empty substitution list
-emptySubL :: Raw.SubL
-emptySubL = Raw.SubList $ Raw.Env []
+emptySubL :: Raw.Environment
+emptySubL = Raw.Env []
 
 -- Returns a sublist with the freevars in some term
 -- TODO: How do you get the free vars preemptively?
-freeSubL :: Raw.SubL
-freeSubL = Raw.SubList $ Raw.Env []
+freeSubL :: Raw.Environment
+freeSubL = Raw.Env []
 
 -- Increments counter and pushes new substitute for x onto m[x]
 pushVar :: Raw.Ident -> Int -> IdMap -> IdMap
@@ -100,9 +89,8 @@ pushVar (Raw.Ident x) c = HM.insertWith (++) x [c]
 pushVars :: [Raw.Assignment] -> Int -> IdMap -> IdMap
 pushVars l c m = do
     let idxd = Prelude.map (\(i,a) -> (i+c,a)) (indexed l)
-    let push1 = \m1 x -> pushVar (getIDA (snd x)) (fst x) m1
-    trace (show idxd) (
-        Prelude.foldl push1 m idxd)
+    let push1 = \m1 (id, Raw.Assign x _ t) -> pushVar x id m1
+    Prelude.foldl push1 m idxd
 
 varAssign :: Raw.Assignment -> IdMonad Assignment
 varAssign (Raw.Assign x _ t) = do
@@ -124,7 +112,6 @@ reName exp = case exp of
     Raw.Next e          -> Next <$> reName e
     Raw.PrevE e         -> reName $ Raw.Prev emptySubL e
     Raw.PrevF e         -> reName $ Raw.Prev freeSubL e
-    Raw.Box l e         -> Box l <$> reName e
     Raw.In e            -> In <$> reName e
     Raw.Out e           -> Out <$> reName e
     Raw.App e1 e2       -> liftA2 App (reName e1) (reName e2)
@@ -136,12 +123,18 @@ reName exp = case exp of
     Raw.InR e           -> InR <$> reName e
     Raw.Norm e          -> Norm <$> reName e
     Raw.Ite b e1 e2     -> liftA3 Ite (reName b) (reName e1) (reName e2)
-    Raw.Prev (Raw.SubList (Raw.Env l)) e -> do
+    Raw.Box (Raw.Env l) e -> do
         cur <- gets (+1)
         rl <- mapM varAssign l
         -- all vars in l are bound in e
         re <- local (pushVars l cur) $ reName e
-        return $ Prev (SubList (Env rl)) re
+        return $ Prev (Env rl) re
+    Raw.Prev (Raw.Env l) e -> do
+        cur <- gets (+1)
+        rl <- mapM varAssign l
+        -- all vars in l are bound in e
+        re <- local (pushVars l cur) $ reName e
+        return $ Prev (Env rl) re
     Raw.Match e x _ l y _ r -> do
         -- Nothing binds e
         re <- reName e

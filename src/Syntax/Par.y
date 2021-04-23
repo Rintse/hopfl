@@ -6,8 +6,9 @@ import qualified Syntax.Abs
 import Syntax.Lex
 }
 
-%name pExp Exp
 %name pEnvironment Environment
+%name pExp Exp
+%name pPrg Prg
 -- no lexer declaration
 %monad { Either String } { (>>=) } { return }
 %tokentype {Token}
@@ -33,20 +34,22 @@ import Syntax.Lex
   'fst' { PT _ (TS _ 19) }
   'if' { PT _ (TS _ 20) }
   'in' { PT _ (TS _ 21) }
-  'inL' { PT _ (TS _ 22) }
-  'inR' { PT _ (TS _ 23) }
-  'match' { PT _ (TS _ 24) }
-  'next' { PT _ (TS _ 25) }
-  'normal' { PT _ (TS _ 26) }
-  'out' { PT _ (TS _ 27) }
-  'prev' { PT _ (TS _ 28) }
-  'prevF' { PT _ (TS _ 29) }
-  'snd' { PT _ (TS _ 30) }
-  'then' { PT _ (TS _ 31) }
-  'true' { PT _ (TS _ 32) }
-  'unbox' { PT _ (TS _ 33) }
-  '{' { PT _ (TS _ 34) }
-  '}' { PT _ (TS _ 35) }
+  'in:' { PT _ (TS _ 22) }
+  'inL' { PT _ (TS _ 23) }
+  'inR' { PT _ (TS _ 24) }
+  'let' { PT _ (TS _ 25) }
+  'match' { PT _ (TS _ 26) }
+  'next' { PT _ (TS _ 27) }
+  'normal' { PT _ (TS _ 28) }
+  'out' { PT _ (TS _ 29) }
+  'prev' { PT _ (TS _ 30) }
+  'prevF' { PT _ (TS _ 31) }
+  'snd' { PT _ (TS _ 32) }
+  'then' { PT _ (TS _ 33) }
+  'true' { PT _ (TS _ 34) }
+  'unbox' { PT _ (TS _ 35) }
+  '{' { PT _ (TS _ 36) }
+  '}' { PT _ (TS _ 37) }
   L_Ident  { PT _ (TV $$) }
   L_doubl  { PT _ (TD $$) }
   L_Lam { PT _ (T_Lam $$) }
@@ -106,10 +109,10 @@ Exp11 : Ident { Syntax.Abs.Var $1 }
 
 Exp10 :: { Syntax.Abs.Exp }
 Exp10 : 'next' Exp11 { Syntax.Abs.Next $2 }
-      | 'prev' SubL '.' Exp11 { Syntax.Abs.Prev $2 $4 }
+      | 'prev' '{' Environment '}' '.' Exp11 { Syntax.Abs.Prev $3 $6 }
       | 'prev' Exp11 { Syntax.Abs.PrevE $2 }
       | 'prevF' Exp11 { Syntax.Abs.PrevF $2 }
-      | 'box' SubL '.' Exp11 { Syntax.Abs.Box $2 $4 }
+      | 'box' '{' Environment '}' '.' Exp11 { Syntax.Abs.Box $3 $6 }
       | 'unbox' Exp11 { Syntax.Abs.Unbox $2 }
       | 'in' Exp11 { Syntax.Abs.In $2 }
       | 'out' Exp11 { Syntax.Abs.Out $2 }
@@ -168,8 +171,9 @@ Exp : Lam Ident '.' Exp { Syntax.Abs.Abstr $1 $2 $4 }
     | 'fix' Ident '.' Exp { Syntax.Abs.Rec $2 $4 }
     | Exp1 { $1 }
 
-SubL :: { Syntax.Abs.SubL }
-SubL : '{' Environment '}' { Syntax.Abs.SubList $2 }
+Prg :: { Syntax.Abs.Prg }
+Prg : 'let' Environment 'in:' Exp { Syntax.Abs.DefProg $2 $4 }
+    | Exp { Syntax.Abs.Prog $1 }
 
 Assignment :: { Syntax.Abs.Assignment }
 Assignment : Ident TSub Exp { Syntax.Abs.Assign $1 $2 $3 }

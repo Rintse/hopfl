@@ -138,10 +138,10 @@ instance Print Syntax.Abs.Exp where
     Syntax.Abs.Val d -> prPrec i 11 (concatD [prt 0 d])
     Syntax.Abs.BVal bconst -> prPrec i 11 (concatD [prt 0 bconst])
     Syntax.Abs.Next exp -> prPrec i 10 (concatD [doc (showString "next"), prt 11 exp])
-    Syntax.Abs.Prev subl exp -> prPrec i 10 (concatD [doc (showString "prev"), prt 0 subl, doc (showString "."), prt 11 exp])
+    Syntax.Abs.Prev environment exp -> prPrec i 10 (concatD [doc (showString "prev"), doc (showString "{"), prt 0 environment, doc (showString "}"), doc (showString "."), prt 11 exp])
     Syntax.Abs.PrevE exp -> prPrec i 10 (concatD [doc (showString "prev"), prt 11 exp])
     Syntax.Abs.PrevF exp -> prPrec i 10 (concatD [doc (showString "prevF"), prt 11 exp])
-    Syntax.Abs.Box subl exp -> prPrec i 10 (concatD [doc (showString "box"), prt 0 subl, doc (showString "."), prt 11 exp])
+    Syntax.Abs.Box environment exp -> prPrec i 10 (concatD [doc (showString "box"), doc (showString "{"), prt 0 environment, doc (showString "}"), doc (showString "."), prt 11 exp])
     Syntax.Abs.Unbox exp -> prPrec i 10 (concatD [doc (showString "unbox"), prt 11 exp])
     Syntax.Abs.In exp -> prPrec i 10 (concatD [doc (showString "in"), prt 11 exp])
     Syntax.Abs.Out exp -> prPrec i 10 (concatD [doc (showString "out"), prt 11 exp])
@@ -170,9 +170,10 @@ instance Print Syntax.Abs.Exp where
     Syntax.Abs.Abstr lam id exp -> prPrec i 0 (concatD [prt 0 lam, prt 0 id, doc (showString "."), prt 0 exp])
     Syntax.Abs.Rec id exp -> prPrec i 0 (concatD [doc (showString "fix"), prt 0 id, doc (showString "."), prt 0 exp])
 
-instance Print Syntax.Abs.SubL where
+instance Print Syntax.Abs.Prg where
   prt i e = case e of
-    Syntax.Abs.SubList environment -> prPrec i 0 (concatD [doc (showString "{"), prt 0 environment, doc (showString "}")])
+    Syntax.Abs.DefProg environment exp -> prPrec i 0 (concatD [doc (showString "let"), prt 0 environment, doc (showString "in:"), prt 0 exp])
+    Syntax.Abs.Prog exp -> prPrec i 0 (concatD [prt 0 exp])
 
 instance Print Syntax.Abs.Assignment where
   prt i e = case e of
