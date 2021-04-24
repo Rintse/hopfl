@@ -62,6 +62,11 @@ doSub v@(Ident x idx dx) (Ident y idy dy, s) =
     if x == y && idx == idy && dx == dy then s
     else Var v
 
+-- Substitutes in substitution lists.
+-- Used in Prev and Box
+substL :: Environment -> Reader (Ident, Exp) Environment
+substL (Env l) = Env <$> mapM (\(Assign x t) -> Assign x <$> subst t) l
+
 -- Substitutes, in exp, x for s
 subst :: Exp -> Reader (Ident, Exp) Exp
 subst exp = case exp of
@@ -69,6 +74,8 @@ subst exp = case exp of
     Val v           -> return exp
     BVal v          -> return exp
     Next e          -> Next <$> subst e
+    Prev l e        -> Prev <$> substL l <*> subst e
+    Box l e         -> Box <$> substL l <*> subst e 
     In e            -> In <$> subst e
     Out e           -> Out <$> subst e
     App e1 e2       -> liftA2 App (subst e1) (subst e2)
@@ -102,5 +109,5 @@ substitute :: Exp -> Ident -> Exp -> Exp
 substitute exp x s = runReader (subst exp) (x,s)
 
 -- Perform substitution for a list of subs
-substL :: Exp -> [Assignment] -> Exp
-substL = Prelude.foldl (\e (Assign x t) -> substitute e x t)
+substList :: Exp -> [Assignment] -> Exp
+substList = Prelude.foldl (\e (Assign x t) -> substitute e x t)

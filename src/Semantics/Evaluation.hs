@@ -33,7 +33,7 @@ evaluate v prog n s env = do
     putStrV v ("- using the environment: " ++ printEnv (mkEnv env))
     putStrV v ("- up to depth: " ++ show n ++ "\n")
 
-    let toEval = evalMonad (eval prog)       -- Put program into eval monad
+    let toEval = evalMonad (eval prog)          -- Put program into eval monad
     let r1 = runReaderT toEval (mkEnv env, n)   -- Run the reader (env, depth)
     let r2 = runStateT r1 (1.0, s)              -- Run the state (density, draws)
 
@@ -118,6 +118,15 @@ eval exp@(Abstr x e) = return $ VThunk exp
 
 -- Recursion
 eval exp@(Rec x e) = eval $ substitute e x $ recName (Next exp)
+
+-- Prev: next inverse
+-- Empty substitution list, simply remove the next
+eval exp@(PrevE e) = eval $ Prev (Env []) e
+eval exp@(Prev (Env []) e) = eval e >>= \case
+    VNext e -> eval e
+    _ -> throwError $ "Took prev of non-next:\n" ++ treeTerm exp
+-- Non empty list, perform substitutions
+eval exp@(Prev (Env l) e) = eval $ Prev (Env []) $ substL e l
 
 -- Unboxing
 eval exp@(Unbox e) = eval e >>= \case

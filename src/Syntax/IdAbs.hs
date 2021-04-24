@@ -72,15 +72,6 @@ newtype IdMonad a = IdMonad {
                 MonadState Int,
                 MonadReader IdMap   )
 
--- Returns an empty substitution list
-emptySubL :: Raw.Environment
-emptySubL = Raw.Env []
-
--- Returns a sublist with the freevars in some term
--- TODO: How do you get the free vars preemptively?
-freeSubL :: Raw.Environment
-freeSubL = Raw.Env []
-
 -- Increments counter and pushes new substitute for x onto m[x]
 pushVar :: Raw.Ident -> Int -> IdMap -> IdMap
 pushVar (Raw.Ident x) c = HM.insertWith (++) x [c]
@@ -110,8 +101,8 @@ reName exp = case exp of
     Raw.Val v           -> return $ Val v
     Raw.BVal v          -> return $ BVal v
     Raw.Next e          -> Next <$> reName e
-    Raw.PrevE e         -> reName $ Raw.Prev emptySubL e
-    Raw.PrevF e         -> reName $ Raw.Prev freeSubL e
+    Raw.PrevE e         -> reName $ Raw.Prev (Raw.Env []) e
+    Raw.PrevF e         -> reName $ Raw.Prev (Raw.Env []) e -- TODO
     Raw.In e            -> In <$> reName e
     Raw.Out e           -> Out <$> reName e
     Raw.App e1 e2       -> liftA2 App (reName e1) (reName e2)
