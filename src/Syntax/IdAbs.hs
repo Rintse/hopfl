@@ -18,12 +18,15 @@ import Debug.Trace
 data Ident = Ident String Int Int
   deriving (Eq, Ord, Show, Read)
 
+data ExpType = Leaf | Unary | Binary | Listary
+
 data Exp
     = Var Ident
     | Val Double
     | BVal Raw.BConst
     | Next Exp
     | Box Environment Exp
+    | BoxF Exp
     | Unbox Exp
     | Prev Environment Exp
     | PrevE Exp
@@ -94,6 +97,57 @@ varAssign (Raw.Assign x _ t) = do
 getSub :: Raw.Ident -> IdMap -> Ident
 getSub (Raw.Ident x) m = Ident x (head $ HM.findWithDefault [0] x m) 0
 
+getFrees :: Exp -> [Ident]
+getFrees exp = case exp of
+    Var i@(Ident x 0 d) -> [i]
+    Var v               -> []
+    Val v               -> []
+    BVal v              -> []
+    Next e              -> getFrees e
+    Prev (Env l) e      -> concatMap (getFrees . (\(Assign x t) -> t)) l ++ getFrees e
+    Box (Env l) e       -> concatMap (getFrees . (\(Assign x t) -> t)) l ++ getFrees e
+    In e                -> getFrees e
+    Out e               -> getFrees e
+    App e1 e2           -> getFrees e1 ++ getFrees e2
+    LApp e1 e2          -> getFrees e1 ++ getFrees e2
+    Pair e1 e2          -> getFrees e1 ++ getFrees e2
+    Fst e               -> getFrees e
+    Snd e               -> getFrees e
+    InL e               -> getFrees e
+    InR e               -> getFrees e
+    Norm e              -> getFrees e
+    Ite b e1 e2         -> getFrees b ++ getFrees e1 ++ getFrees e2
+    Match e x l y r     -> getFrees e ++ getFrees l ++ getFrees r
+    Abstr x e           -> getFrees e
+    Rec x e             -> getFrees e    
+    Add e1 e2           -> getFrees e1 ++ getFrees e2
+    Sub e1 e2           -> getFrees e1 ++ getFrees e2
+    Mul e1 e2           -> getFrees e1 ++ getFrees e2
+    Div e1 e2           -> getFrees e1 ++ getFrees e2
+    And e1 e2           -> getFrees e1 ++ getFrees e2
+    Or e1 e2            -> getFrees e1 ++ getFrees e2
+    Not e               -> getFrees e
+    Eq e1 e2            -> getFrees e1 ++ getFrees e2
+    Lt e1 e2            -> getFrees e1 ++ getFrees e2
+    Gt e1 e2            -> getFrees e1 ++ getFrees e2
+    Leq e1 e2           -> getFrees e1 ++ getFrees e2
+    Geq e1 e2           -> getFrees e1 ++ getFrees e2
+
+-- Transforms an identifier into an identity substitution
+-- for that identifier
+idToAssign :: Ident -> Raw.Assignment
+idToAssign (Ident x _ _) = Raw.Assign 
+    (Raw.Ident x) (Raw.TSub "") (Raw.Var $ Raw.Ident x)
+
+-- Returns the identity substitution list for all free variables
+-- in term e. Used in boxF and prevF
+freeList :: Raw.Exp -> IdMonad Raw.Environment
+freeList e = do
+    renamed <- reName e
+    let frees = getFrees renamed
+    let list = Prelude.map idToAssign frees
+    return $ Raw.Env list
+
 -- TODO check for faulty programs
 reName :: Raw.Exp -> IdMonad Exp
 reName exp = case exp of
@@ -102,7 +156,10 @@ reName exp = case exp of
     Raw.BVal v          -> return $ BVal v
     Raw.Next e          -> Next <$> reName e
     Raw.PrevE e         -> reName $ Raw.Prev (Raw.Env []) e
-    Raw.PrevF e         -> reName $ Raw.Prev (Raw.Env []) e -- TODO
+    Raw.PrevF e         -> do
+        frees <- freeList e
+        reName $ Raw.Prev frees e -- TODO
+    Raw.BoxF e          -> reName $ Raw.Box (Raw.Env []) e
     Raw.In e            -> In <$> reName e
     Raw.Out e           -> Out <$> reName e
     Raw.App e1 e2       -> liftA2 App (reName e1) (reName e2)

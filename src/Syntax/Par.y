@@ -28,28 +28,29 @@ import Syntax.Lex
   '[' { PT _ (TS _ 13) }
   ']' { PT _ (TS _ 14) }
   'box' { PT _ (TS _ 15) }
-  'else' { PT _ (TS _ 16) }
-  'false' { PT _ (TS _ 17) }
-  'fix' { PT _ (TS _ 18) }
-  'fst' { PT _ (TS _ 19) }
-  'if' { PT _ (TS _ 20) }
-  'in' { PT _ (TS _ 21) }
-  'in:' { PT _ (TS _ 22) }
-  'inL' { PT _ (TS _ 23) }
-  'inR' { PT _ (TS _ 24) }
-  'let' { PT _ (TS _ 25) }
-  'match' { PT _ (TS _ 26) }
-  'next' { PT _ (TS _ 27) }
-  'normal' { PT _ (TS _ 28) }
-  'out' { PT _ (TS _ 29) }
-  'prev' { PT _ (TS _ 30) }
-  'prevF' { PT _ (TS _ 31) }
-  'snd' { PT _ (TS _ 32) }
-  'then' { PT _ (TS _ 33) }
-  'true' { PT _ (TS _ 34) }
-  'unbox' { PT _ (TS _ 35) }
-  '{' { PT _ (TS _ 36) }
-  '}' { PT _ (TS _ 37) }
+  'boxF' { PT _ (TS _ 16) }
+  'else' { PT _ (TS _ 17) }
+  'false' { PT _ (TS _ 18) }
+  'fix' { PT _ (TS _ 19) }
+  'fst' { PT _ (TS _ 20) }
+  'if' { PT _ (TS _ 21) }
+  'in' { PT _ (TS _ 22) }
+  'in:' { PT _ (TS _ 23) }
+  'inL' { PT _ (TS _ 24) }
+  'inR' { PT _ (TS _ 25) }
+  'let' { PT _ (TS _ 26) }
+  'match' { PT _ (TS _ 27) }
+  'next' { PT _ (TS _ 28) }
+  'normal' { PT _ (TS _ 29) }
+  'out' { PT _ (TS _ 30) }
+  'prev' { PT _ (TS _ 31) }
+  'prevF' { PT _ (TS _ 32) }
+  'snd' { PT _ (TS _ 33) }
+  'then' { PT _ (TS _ 34) }
+  'true' { PT _ (TS _ 35) }
+  'unbox' { PT _ (TS _ 36) }
+  '{' { PT _ (TS _ 37) }
+  '}' { PT _ (TS _ 38) }
   L_Ident  { PT _ (TV $$) }
   L_doubl  { PT _ (TD $$) }
   L_Lam { PT _ (T_Lam $$) }
@@ -113,6 +114,7 @@ Exp10 : 'next' Exp11 { Syntax.Abs.Next $2 }
       | 'prev' Exp11 { Syntax.Abs.PrevE $2 }
       | 'prevF' Exp11 { Syntax.Abs.PrevF $2 }
       | 'box' '{' Environment '}' '.' Exp11 { Syntax.Abs.Box $3 $6 }
+      | 'boxF' Exp11 { Syntax.Abs.BoxF $2 }
       | 'unbox' Exp11 { Syntax.Abs.Unbox $2 }
       | 'in' Exp11 { Syntax.Abs.In $2 }
       | 'out' Exp11 { Syntax.Abs.Out $2 }

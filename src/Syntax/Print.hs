@@ -142,6 +142,7 @@ instance Print Syntax.Abs.Exp where
     Syntax.Abs.PrevE exp -> prPrec i 10 (concatD [doc (showString "prev"), prt 11 exp])
     Syntax.Abs.PrevF exp -> prPrec i 10 (concatD [doc (showString "prevF"), prt 11 exp])
     Syntax.Abs.Box environment exp -> prPrec i 10 (concatD [doc (showString "box"), doc (showString "{"), prt 0 environment, doc (showString "}"), doc (showString "."), prt 11 exp])
+    Syntax.Abs.BoxF exp -> prPrec i 10 (concatD [doc (showString "boxF"), prt 11 exp])
     Syntax.Abs.Unbox exp -> prPrec i 10 (concatD [doc (showString "unbox"), prt 11 exp])
     Syntax.Abs.In exp -> prPrec i 10 (concatD [doc (showString "in"), prt 11 exp])
     Syntax.Abs.Out exp -> prPrec i 10 (concatD [doc (showString "out"), prt 11 exp])

@@ -51,6 +51,7 @@ data Exp
     | PrevE Exp
     | PrevF Exp
     | Box Environment Exp
+    | BoxF Exp
     | Unbox Exp
     | In Exp
     | Out Exp

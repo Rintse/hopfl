@@ -1,4 +1,16 @@
-(λ x . 
-    ( prev { y ← snd ([1.0, 2.0]) ; z ← true } . (z * ( normal [y, x] ) ) )
-) 
-( fst ( [ ((λ x . x) y), (match (inL 3.0) { x → x ; y → y } ) ] ) )
+let
+    boxRW ← (
+        fix f . λ x . in ( [ x , f ⊙ next ( normal [x , s] ) ] )
+    );
+    head ← (
+        λ s . fst (out (unbox s))
+    );
+    tail ← (
+        λ s . boxF ( prevF ( snd ( out ( ( unbox s ) ) ) ) )
+    );
+    getIdx ← (
+        fix f . λ idx . λ RW . if ( idx <= 0.0 )
+            then head rw
+            else f ⊙ next (idx - 1.0) ⊙ (tl s)
+    )
+in: ( getIdx idx ) boxRW

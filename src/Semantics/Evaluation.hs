@@ -126,11 +126,11 @@ eval exp@(Prev (Env []) e) = eval e >>= \case
     VNext e -> eval e
     _ -> throwError $ "Took prev of non-next:\n" ++ treeTerm exp
 -- Non empty list, perform substitutions
-eval exp@(Prev (Env l) e) = eval $ Prev (Env []) $ substL e l
+eval exp@(Prev (Env l) e) = eval $ Prev (Env []) $ substList e l
 
 -- Unboxing
 eval exp@(Unbox e) = eval e >>= \case
-    VBox (Env l) e1 -> eval $ substL e1 l
+    VBox (Env l) e1 -> eval $ substList e1 l
     _ -> throwError $ "Unbox on non-box:\n" ++ treeTerm exp
 
 -- Boolean and arithmetic expressions

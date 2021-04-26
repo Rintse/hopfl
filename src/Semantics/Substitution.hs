@@ -1,7 +1,6 @@
 -- Defines some substitution functions needed for evaluating 
 -- recursion, function application and match statements
 
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module Semantics.Substitution where
 
 import Syntax.IdAbs
@@ -17,7 +16,13 @@ import Data.Char
 incDepth :: Ident -> Ident
 incDepth (Ident x id d) = Ident x id (d+1)
 
+-- Renames for uniqueness of substituted values in recursion
+-- Used in Prev and Box
+recNameL :: Environment -> Environment
+recNameL (Env l) = Env $ Prelude.map rec1 l
+    where rec1 = \(Assign x t) -> Assign (incDepth x) (recName t)
 -- Renames all variables in body of rec statement to avoid
+--
 -- application substitution in folded out rec terms
 recName :: Exp -> Exp
 recName exp = case exp of
@@ -26,6 +31,8 @@ recName exp = case exp of
     Val v               -> exp
     BVal v              -> exp
     Next e              -> Next $ recName e
+    Prev l e            -> Prev (recNameL l) (recName e)
+    Box l e             -> Box (recNameL l) (recName e)
     In e                -> In $ recName e
     Out e               -> Out $ recName e
     App e1 e2           -> App (recName e1) (recName e2)
@@ -75,7 +82,10 @@ subst exp = case exp of
     BVal v          -> return exp
     Next e          -> Next <$> subst e
     Prev l e        -> Prev <$> substL l <*> subst e
+    PrevF e         -> PrevF <$> subst e
+    PrevE e         -> PrevE <$> subst e
     Box l e         -> Box <$> substL l <*> subst e 
+    BoxF e          -> BoxF <$> subst e
     In e            -> In <$> subst e
     Out e           -> Out <$> subst e
     App e1 e2       -> liftA2 App (subst e1) (subst e2)

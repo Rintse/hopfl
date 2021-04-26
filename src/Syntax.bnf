@@ -33,6 +33,8 @@ PrevE.      Exp10   ::= "prev" Exp11;
 PrevF.      Exp10   ::= "prevF" Exp11;
 
 Box.        Exp10   ::= "box" "{" Environment "}" "." Exp11 ;
+BoxF.       Exp10   ::= "boxF" Exp11 ;
+
 Unbox.      Exp10   ::= "unbox" Exp11 ;
 
 -- Recursion

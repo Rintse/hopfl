@@ -65,11 +65,12 @@ TMatch literals are recognized by the regular expression
 The set of reserved words is the set of terminals appearing in the grammar. Those reserved words that consist of non-letter characters are called symbols, and they are treated in a different way from those that are similar to identifiers. The lexer follows rules familiar from languages like Haskell, C, and Java, including longest match and spacing conventions.
 
 The reserved words used in Syntax are the following:
-  | ``box`` | ``else`` | ``false`` | ``fix``
-  | ``fst`` | ``if`` | ``in`` | ``inL``
-  | ``inR`` | ``let`` | ``match`` | ``next``
-  | ``normal`` | ``out`` | ``prev`` | ``prevF``
-  | ``snd`` | ``then`` | ``true`` | ``unbox``
+  | ``box`` | ``boxF`` | ``else`` | ``false``
+  | ``fix`` | ``fst`` | ``if`` | ``in``
+  | ``inL`` | ``inR`` | ``let`` | ``match``
+  | ``next`` | ``normal`` | ``out`` | ``prev``
+  | ``prevF`` | ``snd`` | ``then`` | ``true``
+  | ``unbox`` |  |  |
 
 The symbols used in Syntax are the following:
   | { | } | . | *
@@ -98,6 +99,7 @@ All other symbols are terminals.
   |  |  **|**  | ``prev`` //Exp11//
   |  |  **|**  | ``prevF`` //Exp11//
   |  |  **|**  | ``box`` ``{`` //Environment// ``}`` ``.`` //Exp11//
+  |  |  **|**  | ``boxF`` //Exp11//
   |  |  **|**  | ``unbox`` //Exp11//
   |  |  **|**  | ``in`` //Exp11//
   |  |  **|**  | ``out`` //Exp11//
