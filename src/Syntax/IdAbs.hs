@@ -93,6 +93,7 @@ pushVars l c m = do
     let push1 = \m1 (id, Raw.Assign x _ t) -> pushVar x id m1
     Prelude.foldl push1 m idxd
 
+-- Rename an individual substitution
 varAssign :: Raw.Assignment -> IdMonad Assignment
 varAssign (Raw.Assign x _ t) = do
     cur <- modify (+1) >> get
@@ -211,8 +212,3 @@ reName exp = case exp of
 -- Translate a raw tree into the id tree with annotated identifiers
 idExp :: Raw.Exp -> Exp
 idExp e = runReader (evalStateT (runId (reName e)) 0 ) HM.empty
-
--- An identifier is free if it is at level 0
-isFree :: Ident -> Bool
-isFree (Ident _ 0 _)    = True
-isFree _                = False
