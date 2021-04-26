@@ -13,7 +13,7 @@ class Treeish a where
     toTree :: a -> Tree String
 
 instance Treeish Ident where
-    toTree (Ident x id _) = Node (x ++ " (" ++ show id ++ ")") []
+    toTree (Ident x id d) = Node (x ++ " (" ++ show id ++ ") " ++ "[" ++ show d ++"]") []
 
 instance Treeish Environment where
     toTree (Env l) = Node "Substitution List" (map toTree l)
@@ -41,7 +41,7 @@ instance Treeish Exp where
         Pair e1 e2          -> Node "Pair"      [ toTree e1, toTree e2 ]
         Ite b e1 e2         -> Node "Ite"       [toTree b, toTree e1, toTree e2 ]
         Abstr x e           -> Node "λ"         [ toTree x, toTree e ]
-        Rec (Ident x _ _) e -> Node "Fix"       [ toTree e ]
+        Rec f e             -> Node "Fix"       [ toTree f, toTree e ]
         Mul e1 e2           -> Node "Mul"       [ toTree e1, toTree e2 ]
         Div e1 e2           -> Node "Div"       [ toTree e1, toTree e2 ]
         Add e1 e2           -> Node "Add"       [ toTree e1, toTree e2 ]

@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 7da6b8575640a20f87838e1b7ee28cb4d309515ea72291583b123f71cd3096e7
+-- hash: 321ac6d7d532aecd2beebfa883591f9b1f8eb091ee99331e381dc30b48fcaf9f
 
 name:           hopfl
 version:        0.1.0.0
@@ -52,9 +52,11 @@ library
     , directory
     , hashable
     , ilist
+    , monadic-recursion-schemes
     , mtl
     , normaldistribution
     , random
+    , recursion-schemes
     , split
     , unordered-containers >=0.2.12.0
   default-language: Haskell2010
@@ -75,9 +77,11 @@ executable hopfl-exe
     , hashable
     , hopfl
     , ilist
+    , monadic-recursion-schemes
     , mtl
     , normaldistribution
     , random
+    , recursion-schemes
     , split
     , unordered-containers >=0.2.12.0
   default-language: Haskell2010
@@ -99,9 +103,11 @@ test-suite hopfl-test
     , hashable
     , hopfl
     , ilist
+    , monadic-recursion-schemes
     , mtl
     , normaldistribution
     , random
+    , recursion-schemes
     , split
     , unordered-containers >=0.2.12.0
   default-language: Haskell2010

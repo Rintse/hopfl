@@ -30,6 +30,8 @@ dependencies:
 - MonadRandom
 - split
 - ilist
+- recursion-schemes
+- monadic-recursion-schemes
 
 library:
   source-dirs: src

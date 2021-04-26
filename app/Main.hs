@@ -8,6 +8,7 @@ import Semantics.Evaluation
 import Tools.VerbPrint
 import Tools.Treeify
 import Tools.Preprocess
+import Semantics.Substitution
 import Args
 
 import System.Environment ( getArgs )
@@ -52,6 +53,6 @@ main = do
     -- Annotate identifiers with a unique id
     let annotated = idExp exp
     showProg verb annotated
-
+    
     -- Evaluate if requested
     when eval $ evaluate verb annotated depth draws env

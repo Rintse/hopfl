@@ -117,7 +117,7 @@ eval exp@(Match e x1 e1 x2 e2) = eval e >>= \case
 eval exp@(Abstr x e) = return $ VThunk exp
 
 -- Recursion
-eval exp@(Rec x e) = eval $ substitute e x $ recName (Next exp)
+eval exp@(Rec x e) = eval $ substitute e x $ Next (recName exp)
 
 -- Prev: next inverse
 -- Empty substitution list, simply remove the next

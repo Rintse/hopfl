@@ -4,39 +4,42 @@
 -- function that transforms raw expressions into their annotated versions
 
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE DeriveFunctor, DeriveFoldable, DeriveTraversable #-}
+{-# LANGUAGE TemplateHaskell, TypeFamilies, LambdaCase #-}
+
 module Syntax.IdAbs where
 
 import qualified Syntax.Abs as Raw
 
+import qualified Data.Set as Set
+import Data.Functor.Foldable.TH
+import Data.Functor.Foldable
 import Control.Monad.Reader
 import Control.Applicative
 import Control.Monad.State
-import Data.HashMap.Lazy as HM
+import qualified Data.HashMap.Lazy as HM
 import Data.List.Index
 import Debug.Trace
 
 data Ident = Ident String Int Int
   deriving (Eq, Ord, Show, Read)
 
-data ExpType = Leaf | Unary | Binary | Listary
-
 data Exp
     = Var Ident
     | Val Double
     | BVal Raw.BConst
     | Next Exp
-    | Box Environment Exp
-    | BoxF Exp
+    | BoxI Exp
     | Unbox Exp
-    | Prev Environment Exp
+    | Box Environment Exp
+    | In    Exp
+    | Out   Exp
+    | Fst   Exp
+    | Snd   Exp
+    | InL   Exp
+    | InR   Exp
     | PrevE Exp
-    | PrevF Exp
-    | In Exp
-    | Out Exp
-    | Fst Exp
-    | Snd Exp
-    | InL Exp
-    | InR Exp
+    | PrevI Exp
     | App Exp Exp
     | LApp Exp Exp
     | Mul Exp Exp
@@ -53,6 +56,7 @@ data Exp
     | Or Exp Exp
     | Pair Exp Exp
     | Norm Exp
+    | Prev Environment Exp
     | Ite Exp Exp Exp
     | Match Exp Ident Exp Ident Exp
     | Abstr Ident Exp
@@ -65,10 +69,13 @@ data Assignment = Assign Ident Exp
 newtype Environment = Env [Assignment]
   deriving (Eq, Ord, Show, Read)
 
+-- Make basefunctor to be able to use recursion schemes
+makeBaseFunctor ''Exp
+
 -- State environment contains a counter and a hashmap in which the values 
 -- track all the names that we are currently substituting the key for.
 -- The last element in the sequence is the name to substitute the key for.
-type IdMap = HashMap String [Int]
+type IdMap = HM.HashMap String [Int]
 newtype IdMonad a = IdMonad {
     runId :: StateT Int (Reader IdMap) a
 } deriving (    Functor, Applicative, Monad,
@@ -97,46 +104,27 @@ varAssign (Raw.Assign x _ t) = do
 getSub :: Raw.Ident -> IdMap -> Ident
 getSub (Raw.Ident x) m = Ident x (head $ HM.findWithDefault [0] x m) 0
 
-getFrees :: Exp -> [Ident]
-getFrees exp = case exp of
-    Var i@(Ident x 0 d) -> [i]
-    Var v               -> []
-    Val v               -> []
-    BVal v              -> []
-    Next e              -> getFrees e
-    Prev (Env l) e      -> concatMap (getFrees . (\(Assign x t) -> t)) l ++ getFrees e
-    Box (Env l) e       -> concatMap (getFrees . (\(Assign x t) -> t)) l ++ getFrees e
-    In e                -> getFrees e
-    Out e               -> getFrees e
-    App e1 e2           -> getFrees e1 ++ getFrees e2
-    LApp e1 e2          -> getFrees e1 ++ getFrees e2
-    Pair e1 e2          -> getFrees e1 ++ getFrees e2
-    Fst e               -> getFrees e
-    Snd e               -> getFrees e
-    InL e               -> getFrees e
-    InR e               -> getFrees e
-    Norm e              -> getFrees e
-    Ite b e1 e2         -> getFrees b ++ getFrees e1 ++ getFrees e2
-    Match e x l y r     -> getFrees e ++ getFrees l ++ getFrees r
-    Abstr x e           -> getFrees e
-    Rec x e             -> getFrees e    
-    Add e1 e2           -> getFrees e1 ++ getFrees e2
-    Sub e1 e2           -> getFrees e1 ++ getFrees e2
-    Mul e1 e2           -> getFrees e1 ++ getFrees e2
-    Div e1 e2           -> getFrees e1 ++ getFrees e2
-    And e1 e2           -> getFrees e1 ++ getFrees e2
-    Or e1 e2            -> getFrees e1 ++ getFrees e2
-    Not e               -> getFrees e
-    Eq e1 e2            -> getFrees e1 ++ getFrees e2
-    Lt e1 e2            -> getFrees e1 ++ getFrees e2
-    Gt e1 e2            -> getFrees e1 ++ getFrees e2
-    Leq e1 e2           -> getFrees e1 ++ getFrees e2
-    Geq e1 e2           -> getFrees e1 ++ getFrees e2
+-- Gets all free variables in an expression
+getFrees :: Exp -> Set.Set Ident
+getFrees = cata $ \case
+    (VarF i@(Ident x 0 _))   -> Set.singleton i -- Index 0: Free variable
+    (VarF _)                 -> Set.empty
+    (BValF _)                -> Set.empty
+    (ValF _)                 -> Set.empty
+    (PrevF (Env l) e)        -> do 
+        let frees = Prelude.map (\(Assign x t) -> getFrees t) l
+        let free = Prelude.foldr Set.union Set.empty frees
+        Set.union free e
+    (BoxF (Env l) e)         -> do
+        let frees = Prelude.map (\(Assign x t) -> getFrees t) l
+        let free = Prelude.foldr Set.union Set.empty frees
+        Set.union free e
+    fFree                    -> foldr Set.union Set.empty fFree
 
 -- Transforms an identifier into an identity substitution
 -- for that identifier
 idToAssign :: Ident -> Raw.Assignment
-idToAssign (Ident x _ _) = Raw.Assign 
+idToAssign (Ident x _ _) = Raw.Assign
     (Raw.Ident x) (Raw.TSub "") (Raw.Var $ Raw.Ident x)
 
 -- Returns the identity substitution list for all free variables
@@ -144,7 +132,7 @@ idToAssign (Ident x _ _) = Raw.Assign
 freeList :: Raw.Exp -> IdMonad Raw.Environment
 freeList e = do
     renamed <- reName e
-    let frees = getFrees renamed
+    let frees = Set.toList $ getFrees renamed
     let list = Prelude.map idToAssign frees
     return $ Raw.Env list
 

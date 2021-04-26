@@ -1,10 +1,16 @@
 -- Defines some substitution functions needed for evaluating 
 -- recursion, function application and match statements
 
+{-# LANGUAGE DeriveFunctor, DeriveFoldable, DeriveTraversable #-}
+{-# LANGUAGE TemplateHaskell, TypeFamilies, LambdaCase #-}
+
 module Semantics.Substitution where
 
 import Syntax.IdAbs
 
+import Data.Functor.Foldable.TH
+import Data.Functor.Foldable
+import Data.Functor.Foldable.Monadic
 import Control.Monad.Reader
 import Control.Applicative
 import Control.Monad.State
@@ -21,46 +27,19 @@ incDepth (Ident x id d) = Ident x id (d+1)
 recNameL :: Environment -> Environment
 recNameL (Env l) = Env $ Prelude.map rec1 l
     where rec1 = \(Assign x t) -> Assign (incDepth x) (recName t)
+
 -- Renames all variables in body of rec statement to avoid
---
--- application substitution in folded out rec terms
+-- faulty application substitution in folded out rec terms
 recName :: Exp -> Exp
-recName exp = case exp of
-    Var (Ident x 0 d)   -> exp -- Free variable
-    Var v               -> Var $ incDepth v
-    Val v               -> exp
-    BVal v              -> exp
-    Next e              -> Next $ recName e
-    Prev l e            -> Prev (recNameL l) (recName e)
-    Box l e             -> Box (recNameL l) (recName e)
-    In e                -> In $ recName e
-    Out e               -> Out $ recName e
-    App e1 e2           -> App (recName e1) (recName e2)
-    LApp e1 e2          -> LApp (recName e1) (recName e2)
-    Pair e1 e2          -> Pair (recName e1) (recName e2)
-    Fst e               -> Fst $ recName e
-    Snd e               -> Snd $ recName e
-    InL e               -> InL $ recName e
-    InR e               -> InR $ recName e
-    Norm e              -> Norm $ recName e
-    Ite b e1 e2         -> Ite (recName b) (recName e1) (recName e2)
-    Match e x l y r     -> Match (recName e)
-        (incDepth x) (recName l)
-        (incDepth y) (recName r)
-    Abstr x e           -> Abstr (incDepth x) (recName e)
-    Rec x e             -> Rec (incDepth x) (recName e)
-    Add e1 e2           -> Add (recName e1) (recName e2)
-    Sub e1 e2           -> Sub (recName e1) (recName e2)
-    Mul e1 e2           -> Mul (recName e1) (recName e2)
-    Div e1 e2           -> Div (recName e1) (recName e2)
-    And e1 e2           -> And (recName e1) (recName e2)
-    Or e1 e2            -> Or (recName e1) (recName e2)
-    Not e               -> Not (recName e)
-    Eq e1 e2            -> Eq (recName e1) (recName e2)
-    Lt e1 e2            -> Lt (recName e1) (recName e2)
-    Gt e1 e2            -> Gt (recName e1) (recName e2)
-    Leq e1 e2           -> Leq (recName e1) (recName e2)
-    Geq e1 e2           -> Geq (recName e1) (recName e2)
+recName = ana $ \case
+    Var (Ident x 0 d)   -> VarF $   Ident x 0 d -- Free variable
+    Var v               -> VarF $   incDepth v -- Not free, increment
+    Prev l e            -> PrevF    (recNameL l) e
+    Box l e             -> BoxF     (recNameL l) e
+    Abstr x e           -> AbstrF   (incDepth x) e
+    Rec x e             -> RecF     (incDepth x) e
+    Match e x l y r     -> MatchF e (incDepth x) l (incDepth y) r
+    other               -> project other
 
 -- Performs substitution
 -- Variables are the same if they have the same name, id and depth
@@ -74,6 +53,10 @@ doSub v@(Ident x idx dx) (Ident y idy dy, s) =
 substL :: Environment -> Reader (Ident, Exp) Environment
 substL (Env l) = Env <$> mapM (\(Assign x t) -> Assign x <$> subst t) l
 
+subst2 :: Exp -> Reader (Ident, Exp) Exp
+subst2 = anaM $ \case
+    Var x           -> asks (project . doSub x)
+
 -- Substitutes, in exp, x for s
 subst :: Exp -> Reader (Ident, Exp) Exp
 subst exp = case exp of
@@ -82,10 +65,10 @@ subst exp = case exp of
     BVal v          -> return exp
     Next e          -> Next <$> subst e
     Prev l e        -> Prev <$> substL l <*> subst e
-    PrevF e         -> PrevF <$> subst e
+    PrevI e         -> PrevI <$> subst e
     PrevE e         -> PrevE <$> subst e
-    Box l e         -> Box <$> substL l <*> subst e 
-    BoxF e          -> BoxF <$> subst e
+    Box l e         -> Box <$> substL l <*> subst e
+    BoxI e          -> BoxI <$> subst e
     In e            -> In <$> subst e
     Out e           -> Out <$> subst e
     App e1 e2       -> liftA2 App (subst e1) (subst e2)
