@@ -75,7 +75,7 @@ eval exp@(App e1 e2) = match2 eval e1 e2 >>= \case
 -- Delayed function application
 eval exp@(LApp e1 e2) = match2 eval e1 e2 >>= \case
     (VNext t, VNext s) -> eval $ Next $ App t s
-    _ -> throwError $ "Invalid arguments to LApp:\n" ++ treeTerm exp
+    (x,y) -> throwError $ "Invalid arguments to LApp:\n" ++ treeValue x ++ "\nAND\n" ++ treeValue y
 
 -- Pair creation
 eval exp@(Pair e1 e2) = return $ VPair e1 e2
@@ -121,14 +121,14 @@ eval exp@(Rec x e) = eval $ substitute e x $ Next (recName exp)
 
 -- Prev: next inverse
 -- Empty substitution list, simply remove the next
-eval exp@(PrevE e) = eval $ Prev (Env []) e
 eval exp@(Prev (Env []) e) = eval e >>= \case
     VNext e -> eval e
     _ -> throwError $ "Took prev of non-next:\n" ++ treeTerm exp
 -- Non empty list, perform substitutions
 eval exp@(Prev (Env l) e) = eval $ Prev (Env []) $ substList e l
 
--- Unboxing
+-- Boxing  and unboxing
+eval exp@(Box l e) = return $ VBox l e
 eval exp@(Unbox e) = eval e >>= \case
     VBox (Env l) e1 -> eval $ substList e1 l
     _ -> throwError $ "Unbox on non-box:\n" ++ treeTerm exp
@@ -151,4 +151,5 @@ eval exp = case exp of
     Gt e1 e2    -> evalRelop eval e1 (>) e2
     Leq e1 e2   -> evalRelop eval e1 (<=) e2
     Geq e1 e2   -> evalRelop eval e1 (>=) e2
+    _           -> throwError $ "Got a weird thing:\n" ++ treeTerm exp
 

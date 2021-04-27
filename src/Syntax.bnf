@@ -30,10 +30,10 @@ Prev.       Exp10   ::= "prev" "{" Environment "}" "." Exp11 ;
 -- Syntactic sugar for empty sublist
 PrevE.      Exp10   ::= "prev" Exp11;
 -- Syntactic sugar for prev{\x ← \x}.t with \x being all free vars in t
-PrevF.      Exp10   ::= "prevF" Exp11;
+PrevI.      Exp10   ::= "prevI" Exp11;
 
 Box.        Exp10   ::= "box" "{" Environment "}" "." Exp11 ;
-BoxF.       Exp10   ::= "boxF" Exp11 ;
+BoxI.       Exp10   ::= "boxI" Exp11 ;
 
 Unbox.      Exp10   ::= "unbox" Exp11 ;
 

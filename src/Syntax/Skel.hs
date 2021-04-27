@@ -52,9 +52,9 @@ transExp x = case x of
   Syntax.Abs.Next exp -> failure x
   Syntax.Abs.Prev environment exp -> failure x
   Syntax.Abs.PrevE exp -> failure x
-  Syntax.Abs.PrevF exp -> failure x
+  Syntax.Abs.PrevI exp -> failure x
   Syntax.Abs.Box environment exp -> failure x
-  Syntax.Abs.BoxF exp -> failure x
+  Syntax.Abs.BoxI exp -> failure x
   Syntax.Abs.Unbox exp -> failure x
   Syntax.Abs.In exp -> failure x
   Syntax.Abs.Out exp -> failure x

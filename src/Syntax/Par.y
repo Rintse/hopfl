@@ -28,7 +28,7 @@ import Syntax.Lex
   '[' { PT _ (TS _ 13) }
   ']' { PT _ (TS _ 14) }
   'box' { PT _ (TS _ 15) }
-  'boxF' { PT _ (TS _ 16) }
+  'boxI' { PT _ (TS _ 16) }
   'else' { PT _ (TS _ 17) }
   'false' { PT _ (TS _ 18) }
   'fix' { PT _ (TS _ 19) }
@@ -44,7 +44,7 @@ import Syntax.Lex
   'normal' { PT _ (TS _ 29) }
   'out' { PT _ (TS _ 30) }
   'prev' { PT _ (TS _ 31) }
-  'prevF' { PT _ (TS _ 32) }
+  'prevI' { PT _ (TS _ 32) }
   'snd' { PT _ (TS _ 33) }
   'then' { PT _ (TS _ 34) }
   'true' { PT _ (TS _ 35) }
@@ -112,9 +112,9 @@ Exp10 :: { Syntax.Abs.Exp }
 Exp10 : 'next' Exp11 { Syntax.Abs.Next $2 }
       | 'prev' '{' Environment '}' '.' Exp11 { Syntax.Abs.Prev $3 $6 }
       | 'prev' Exp11 { Syntax.Abs.PrevE $2 }
-      | 'prevF' Exp11 { Syntax.Abs.PrevF $2 }
+      | 'prevI' Exp11 { Syntax.Abs.PrevI $2 }
       | 'box' '{' Environment '}' '.' Exp11 { Syntax.Abs.Box $3 $6 }
-      | 'boxF' Exp11 { Syntax.Abs.BoxF $2 }
+      | 'boxI' Exp11 { Syntax.Abs.BoxI $2 }
       | 'unbox' Exp11 { Syntax.Abs.Unbox $2 }
       | 'in' Exp11 { Syntax.Abs.In $2 }
       | 'out' Exp11 { Syntax.Abs.Out $2 }

@@ -1,16 +1,16 @@
 let
-    boxRW ← (
-        fix f . λ x . in ( [ x , f ⊙ next ( normal [x , s] ) ] )
+    RW ← (
+        ( fix f . λ x . in ( [ x , f ⊙ next ( normal [x , s] ) ] ) )
     );
     head ← (
         λ s . fst (out (unbox s))
     );
     tail ← (
-        λ s . boxF ( prevF ( snd ( out ( ( unbox s ) ) ) ) )
+        λ s . boxI ( prevI ( snd ( out ( ( unbox s ) ) ) ) )
     );
     getIdx ← (
-        fix f . λ idx . λ RW . if ( idx <= 0.0 )
+        fix f . λ idx . λ rw . if ( idx <= 0.0 )
             then head rw
-            else f ⊙ next (idx - 1.0) ⊙ (tl s)
+            else f ⊙ next (idx - 1.0) ⊙ next (tail rw)
     )
-in: ( getIdx idx ) boxRW
+in: ( getIdx idx ) ( boxI ( RW x0 ))

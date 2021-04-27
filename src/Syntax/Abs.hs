@@ -49,9 +49,9 @@ data Exp
     | Next Exp
     | Prev Environment Exp
     | PrevE Exp
-    | PrevF Exp
+    | PrevI Exp
     | Box Environment Exp
-    | BoxF Exp
+    | BoxI Exp
     | Unbox Exp
     | In Exp
     | Out Exp

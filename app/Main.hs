@@ -53,6 +53,6 @@ main = do
     -- Annotate identifiers with a unique id
     let annotated = idExp exp
     showProg verb annotated
-    
+
     -- Evaluate if requested
     when eval $ evaluate verb annotated depth draws env

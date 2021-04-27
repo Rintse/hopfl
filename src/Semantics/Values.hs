@@ -37,4 +37,4 @@ toExp (VThunk e) = e
 toExp (VPair e1 e2) = Pair e1 e2
 toExp (VNext e) = Next e
 toExp (VOut e) = Out e
-
+toExp (VBox l e) = Box l e

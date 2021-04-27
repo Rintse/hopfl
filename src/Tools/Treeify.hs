@@ -8,6 +8,7 @@ import Semantics.Values
 import Tools.VerbPrint
 
 import Data.Tree
+import Debug.Trace
 
 class Treeish a where
     toTree :: a -> Tree String
@@ -27,6 +28,8 @@ instance Treeish Exp where
         Val v               -> Node (show v)    []
         BVal b              -> Node (show b)    []
         Next e              -> Node "Next"      [ toTree e ]
+        Unbox e             -> Node "Unbox"     [ toTree e]
+        Box l e             -> Node "Box"       [ toTree l, toTree e]
         Prev l e            -> Node "Prev"      [ toTree l, toTree e ]
         In e                -> Node "In"        [ toTree e ]
         Out e               -> Node "Out"       [ toTree e ]
@@ -56,6 +59,7 @@ instance Treeish Exp where
         Match e x1 e1 x2 e2 -> Node "Match"     [ toTree e,
                                                   toTree x1, toTree e1, 
                                                   toTree x2, toTree e2 ]
+        other -> trace ("Wat is dez\n" ++ show other) Node "" []
 
 treeTerm :: Exp -> String
 treeTerm e = drawTree $ toTree e
@@ -70,7 +74,8 @@ treeValue val = ( case val of
     VInR t      -> "VInR:\n" ++ treeTerm t
     VNext t     -> "VNext:\n" ++ treeTerm t
     VOut t      -> "VOut:\n" ++ treeTerm t
-    VThunk t    -> "VThunk: \n" ++ treeTerm t
+    VThunk t    -> "VThunk:\n" ++ treeTerm t
+    VBox l t    -> "VBox:\n" ++ treeTerm t
     ) ++ "\n"
 
 showProg :: Bool -> Exp -> IO ()

@@ -70,26 +70,29 @@ performDraw m v = gets snd >>= \case
 
 -- Helper functions to evaluate boolean and aritmetic expresions
 -- Evaluates a binary arithmetic operation
-evalAExp :: (Exp -> EvalMonad Value) -> Exp -> (Double -> Double -> Double) -> Exp -> EvalMonad Value
+evalAExp :: (Exp -> EvalMonad Value) -> Exp 
+         -> (Double -> Double -> Double) -> Exp -> EvalMonad Value
 evalAExp f e1 op e2 = match2 f e1 e2 >>= \case
     (VVal d1, VVal d2) -> return $ VVal $ op d1 d2
     _ -> throwError "Non-real arguments to arithmetic operator"
 
 -- Evaluates a binary boolean operation
-evalBExp :: (Exp -> EvalMonad Value) -> Exp -> (Bool -> Bool -> Bool) -> Exp -> EvalMonad Value
+evalBExp :: (Exp -> EvalMonad Value) -> Exp 
+         -> (Bool -> Bool -> Bool) -> Exp -> EvalMonad Value
 evalBExp f e1 op e2 = match2 f e1 e2 >>= \case
     (VBVal b1, VBVal b2) -> return $ VBVal $ op b1 b2
     _ -> throwError "Non-bool arguments to boolean operator"
 
 -- Evaluates a unary boolean operation
-evalBExp1 :: (Exp -> EvalMonad Value) -> (Bool -> Bool) -> Exp -> EvalMonad Value
+evalBExp1 :: (Exp -> EvalMonad Value) 
+          -> (Bool -> Bool) -> Exp -> EvalMonad Value
 evalBExp1 f op e = f e >>= \case
     (VBVal b) -> return $ VBVal $ op b
     _ -> throwError "Non-bool arguments to boolean"
 
 -- Evaluates a relative operator
-evalRelop :: (Exp -> EvalMonad Value) -> Exp -> (Double -> Double -> Bool) -> Exp -> EvalMonad Value
+evalRelop :: (Exp -> EvalMonad Value) -> Exp 
+          -> (Double -> Double -> Bool) -> Exp -> EvalMonad Value
 evalRelop f e1 op e2 = match2 f e1 e2 >>= \case
     (VVal d1, VVal d2) -> return $ VBVal $ op d1 d2
     _ -> throwError "Non-real arguments to relative operator\n"
-
