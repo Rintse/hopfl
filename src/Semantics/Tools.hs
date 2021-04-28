@@ -96,3 +96,4 @@ evalRelop :: (Exp -> EvalMonad Value) -> Exp
 evalRelop f e1 op e2 = match2 f e1 e2 >>= \case
     (VVal d1, VVal d2) -> return $ VBVal $ op d1 d2
     _ -> throwError "Non-real arguments to relative operator\n"
+

@@ -1,5 +1,5 @@
 -- Defines some substitution functions needed for evaluating 
--- recursion, function application and match statements
+-- recursion, function application, unboxing, previous and match statements
 
 {-# LANGUAGE DeriveFunctor, DeriveFoldable, DeriveTraversable #-}
 {-# LANGUAGE TemplateHaskell, TypeFamilies, LambdaCase #-}

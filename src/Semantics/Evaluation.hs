@@ -65,7 +65,7 @@ eval exp@(In e) = return $ VIn e
 -- Extract from fixpoint
 eval exp@(Out e) = eval e >>= \case
     VIn v -> eval v
-    _ -> return $ VOut exp
+    _ -> throwError $ " Out on non-In:\n" ++ treeTerm exp
 
 -- Function application
 eval exp@(App e1 e2) = match2 eval e1 e2 >>= \case
@@ -75,7 +75,7 @@ eval exp@(App e1 e2) = match2 eval e1 e2 >>= \case
 -- Delayed function application
 eval exp@(LApp e1 e2) = match2 eval e1 e2 >>= \case
     (VNext t, VNext s) -> eval $ Next $ App t s
-    (x,y) -> throwError $ "Invalid arguments to LApp:\n" ++ treeValue x ++ "\nAND\n" ++ treeValue y
+    (x,y) -> throwError $ "Invalid arguments to LApp:\n" ++ treeTerm exp
 
 -- Pair creation
 eval exp@(Pair e1 e2) = return $ VPair e1 e2
@@ -108,9 +108,9 @@ eval exp@(InL e) = return $ VInL e
 eval exp@(InR e) = return $ VInR e
 
 -- Matching coproducts
-eval exp@(Match e x1 e1 x2 e2) = eval e >>= \case
-    VInL l  -> eval l >>= eval . substitute e1 x1 . toExp
-    VInR r  -> eval r >>= eval . substitute e2 x2 . toExp
+eval exp@(Match e x e1 y e2) = eval e >>= \case
+    VInL l  -> eval l >>= eval . substitute e1 x . toExp
+    VInR r  -> eval r >>= eval . substitute e2 y . toExp
     _       -> throwError $ "Match on non-coproduct:\n" ++ treeTerm exp
 
 -- Function abstraction
@@ -151,5 +151,4 @@ eval exp = case exp of
     Gt e1 e2    -> evalRelop eval e1 (>) e2
     Leq e1 e2   -> evalRelop eval e1 (<=) e2
     Geq e1 e2   -> evalRelop eval e1 (>=) e2
-    _           -> throwError $ "Got a weird thing:\n" ++ treeTerm exp
 

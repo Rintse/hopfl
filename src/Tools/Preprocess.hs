@@ -13,8 +13,8 @@ import Control.Monad.Reader
 import Debug.Trace
 
 -- Perform a single definition substitution
-defSub2 :: Exp -> Reader Assignment Exp
-defSub2 = anaM $ \case
+defSub :: Exp -> Reader Assignment Exp
+defSub = anaM $ \case
     e@(Var (Ident x)) -> do
         (Assign (Ident s) o t) <- ask
         if x == s
@@ -32,18 +32,19 @@ defSub2 = anaM $ \case
 
 -- Runs definition substitution inside a reader monad
 runDef :: Exp -> Assignment -> Exp
-runDef e = runReader (defSub2 e)
+runDef e = runReader (defSub e)
 
+-- Perform a definition substitution all following definitions
+inDef :: [Assignment] -> Assignment -> [Assignment]
+inDef l a = map (\(Assign x o t) -> Assign x o (runDef t a)) l
 
-inList :: [Assignment] -> Assignment -> [Assignment]
-inList l a = map (\(Assign x o t) -> Assign x o (runDef t a)) l
-
-walk :: [Assignment] -> [Assignment]
-walk [a] = [a]
-walk (a:l) = a : walk (inList l a)
+-- Perform all definition subs in the definitions after it
+inDefs :: [Assignment] -> [Assignment]
+inDefs [a] = [a]
+inDefs (a:l) = a : inDefs (inDef l a)
 
 -- Perform definition substitutions for a list of defs
 handleDefs :: Prg -> Exp
-handleDefs (DefProg (Env l) e) = foldl runDef e $ walk l
+handleDefs (DefProg (Env l) e) = foldl runDef e $ inDefs l
 handleDefs (Prog e) = e
 

@@ -30,6 +30,7 @@ data Exp
     | BVal Raw.BConst
     | Next Exp
     | Unbox Exp
+    | BoxI Exp
     | Box Environment Exp
     | In    Exp
     | Out   Exp
@@ -54,6 +55,8 @@ data Exp
     | Pair Exp Exp
     | Norm Exp
     | Prev Environment Exp
+    | PrevI Exp
+    | PrevE Exp
     | Ite Exp Exp Exp
     | Match Exp Ident Exp Ident Exp
     | Abstr Ident Exp
@@ -137,7 +140,7 @@ freeList e = do
 -- TODO check for faulty programs?
 -- Transforms the raw syntax tree into a version where the 
 -- idenfiers are made unique with an id and recursion depth tag.
--- Also desugars the boxI and prevI/E terms
+-- Also desugars the boxI and prevI/E terms`
 transform :: Raw.Exp -> IdMonad Exp
 transform exp = case exp of
     Raw.Val v           -> return $ Val v
@@ -205,4 +208,5 @@ transform exp = case exp of
 
 -- Translate a raw tree into the id tree with annotated identifiers
 idExp :: Raw.Exp -> Exp
-idExp e = runReader (evalStateT (runId (transform e)) 0 ) HM.empty
+idExp e = runReader (evalStateT (runId(transform e)) 0) HM.empty
+
