@@ -26,41 +26,38 @@ data Ident = Ident String Int Int
 
 data Exp
     = Var Ident
-    | Val Double
-    | BVal Raw.BConst
-    | Next Exp
+    | Val   Double
+    | BVal  Raw.BConst
+    | Next  Exp
     | Unbox Exp
-    | BoxI Exp
-    | Box Environment Exp
     | In    Exp
     | Out   Exp
     | Fst   Exp
     | Snd   Exp
     | InL   Exp
     | InR   Exp
-    | App Exp Exp
-    | LApp Exp Exp
-    | Mul Exp Exp
-    | Div Exp Exp
-    | Add Exp Exp
-    | Sub Exp Exp
-    | Eq Exp Exp
-    | Lt Exp Exp
-    | Gt Exp Exp
-    | Leq Exp Exp
-    | Geq Exp Exp
-    | Not Exp
-    | And Exp Exp
-    | Or Exp Exp
-    | Pair Exp Exp
-    | Norm Exp
-    | Prev Environment Exp
-    | PrevI Exp
-    | PrevE Exp
-    | Ite Exp Exp Exp
-    | Match Exp Ident Exp Ident Exp
+    | Norm  Exp
+    | Not   Exp
+    | App   Exp Exp
+    | LApp  Exp Exp
+    | Mul   Exp Exp
+    | Div   Exp Exp
+    | Add   Exp Exp
+    | Sub   Exp Exp
+    | Eq    Exp Exp
+    | Lt    Exp Exp
+    | Gt    Exp Exp
+    | Leq   Exp Exp
+    | Geq   Exp Exp
+    | And   Exp Exp
+    | Or    Exp Exp
+    | Pair  Exp Exp
     | Abstr Ident Exp
-    | Rec Ident Exp
+    | Rec   Ident Exp
+    | Ite   Exp Exp Exp
+    | Box   Environment Exp
+    | Prev  Environment Exp
+    | Match Exp Ident Exp Ident Exp
     deriving (Eq, Ord, Show, Read)
 
 data Assignment = Assign Ident Exp
