@@ -59,7 +59,6 @@ instance Treeish Exp where
         Match e x1 e1 x2 e2 -> Node "Match"     [ toTree e,
                                                   toTree x1, toTree e1, 
                                                   toTree x2, toTree e2 ]
-        other -> trace ("Wat is dez\n" ++ show other) Node "" []
 
 treeTerm :: Exp -> String
 treeTerm e = drawTree $ toTree e

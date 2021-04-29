@@ -11,6 +11,6 @@ let
     getIdx ← (
         fix f . λ idx . λ rw . if ( idx <= 0.0 )
             then head rw
-            else f ⊙ next (idx - 1.0) ⊙ next (tail rw)
+            else prev (f ⊙ next (idx - 1.0) ⊙ next (tail rw))
     )
 in: ( getIdx idx ) ( boxI ( RW x0 ))
