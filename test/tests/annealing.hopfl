@@ -1,6 +1,7 @@
 # Simulated annealing on the max-cut problem
 # Solutions are represented as bitstrings where the boolean values
 # indicate in which of the two sets a vertex ends up
+# stack run -- -E -d "0.6;0.3;0.4;0.1;0.9;" -e "" -v -i test/tests/annealing.hopfl
 
 let
     # Mathematical tools
@@ -25,7 +26,7 @@ let
     # Initial solution
     init_v ← ([true, [true, [false, [false, 0.0]]]]) ;  
     n ← 4.0 ; # And it's size
-    k_max ← 4.0 ; # Maximum number of iteration
+    k_max ← 3.0 ; # Maximum number of iteration
     init_temp ← 1.0 ; # Initial temperature
 
     # List getter
