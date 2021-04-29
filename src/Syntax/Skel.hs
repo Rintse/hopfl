@@ -64,6 +64,7 @@ transExp x = case x of
   Syntax.Abs.InR exp -> failure x
   Syntax.Abs.App exp1 exp2 -> failure x
   Syntax.Abs.LApp exp1 tlapp exp2 -> failure x
+  Syntax.Abs.Pow exp1 exp2 -> failure x
   Syntax.Abs.Mul exp1 exp2 -> failure x
   Syntax.Abs.Div exp1 exp2 -> failure x
   Syntax.Abs.Add exp1 exp2 -> failure x

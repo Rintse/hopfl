@@ -20,40 +20,41 @@ BTrue.      BConst  ::= "true" ;
 BFalse.     BConst  ::= "false" ;
 
 -- Terms
-Var.        Exp11   ::= Ident ;
-Val.        Exp11   ::= Double ;
-BVal.       Exp11   ::= BConst ;
+Var.        Exp12   ::= Ident ;
+Val.        Exp12   ::= Double ;
+BVal.       Exp12   ::= BConst ;
 
 -- Later modality (with applicative function LApp)
-Next.       Exp10   ::= "next" Exp11 ;
-Prev.       Exp10   ::= "prev" "{" Environment "}" "." Exp11 ;
+Next.       Exp11   ::= "next" Exp12 ;
+Prev.       Exp11   ::= "prev" "{" Environment "}" "." Exp12 ;
 -- Syntactic sugar for empty sublist
-PrevE.      Exp10   ::= "prev" Exp11;
+PrevE.      Exp11   ::= "prev" Exp12;
 -- Syntactic sugar for prev{\x ← \x}.t with \x being all free vars in t
-PrevI.      Exp10   ::= "prevI" Exp11;
+PrevI.      Exp11   ::= "prevI" Exp12;
 
-Box.        Exp10   ::= "box" "{" Environment "}" "." Exp11 ;
-BoxI.       Exp10   ::= "boxI" Exp11 ;
+Box.        Exp11   ::= "box" "{" Environment "}" "." Exp11 ;
+BoxI.       Exp11   ::= "boxI" Exp12 ;
 
-Unbox.      Exp10   ::= "unbox" Exp11 ;
+Unbox.      Exp11   ::= "unbox" Exp12 ;
 
 -- Recursion
-In.         Exp10   ::= "in" Exp11 ;
-Out.        Exp10   ::= "out" Exp11 ;
+In.         Exp11   ::= "in" Exp12 ;
+Out.        Exp11   ::= "out" Exp12 ;
 
 -- Projections
-Fst.        Exp10   ::= "fst" Exp11 ;
-Snd.        Exp10   ::= "snd" Exp11 ;
+Fst.        Exp11   ::= "fst" Exp12 ;
+Snd.        Exp11   ::= "snd" Exp12 ;
 
 -- Injections
-InL.        Exp10   ::= "inL" Exp11 ;
-InR.        Exp10   ::= "inR" Exp11 ;
+InL.        Exp11   ::= "inL" Exp12 ;
+InR.        Exp11   ::= "inR" Exp12 ;
 
 -- (Delayed) application
-App.        Exp9    ::= Exp9 Exp10 ;
-LApp.       Exp9    ::= Exp9 TLApp Exp10;
+App.        Exp10    ::= Exp10 Exp11 ;
+LApp.       Exp10    ::= Exp10 TLApp Exp11;
 
 -- Arithmetic
+Pow.        Exp9    ::= Exp9 "^" Exp10 ;
 Mul.        Exp8    ::= Exp8 "*" Exp9 ;
 Div.        Exp8    ::= Exp8 "/" Exp9 ;
 Add.        Exp7    ::= Exp7 "+" Exp8 ;
@@ -78,7 +79,7 @@ Match.      Exp1    ::= "match" Exp11 "{" Ident TMatch Exp1 ";" Ident TMatch Exp
 
 Abstr.      Exp     ::= Lam Ident "." Exp ;
 Rec.        Exp     ::= "fix" Ident "." Exp ;
-coercions Exp 11 ;
+coercions Exp 12 ;
 
 -- Program with definitions
 DefProg.    Prg     ::= "let" Environment "in:" Exp ;

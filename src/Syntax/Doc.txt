@@ -73,11 +73,11 @@ The reserved words used in Syntax are the following:
   | ``unbox`` |  |  |
 
 The symbols used in Syntax are the following:
-  | { | } | . | *
-  | / | + | - | =
-  | < | > | [ | ,
-  | ] | ; | ( | )
-  | in: |  |  |
+  | { | } | . | ^
+  | * | / | + | -
+  | = | < | > | [
+  | , | ] | ; | (
+  | ) | in: |  |
 
 ===Comments===
 Single-line comments begin with #.There are no multiple-line comments in the grammar.
@@ -90,26 +90,28 @@ All other symbols are terminals.
 
   | //BConst// | -> | ``true``
   |  |  **|**  | ``false``
-  | //Exp11// | -> | //Ident//
+  | //Exp12// | -> | //Ident//
   |  |  **|**  | //Double//
   |  |  **|**  | //BConst//
   |  |  **|**  | ``(`` //Exp// ``)``
-  | //Exp10// | -> | ``next`` //Exp11//
-  |  |  **|**  | ``prev`` ``{`` //Environment// ``}`` ``.`` //Exp11//
-  |  |  **|**  | ``prev`` //Exp11//
-  |  |  **|**  | ``prevI`` //Exp11//
+  | //Exp11// | -> | ``next`` //Exp12//
+  |  |  **|**  | ``prev`` ``{`` //Environment// ``}`` ``.`` //Exp12//
+  |  |  **|**  | ``prev`` //Exp12//
+  |  |  **|**  | ``prevI`` //Exp12//
   |  |  **|**  | ``box`` ``{`` //Environment// ``}`` ``.`` //Exp11//
-  |  |  **|**  | ``boxI`` //Exp11//
-  |  |  **|**  | ``unbox`` //Exp11//
-  |  |  **|**  | ``in`` //Exp11//
-  |  |  **|**  | ``out`` //Exp11//
-  |  |  **|**  | ``fst`` //Exp11//
-  |  |  **|**  | ``snd`` //Exp11//
-  |  |  **|**  | ``inL`` //Exp11//
-  |  |  **|**  | ``inR`` //Exp11//
+  |  |  **|**  | ``boxI`` //Exp12//
+  |  |  **|**  | ``unbox`` //Exp12//
+  |  |  **|**  | ``in`` //Exp12//
+  |  |  **|**  | ``out`` //Exp12//
+  |  |  **|**  | ``fst`` //Exp12//
+  |  |  **|**  | ``snd`` //Exp12//
+  |  |  **|**  | ``inL`` //Exp12//
+  |  |  **|**  | ``inR`` //Exp12//
+  |  |  **|**  | //Exp12//
+  | //Exp10// | -> | //Exp10// //Exp11//
+  |  |  **|**  | //Exp10// //TLApp// //Exp11//
   |  |  **|**  | //Exp11//
-  | //Exp9// | -> | //Exp9// //Exp10//
-  |  |  **|**  | //Exp9// //TLApp// //Exp10//
+  | //Exp9// | -> | //Exp9// ``^`` //Exp10//
   |  |  **|**  | //Exp10//
   | //Exp8// | -> | //Exp8// ``*`` //Exp9//
   |  |  **|**  | //Exp8// ``/`` //Exp9//

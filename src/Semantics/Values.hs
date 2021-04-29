@@ -10,7 +10,8 @@ import qualified Syntax.Abs as Raw
 data Value
   = VVal Double
   | VBVal Bool
-  | VPair Exp Exp
+  -- | VPair Exp Exp
+  | VPair Value Value
   | VIn Exp
   | VInL Exp
   | VInR Exp
@@ -34,7 +35,8 @@ toExp (VIn e) = In e
 toExp (VInL e) = InL e
 toExp (VInR e) = InR e
 toExp (VThunk e) = e
-toExp (VPair e1 e2) = Pair e1 e2
+-- toExp (VPair e1 e2) = Pair e1 e2
+toExp (VPair e1 e2) = Pair (toExp e1) (toExp e2)
 toExp (VNext e) = Next e
 toExp (VOut e) = Out e
 toExp (VBox l e) = Box l e

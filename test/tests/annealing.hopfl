@@ -2,74 +2,106 @@
 # Solutions are represented as bitstrings where the boolean values
 # indicate in which of the two sets a vertex ends up
 
-# The simulated annealing algorithm
-( λ mutate . λ rand . λ k_max . λ k . λ T_max . λ T . λ f . λ s .
-    if (k = 0) then s else ( # Max iterations reached
-        
+let
+    # Mathematical tools
+    e ← 2.71828;
+    exp ← (λ x . e ^ x);
+    neg ← (λ x . 0 - x);
+
+    # We want to optimize for the following graph:
+    # 0 - 1     Here the optimal solution is obviously
+    # |   |     to cut such that the two partitions
+    # 2 - 3     are {0, 3} and {1, 2} (4 cuts), as adjacency list:
+    graph ← ( [   
+        [0.0,1.0], [
+        [1.0,0.0], [
+        [0.0,2.0], [
+        [2.0,0.0], false  
+    ] ] ] ] ) ;
+    n_edges ← 4.0 ;
+
+    init_v ← ([1.0, [1.0, [0.0, [0.0, false]]]]) ; # Initial solution (all 1s)
+    n ← 4.0 ; # And it's size
+    k_max ← 5.0 ; # Maximum number of iteration
+    init_temp ← 10.0 ; # Initial temperature
+
+    # List getter
+    get ← ( fix f . λ v . λ idx . 
+        if (idx = 0.0)
+            then fst v
+            else prev ( f ⊙ next (snd v) ⊙ next (idx-1.0) )
+    ) ;
+
+
+    # Returns 1.0 if v cuts edge e, 0.0 otherwise
+    cuts ← (
+        λ e . λ v . 
     )
-)
 
-# Mutation function, generates a neighbour
-( ( λ rand_idx . λ flip . λ s . 
-    flip rand_idx s
-)
-( ( λ draw . # rand_idx
-    if (draw < 0.25) then 0.0
-    else if (draw < 0.5) then 1.0
-    else if (draw < 0.75) then 2.0
-    else 3.0
-  ) normal [0.5, 0,25]
-)
-
-( λ idx . λ s . 
-    if (idx = 0.0) then
-        [ !(fst s), snd s ]
-    else if (idx == 1) then 
-        [ fst s,  [!()]]
-)
-)
-
-
-# Random function, returns value in [0,1] (but not uniformly)
-(
-( λ x . if (x > 1) then 1 else if (x < 0) then 0 else x )
-( normal [0.5, 0.25] )
-)
-
-# Maximum number of steps
-max_steps   # (k_max)
-0           # (k)
-
-# Temperature function (linearly to 0)
-( ( λ init_temp . λ k . λ k_max . 
-    init_temp * (1 - ((k + 1) / k_max))
-) 
-20 # Initial temperature
-)
-
-# Function to optimize: points for each edge cut
-(
-( λ adj_list . λ s .
+    # The evaluation function
+    eval ← ( λ v . λ e_idx . 
+        cuts (get e_idx) v + ( prev ( 
+            f ⊙ next v ⊙ next (e_idx + 1.0)
+        ) )
+    ) ;
     
-)
+    # Bit flipper
+    flip ← ( λ x . if (x = 0.0) then 1.0 else 0.0 ) ;
 
-# We want to optimize for the following graph:
-# 0 - 1     Here the optimal solution is obviously
-# |   |     to cut such that the two partitions
-# 2 - 3     are {0, 3} and {1, 2} (4 cuts), as adjacency list:
-( [ 
-    [ [0,1], 1 ]
-    [ [1,0], 1 ]
-    [ [0,2], 1 ]
-    [ [2,0], 1 ]
-    [ [0,3], 0 ]
-    [ [3,0], 0 ]
-] ) )
+    # Flip bit at given idx
+    flip_bit ← ( fix f . λ idx . λ v . 
+        if (idx = 0.0)
+            then ([ flip (fst v), (snd v) ])
+            else ([ fst v, prev ( f ⊙ next (idx-1.0) ⊙ next (snd v) ) ])
+    ) ;
 
-# Initial solution (all the same partition)
-[   
-    true, [
-    true, [
-    true, 
-    true
-]]]
+    # Random number (NOT UNIFORM) in [0.0, 1.0]
+    rand ← ( ( λ draw . if (draw < 0.0)
+        then 0.0
+        else (
+            if (draw > 1.0)
+                then 1.0
+                else draw
+        ) ) ( normal [0.5, 0.25] )
+    ) ;
+
+    # Function that generates a (NOT UNIFORM) random idx between 0 and n
+    rand_idx ← ( ( fix f . λ x . λ c .
+        if ( x ≥ (c * (1.0/n)) ) ∧ ( x ≤ ((c+1.0) * (1.0/n)) )
+            then c # x falls in the interval for idx c
+            else prev (f ⊙ next x ⊙ next (c+1.0))
+        ) rand 0.0
+    ) ;
+
+    # Mutation function, randomly flips one bit in the solution vector
+    mutate ← ( flip_bit rand_idx ) ;
+
+    # Gets the temperature for round k
+    get_temp ← ( λ k . init_temp / (k + 1.0) ) ;
+
+    # The chance of accepting a neigbour if it is worse
+    p_accept_new ← ( λ old . λ new . temp . 
+        exp( neg ( ( eval(new) - eval(old) ) / temp ) )
+    ) ;
+
+    # Non-deterministically select between neighbour and original
+    select ← ( λ old . λ new . λ temp . 
+        if ( (eval new) < (eval old) )
+            then new
+            else (
+                if ( rand < ( p_accept_new old new temp ) )
+                    then new 
+                    else old
+            )
+    )
+
+# The actual algorithm
+in: (
+    fix f . λ k . λ v . 
+        if (k = k_max)
+            then v # Maximum number of iterations reached
+            else prev ( f 
+                ⊙ next ( k + 1.0 ) 
+                ⊙ select v ( mutate v ) ( get_temp k )
+            )
+) 0 init_v

@@ -17,7 +17,7 @@ $d = [0-9]           -- digit
 $i = [$l $d _ ']     -- identifier character
 $u = [. \n]          -- universal: any character
 @rsyms =    -- symbols and non-identifier-like reserved words
-   \{ | \} | \. | \* | \/ | \+ | \- | \= | \< | \> | \[ | \, | \] | \; | \( | \) | "in" \:
+   \{ | \} | \. | \^ | \* | \/ | \+ | \- | \= | \< | \> | \[ | \, | \] | \; | \( | \) | "in" \:
 :-
 
 -- Line comments
@@ -138,7 +138,7 @@ eitherResIdent tv s = treeFind resWords
                               | s == a = t
 
 resWords :: BTree
-resWords = b "fst" 20 (b "<" 10 (b "," 5 (b "*" 3 (b ")" 2 (b "(" 1 N N) N) (b "+" 4 N N)) (b "/" 8 (b "." 7 (b "-" 6 N N) N) (b ";" 9 N N))) (b "box" 15 (b "[" 13 (b ">" 12 (b "=" 11 N N) N) (b "]" 14 N N)) (b "false" 18 (b "else" 17 (b "boxI" 16 N N) N) (b "fix" 19 N N)))) (b "out" 30 (b "inR" 25 (b "in:" 23 (b "in" 22 (b "if" 21 N N) N) (b "inL" 24 N N)) (b "next" 28 (b "match" 27 (b "let" 26 N N) N) (b "normal" 29 N N))) (b "true" 35 (b "snd" 33 (b "prevI" 32 (b "prev" 31 N N) N) (b "then" 34 N N)) (b "{" 37 (b "unbox" 36 N N) (b "}" 38 N N))))
+resWords = b "fix" 20 (b "<" 10 (b "," 5 (b "*" 3 (b ")" 2 (b "(" 1 N N) N) (b "+" 4 N N)) (b "/" 8 (b "." 7 (b "-" 6 N N) N) (b ";" 9 N N))) (b "^" 15 (b "[" 13 (b ">" 12 (b "=" 11 N N) N) (b "]" 14 N N)) (b "else" 18 (b "boxI" 17 (b "box" 16 N N) N) (b "false" 19 N N)))) (b "normal" 30 (b "inL" 25 (b "in" 23 (b "if" 22 (b "fst" 21 N N) N) (b "in:" 24 N N)) (b "match" 28 (b "let" 27 (b "inR" 26 N N) N) (b "next" 29 N N))) (b "then" 35 (b "prevI" 33 (b "prev" 32 (b "out" 31 N N) N) (b "snd" 34 N N)) (b "{" 38 (b "unbox" 37 (b "true" 36 N N) N) (b "}" 39 N N))))
    where b s n = let bs = s
                  in  B bs (TS bs n)
 

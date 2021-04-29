@@ -67,7 +67,8 @@ treeValue :: Value -> String
 treeValue val = ( case val of
     VVal v      -> show val
     VBVal b     -> show val
-    VPair t1 t2 -> "VPair:\n" ++ treeTerm t1 ++ treeTerm t2
+    VPair t1 t2 -> "VPair:\n" ++ treeValue t1 ++ treeValue t2
+    -- VPair t1 t2 -> "VPair:\n" ++ treeTerm t1 ++ treeTerm t2
     VIn t       -> "VIn:\n" ++ treeTerm t
     VInL t      -> "VInL:\n" ++ treeTerm t
     VInR t      -> "VInR:\n" ++ treeTerm t

@@ -61,6 +61,7 @@ data Exp
     | InR Exp
     | App Exp Exp
     | LApp Exp TLApp Exp
+    | Pow Exp Exp
     | Mul Exp Exp
     | Div Exp Exp
     | Add Exp Exp

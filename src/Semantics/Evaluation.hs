@@ -78,21 +78,31 @@ eval exp@(LApp e1 e2) = match2 eval e1 e2 >>= \case
     (x,y) -> throwError $ "Invalid arguments to LApp:\n" ++ treeTerm exp
 
 -- Pair creation
-eval exp@(Pair e1 e2) = return $ VPair e1 e2
+eval exp@(Pair e1 e2) = liftA2 VPair (eval e1) (eval e2)
+-- eval exp@(Pair e1 e2) = return $ VPair e1 e2
 
 -- First projection
+-- eval exp@(Fst e) = eval e >>= \case
+    -- VPair v1 v2 -> eval v1;
+    -- _ -> throwError $ "Took fst of non-pair " ++ treeTerm exp
+
+-- Second projection
+-- eval exp@(Snd e) = eval e >>= \case
+    -- VPair v1 v2 -> eval v2
+    -- _ -> throwError $ "Took snd of non-pair " ++ treeTerm exp
+-- First projection
 eval exp@(Fst e) = eval e >>= \case
-    VPair v1 v2 -> eval v1;
+    VPair v1 v2 -> return v1;
     _ -> throwError $ "Took fst of non-pair " ++ treeTerm exp
 
 -- Second projection
 eval exp@(Snd e) = eval e >>= \case
-    VPair v1 v2 -> eval v2
+    VPair v1 v2 -> return v2
     _ -> throwError $ "Took snd of non-pair " ++ treeTerm exp
 
 -- Normal distribtion sampling
 eval exp@(Norm e) = eval e >>= \case
-    VPair e1 e2 -> match2 eval e1 e2 >>= \case
+    VPair e1 e2 -> case (e1,e2) of
         (VVal m, VVal v) -> performDraw m v
         _ -> throwError "Normal pair does not contain reals"
     _ -> throwError $ "Normal argument not a pair: \n" ++ treeTerm exp
@@ -137,6 +147,7 @@ eval exp@(Unbox e) = eval e >>= \case
 eval exp = case exp of
     BVal v      -> return $ VBVal $ toBool v
     Val v       -> return $ VVal v
+    Pow e1 e2   -> evalAExp eval e1 (**) e2
     Add e1 e2   -> evalAExp eval e1 (+) e2
     Sub e1 e2   -> evalAExp eval e1 (-) e2
     Mul e1 e2   -> evalAExp eval e1 (*) e2

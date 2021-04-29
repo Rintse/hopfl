@@ -25,7 +25,7 @@ data Ident = Ident String Int Int
   deriving (Eq, Ord, Show, Read)
 
 data Exp
-    = Var Ident
+    = Var   Ident
     | Val   Double
     | BVal  Raw.BConst
     | Next  Exp
@@ -40,6 +40,7 @@ data Exp
     | Not   Exp
     | App   Exp Exp
     | LApp  Exp Exp
+    | Pow   Exp Exp
     | Mul   Exp Exp
     | Div   Exp Exp
     | Add   Exp Exp
@@ -105,11 +106,10 @@ getSub (Raw.Ident x) m = Ident x (head $ HM.findWithDefault [0] x m) 0
 -- Gets all free variables in an expression
 getFrees :: Exp -> Set.Set Ident
 getFrees = cata $ \case
-    (VarF i@(Ident x 0 _))   -> Set.singleton i -- Index 0: Free variable
-    (VarF _)                 -> Set.empty
-    (BValF _)                -> Set.empty
-    (ValF _)                 -> Set.empty
-    (PrevF (Env l) e)        -> do
+    (ValF _)                -> Set.empty
+    (VarF _)                -> Set.empty
+    (BValF _)               -> Set.empty
+    (PrevF (Env l) e)       -> do
         let frees = Prelude.map (\(Assign x t) -> getFrees t) l
         let free = Prelude.foldr Set.union Set.empty frees
         Set.union free e
@@ -137,8 +137,6 @@ freeList e = do
 -- TODO check for faulty programs?
 -- Transforms the raw syntax tree into a version where the 
 -- idenfiers are made unique with an id and recursion depth tag.
--- Also desugars the boxI and prevI/E terms`
-transform :: Raw.Exp -> IdMonad Exp
 transform exp = case exp of
     Raw.Val v           -> return $ Val v
     Raw.BVal v          -> return $ BVal v
@@ -162,6 +160,7 @@ transform exp = case exp of
     Raw.Add e1 e2       -> liftA2 Add   (transform e1) (transform e2)
     Raw.Sub e1 e2       -> liftA2 Sub   (transform e1) (transform e2)
     Raw.Mul e1 e2       -> liftA2 Mul   (transform e1) (transform e2)
+    Raw.Pow e1 e2       -> liftA2 Pow   (transform e1) (transform e2)
     Raw.Div e1 e2       -> liftA2 Div   (transform e1) (transform e2)
     Raw.And e1 o e2     -> liftA2 And   (transform e1) (transform e2)
     Raw.Or e1 o e2      -> liftA2 Or    (transform e1) (transform e2)
