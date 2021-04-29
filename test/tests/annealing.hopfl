@@ -4,55 +4,63 @@
 
 let
     # Mathematical tools
-    e ← 2.71828;
-    exp ← (λ x . e ^ x);
-    neg ← (λ x . 0 - x);
+    e ← 2.71828 ;
+    exp ← (λ x . e ^ x) ;
+    neg ← (λ x . 0.0 - x) ;
+    xor ← ( λ p . λ q . ( p ∨ q ) ∧ ¬ ( p ∧ q ) ) ;
 
     # We want to optimize for the following graph:
     # 0 - 1     Here the optimal solution is obviously
-    # |   |     to cut such that the two partitions
-    # 2 - 3     are {0, 3} and {1, 2} (4 cuts), as adjacency list:
+    # | \ |     to cut such that the two partitions
+    # 3 - 2     are {0, 3} and {1, 2} (4 cuts), as adjacency list:
     graph ← ( [   
         [0.0,1.0], [
-        [1.0,0.0], [
         [0.0,2.0], [
-        [2.0,0.0], false  
-    ] ] ] ] ) ;
-    n_edges ← 4.0 ;
+        [0.0,3.0], [
+        [1.0,2.0], [
+        [2.0,3.0], false
+    ] ] ] ] ] ) ;
+    n_edges ← 5.0 ;
 
-    init_v ← ([1.0, [1.0, [0.0, [0.0, false]]]]) ; # Initial solution (all 1s)
+    # Initial solution
+    init_v ← ([true, [true, [false, [false, 0.0]]]]) ;  
     n ← 4.0 ; # And it's size
-    k_max ← 5.0 ; # Maximum number of iteration
-    init_temp ← 10.0 ; # Initial temperature
+    k_max ← 4.0 ; # Maximum number of iteration
+    init_temp ← 1.0 ; # Initial temperature
 
     # List getter
-    get ← ( fix f . λ v . λ idx . 
+    get ← ( fix f . λ l . λ idx . 
         if (idx = 0.0)
-            then fst v
-            else prev ( f ⊙ next (snd v) ⊙ next (idx-1.0) )
+            then fst l
+            else prev ( f ⊙ next (snd l) ⊙ next (idx-1.0) )
     ) ;
-
 
     # Returns 1.0 if v cuts edge e, 0.0 otherwise
-    cuts ← (
-        λ e . λ v . 
-    )
+    cuts ← ( λ edge . λ s . 
+        if ( xor ( get s (fst edge) ) ( get s (snd edge) ) )
+            then 1.0 # An edge is cut if its verteces are in different partitions
+            else 0.0 # Not cut otherwise
+    ) ;
+
+    # The evaluation function should be lower for better solutions
+    eval ← ( λ s . 1.0 / (cut_count s) ) ;
 
     # The evaluation function
-    eval ← ( λ v . λ e_idx . 
-        cuts (get e_idx) v + ( prev ( 
-            f ⊙ next v ⊙ next (e_idx + 1.0)
-        ) )
+    cut_count ← ( ( fix f . λ e_idx . λ s .
+        if ( e_idx = n ) 
+            then 0.0 # End of vector
+            else (
+                cuts (get graph e_idx) s
+                + ( prev ( f ⊙ next (e_idx + 1.0) ⊙ next s ) )
+            )
+        ) 0.0
     ) ;
     
-    # Bit flipper
-    flip ← ( λ x . if (x = 0.0) then 1.0 else 0.0 ) ;
-
     # Flip bit at given idx
-    flip_bit ← ( fix f . λ idx . λ v . 
+    flip_bit ← ( fix f . λ idx . λ s . 
         if (idx = 0.0)
-            then ([ flip (fst v), (snd v) ])
-            else ([ fst v, prev ( f ⊙ next (idx-1.0) ⊙ next (snd v) ) ])
+            then ([ ¬(fst s), (snd s) ])
+            else ([ fst s, prev ( f ⊙ next (idx-1.0) ⊙ next (snd s) ) ])
     ) ;
 
     # Random number (NOT UNIFORM) in [0.0, 1.0]
@@ -80,7 +88,7 @@ let
     get_temp ← ( λ k . init_temp / (k + 1.0) ) ;
 
     # The chance of accepting a neigbour if it is worse
-    p_accept_new ← ( λ old . λ new . temp . 
+    p_accept_new ← ( λ old . λ new . λ temp . 
         exp( neg ( ( eval(new) - eval(old) ) / temp ) )
     ) ;
 
@@ -102,6 +110,7 @@ in: (
             then v # Maximum number of iterations reached
             else prev ( f 
                 ⊙ next ( k + 1.0 ) 
-                ⊙ select v ( mutate v ) ( get_temp k )
+                ⊙ next ( select v ( mutate v ) ( get_temp k ) )
             )
-) 0 init_v
+) 0.0 init_v
+

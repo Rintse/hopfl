@@ -1,0 +1,1708 @@
+Parsing program
+Parse successful
+[Abstract Syntax]
+App (App (Rec (Ident "f" 1 0) (Abstr (Ident "k" 2 0) (Abstr (Ident "v" 3 0) (Ite (Eq (Var (Ident "k" 2 0)) (Val 4.0)) (Var (Ident "v" 3 0)) (Prev (Env []) (LApp (LApp (Var (Ident "f" 1 0)) (Next (Add (Var (Ident "k" 2 0)) (Val 1.0)))) (Next (App (App (App (Abstr (Ident "old" 4 0) (Abstr (Ident "new" 5 0) (Abstr (Ident "temp" 6 0) (Ite (Lt (App (Abstr (Ident "s" 7 0) (Div (Val 1.0) (App (App (Rec (Ident "f" 8 0) (Abstr (Ident "e_idx" 9 0) (Abstr (Ident "s" 10 0) (Ite (Eq (Var (Ident "e_idx" 9 0)) (Val 4.0)) (Val 0.0) (Add (App (App (Abstr (Ident "edge" 11 0) (Abstr (Ident "s" 12 0) (Ite (App (App (Abstr (Ident "p" 13 0) (Abstr (Ident "q" 14 0) (And (Or (Var (Ident "p" 13 0)) (Var (Ident "q" 14 0))) (Not (And (Var (Ident "p" 13 0)) (Var (Ident "q" 14 0))))))) (App (App (Rec (Ident "f" 15 0) (Abstr (Ident "l" 16 0) (Abstr (Ident "idx" 17 0) (Ite (Eq (Var (Ident "idx" 17 0)) (Val 0.0)) (Fst (Var (Ident "l" 16 0))) (Prev (Env []) (LApp (LApp (Var (Ident "f" 15 0)) (Next (Snd (Var (Ident "l" 16 0))))) (Next (Sub (Var (Ident "idx" 17 0)) (Val 1.0))))))))) (Var (Ident "s" 12 0))) (Fst (Var (Ident "edge" 11 0))))) (App (App (Rec (Ident "f" 18 0) (Abstr (Ident "l" 19 0) (Abstr (Ident "idx" 20 0) (Ite (Eq (Var (Ident "idx" 20 0)) (Val 0.0)) (Fst (Var (Ident "l" 19 0))) (Prev (Env []) (LApp (LApp (Var (Ident "f" 18 0)) (Next (Snd (Var (Ident "l" 19 0))))) (Next (Sub (Var (Ident "idx" 20 0)) (Val 1.0))))))))) (Var (Ident "s" 12 0))) (Snd (Var (Ident "edge" 11 0))))) (Val 1.0) (Val 0.0)))) (App (App (Rec (Ident "f" 21 0) (Abstr (Ident "l" 22 0) (Abstr (Ident "idx" 23 0) (Ite (Eq (Var (Ident "idx" 23 0)) (Val 0.0)) (Fst (Var (Ident "l" 22 0))) (Prev (Env []) (LApp (LApp (Var (Ident "f" 21 0)) (Next (Snd (Var (Ident "l" 22 0))))) (Next (Sub (Var (Ident "idx" 23 0)) (Val 1.0))))))))) (Pair (Pair (Val 0.0) (Val 1.0)) (Pair (Pair (Val 0.0) (Val 2.0)) (Pair (Pair (Val 0.0) (Val 3.0)) (Pair (Pair (Val 1.0) (Val 2.0)) (Pair (Pair (Val 2.0) (Val 3.0)) (BVal BFalse))))))) (Var (Ident "e_idx" 9 0)))) (Var (Ident "s" 10 0))) (Prev (Env []) (LApp (LApp (Var (Ident "f" 8 0)) (Next (Add (Var (Ident "e_idx" 9 0)) (Val 1.0)))) (Next (Var (Ident "s" 10 0)))))))))) (Val 0.0)) (Var (Ident "s" 7 0))))) (Var (Ident "new" 5 0))) (App (Abstr (Ident "s" 24 0) (Div (Val 1.0) (App (App (Rec (Ident "f" 25 0) (Abstr (Ident "e_idx" 26 0) (Abstr (Ident "s" 27 0) (Ite (Eq (Var (Ident "e_idx" 26 0)) (Val 4.0)) (Val 0.0) (Add (App (App (Abstr (Ident "edge" 28 0) (Abstr (Ident "s" 29 0) (Ite (App (App (Abstr (Ident "p" 30 0) (Abstr (Ident "q" 31 0) (And (Or (Var (Ident "p" 30 0)) (Var (Ident "q" 31 0))) (Not (And (Var (Ident "p" 30 0)) (Var (Ident "q" 31 0))))))) (App (App (Rec (Ident "f" 32 0) (Abstr (Ident "l" 33 0) (Abstr (Ident "idx" 34 0) (Ite (Eq (Var (Ident "idx" 34 0)) (Val 0.0)) (Fst (Var (Ident "l" 33 0))) (Prev (Env []) (LApp (LApp (Var (Ident "f" 32 0)) (Next (Snd (Var (Ident "l" 33 0))))) (Next (Sub (Var (Ident "idx" 34 0)) (Val 1.0))))))))) (Var (Ident "s" 29 0))) (Fst (Var (Ident "edge" 28 0))))) (App (App (Rec (Ident "f" 35 0) (Abstr (Ident "l" 36 0) (Abstr (Ident "idx" 37 0) (Ite (Eq (Var (Ident "idx" 37 0)) (Val 0.0)) (Fst (Var (Ident "l" 36 0))) (Prev (Env []) (LApp (LApp (Var (Ident "f" 35 0)) (Next (Snd (Var (Ident "l" 36 0))))) (Next (Sub (Var (Ident "idx" 37 0)) (Val 1.0))))))))) (Var (Ident "s" 29 0))) (Snd (Var (Ident "edge" 28 0))))) (Val 1.0) (Val 0.0)))) (App (App (Rec (Ident "f" 38 0) (Abstr (Ident "l" 39 0) (Abstr (Ident "idx" 40 0) (Ite (Eq (Var (Ident "idx" 40 0)) (Val 0.0)) (Fst (Var (Ident "l" 39 0))) (Prev (Env []) (LApp (LApp (Var (Ident "f" 38 0)) (Next (Snd (Var (Ident "l" 39 0))))) (Next (Sub (Var (Ident "idx" 40 0)) (Val 1.0))))))))) (Pair (Pair (Val 0.0) (Val 1.0)) (Pair (Pair (Val 0.0) (Val 2.0)) (Pair (Pair (Val 0.0) (Val 3.0)) (Pair (Pair (Val 1.0) (Val 2.0)) (Pair (Pair (Val 2.0) (Val 3.0)) (BVal BFalse))))))) (Var (Ident "e_idx" 26 0)))) (Var (Ident "s" 27 0))) (Prev (Env []) (LApp (LApp (Var (Ident "f" 25 0)) (Next (Add (Var (Ident "e_idx" 26 0)) (Val 1.0)))) (Next (Var (Ident "s" 27 0)))))))))) (Val 0.0)) (Var (Ident "s" 24 0))))) (Var (Ident "old" 4 0)))) (Var (Ident "new" 5 0)) (Ite (Lt (App (Abstr (Ident "draw" 41 0) (Ite (Lt (Var (Ident "draw" 41 0)) (Val 0.0)) (Val 0.0) (Ite (Gt (Var (Ident "draw" 41 0)) (Val 1.0)) (Val 1.0) (Var (Ident "draw" 41 0))))) (Norm (Pair (Val 0.5) (Val 0.25)))) (App (App (App (Abstr (Ident "old" 42 0) (Abstr (Ident "new" 43 0) (Abstr (Ident "temp" 44 0) (App (Abstr (Ident "x" 45 0) (Pow (Val 2.71828) (Var (Ident "x" 45 0)))) (App (Abstr (Ident "x" 46 0) (Sub (Val 0.0) (Var (Ident "x" 46 0)))) (Div (Sub (App (Abstr (Ident "s" 47 0) (Div (Val 1.0) (App (App (Rec (Ident "f" 48 0) (Abstr (Ident "e_idx" 49 0) (Abstr (Ident "s" 50 0) (Ite (Eq (Var (Ident "e_idx" 49 0)) (Val 4.0)) (Val 0.0) (Add (App (App (Abstr (Ident "edge" 51 0) (Abstr (Ident "s" 52 0) (Ite (App (App (Abstr (Ident "p" 53 0) (Abstr (Ident "q" 54 0) (And (Or (Var (Ident "p" 53 0)) (Var (Ident "q" 54 0))) (Not (And (Var (Ident "p" 53 0)) (Var (Ident "q" 54 0))))))) (App (App (Rec (Ident "f" 55 0) (Abstr (Ident "l" 56 0) (Abstr (Ident "idx" 57 0) (Ite (Eq (Var (Ident "idx" 57 0)) (Val 0.0)) (Fst (Var (Ident "l" 56 0))) (Prev (Env []) (LApp (LApp (Var (Ident "f" 55 0)) (Next (Snd (Var (Ident "l" 56 0))))) (Next (Sub (Var (Ident "idx" 57 0)) (Val 1.0))))))))) (Var (Ident "s" 52 0))) (Fst (Var (Ident "edge" 51 0))))) (App (App (Rec (Ident "f" 58 0) (Abstr (Ident "l" 59 0) (Abstr (Ident "idx" 60 0) (Ite (Eq (Var (Ident "idx" 60 0)) (Val 0.0)) (Fst (Var (Ident "l" 59 0))) (Prev (Env []) (LApp (LApp (Var (Ident "f" 58 0)) (Next (Snd (Var (Ident "l" 59 0))))) (Next (Sub (Var (Ident "idx" 60 0)) (Val 1.0))))))))) (Var (Ident "s" 52 0))) (Snd (Var (Ident "edge" 51 0))))) (Val 1.0) (Val 0.0)))) (App (App (Rec (Ident "f" 61 0) (Abstr (Ident "l" 62 0) (Abstr (Ident "idx" 63 0) (Ite (Eq (Var (Ident "idx" 63 0)) (Val 0.0)) (Fst (Var (Ident "l" 62 0))) (Prev (Env []) (LApp (LApp (Var (Ident "f" 61 0)) (Next (Snd (Var (Ident "l" 62 0))))) (Next (Sub (Var (Ident "idx" 63 0)) (Val 1.0))))))))) (Pair (Pair (Val 0.0) (Val 1.0)) (Pair (Pair (Val 0.0) (Val 2.0)) (Pair (Pair (Val 0.0) (Val 3.0)) (Pair (Pair (Val 1.0) (Val 2.0)) (Pair (Pair (Val 2.0) (Val 3.0)) (BVal BFalse))))))) (Var (Ident "e_idx" 49 0)))) (Var (Ident "s" 50 0))) (Prev (Env []) (LApp (LApp (Var (Ident "f" 48 0)) (Next (Add (Var (Ident "e_idx" 49 0)) (Val 1.0)))) (Next (Var (Ident "s" 50 0)))))))))) (Val 0.0)) (Var (Ident "s" 47 0))))) (Var (Ident "new" 43 0))) (App (Abstr (Ident "s" 64 0) (Div (Val 1.0) (App (App (Rec (Ident "f" 65 0) (Abstr (Ident "e_idx" 66 0) (Abstr (Ident "s" 67 0) (Ite (Eq (Var (Ident "e_idx" 66 0)) (Val 4.0)) (Val 0.0) (Add (App (App (Abstr (Ident "edge" 68 0) (Abstr (Ident "s" 69 0) (Ite (App (App (Abstr (Ident "p" 70 0) (Abstr (Ident "q" 71 0) (And (Or (Var (Ident "p" 70 0)) (Var (Ident "q" 71 0))) (Not (And (Var (Ident "p" 70 0)) (Var (Ident "q" 71 0))))))) (App (App (Rec (Ident "f" 72 0) (Abstr (Ident "l" 73 0) (Abstr (Ident "idx" 74 0) (Ite (Eq (Var (Ident "idx" 74 0)) (Val 0.0)) (Fst (Var (Ident "l" 73 0))) (Prev (Env []) (LApp (LApp (Var (Ident "f" 72 0)) (Next (Snd (Var (Ident "l" 73 0))))) (Next (Sub (Var (Ident "idx" 74 0)) (Val 1.0))))))))) (Var (Ident "s" 69 0))) (Fst (Var (Ident "edge" 68 0))))) (App (App (Rec (Ident "f" 75 0) (Abstr (Ident "l" 76 0) (Abstr (Ident "idx" 77 0) (Ite (Eq (Var (Ident "idx" 77 0)) (Val 0.0)) (Fst (Var (Ident "l" 76 0))) (Prev (Env []) (LApp (LApp (Var (Ident "f" 75 0)) (Next (Snd (Var (Ident "l" 76 0))))) (Next (Sub (Var (Ident "idx" 77 0)) (Val 1.0))))))))) (Var (Ident "s" 69 0))) (Snd (Var (Ident "edge" 68 0))))) (Val 1.0) (Val 0.0)))) (App (App (Rec (Ident "f" 78 0) (Abstr (Ident "l" 79 0) (Abstr (Ident "idx" 80 0) (Ite (Eq (Var (Ident "idx" 80 0)) (Val 0.0)) (Fst (Var (Ident "l" 79 0))) (Prev (Env []) (LApp (LApp (Var (Ident "f" 78 0)) (Next (Snd (Var (Ident "l" 79 0))))) (Next (Sub (Var (Ident "idx" 80 0)) (Val 1.0))))))))) (Pair (Pair (Val 0.0) (Val 1.0)) (Pair (Pair (Val 0.0) (Val 2.0)) (Pair (Pair (Val 0.0) (Val 3.0)) (Pair (Pair (Val 1.0) (Val 2.0)) (Pair (Pair (Val 2.0) (Val 3.0)) (BVal BFalse))))))) (Var (Ident "e_idx" 66 0)))) (Var (Ident "s" 67 0))) (Prev (Env []) (LApp (LApp (Var (Ident "f" 65 0)) (Next (Add (Var (Ident "e_idx" 66 0)) (Val 1.0)))) (Next (Var (Ident "s" 67 0)))))))))) (Val 0.0)) (Var (Ident "s" 64 0))))) (Var (Ident "old" 42 0)))) (Var (Ident "temp" 44 0)))))))) (Var (Ident "old" 4 0))) (Var (Ident "new" 5 0))) (Var (Ident "temp" 6 0)))) (Var (Ident "new" 5 0)) (Var (Ident "old" 4 0))))))) (Var (Ident "v" 3 0))) (App (App (Rec (Ident "f" 81 0) (Abstr (Ident "idx" 82 0) (Abstr (Ident "s" 83 0) (Ite (Eq (Var (Ident "idx" 82 0)) (Val 0.0)) (Pair (Not (Fst (Var (Ident "s" 83 0)))) (Snd (Var (Ident "s" 83 0)))) (Pair (Fst (Var (Ident "s" 83 0))) (Prev (Env []) (LApp (LApp (Var (Ident "f" 81 0)) (Next (Sub (Var (Ident "idx" 82 0)) (Val 1.0)))) (Next (Snd (Var (Ident "s" 83 0))))))))))) (App (App (Rec (Ident "f" 84 0) (Abstr (Ident "x" 85 0) (Abstr (Ident "c" 86 0) (Ite (And (Geq (Var (Ident "x" 85 0)) (Mul (Var (Ident "c" 86 0)) (Div (Val 1.0) (Val 4.0)))) (Leq (Var (Ident "x" 85 0)) (Mul (Add (Var (Ident "c" 86 0)) (Val 1.0)) (Div (Val 1.0) (Val 4.0))))) (Var (Ident "c" 86 0)) (Prev (Env []) (LApp (LApp (Var (Ident "f" 84 0)) (Next (Var (Ident "x" 85 0)))) (Next (Add (Var (Ident "c" 86 0)) (Val 1.0))))))))) (App (Abstr (Ident "draw" 87 0) (Ite (Lt (Var (Ident "draw" 87 0)) (Val 0.0)) (Val 0.0) (Ite (Gt (Var (Ident "draw" 87 0)) (Val 1.0)) (Val 1.0) (Var (Ident "draw" 87 0))))) (Norm (Pair (Val 0.5) (Val 0.25))))) (Val 0.0))) (Var (Ident "v" 3 0)))) (App (Abstr (Ident "k" 88 0) (Div (Val 1.0) (Add (Var (Ident "k" 88 0)) (Val 1.0)))) (Var (Ident "k" 2 0))))))))))) (Val 0.0)) (Pair (BVal BTrue) (Pair (BVal BTrue) (Pair (BVal BFalse) (Pair (BVal BFalse) (Val 0.0)))))
+
+[Tree]
+App
+|
++- App
+|  |
+|  +- Fix
+|  |  |
+|  |  +- f (1) [0]
+|  |  |
+|  |  `- λ
+|  |     |
+|  |     +- k (2) [0]
+|  |     |
+|  |     `- λ
+|  |        |
+|  |        +- v (3) [0]
+|  |        |
+|  |        `- Ite
+|  |           |
+|  |           +- Eq
+|  |           |  |
+|  |           |  +- k (2) [0]
+|  |           |  |
+|  |           |  `- 4.0
+|  |           |
+|  |           +- v (3) [0]
+|  |           |
+|  |           `- Prev
+|  |              |
+|  |              +- Substitution List
+|  |              |
+|  |              `- LApp
+|  |                 |
+|  |                 +- LApp
+|  |                 |  |
+|  |                 |  +- f (1) [0]
+|  |                 |  |
+|  |                 |  `- Next
+|  |                 |     |
+|  |                 |     `- Add
+|  |                 |        |
+|  |                 |        +- k (2) [0]
+|  |                 |        |
+|  |                 |        `- 1.0
+|  |                 |
+|  |                 `- Next
+|  |                    |
+|  |                    `- App
+|  |                       |
+|  |                       +- App
+|  |                       |  |
+|  |                       |  +- App
+|  |                       |  |  |
+|  |                       |  |  +- λ
+|  |                       |  |  |  |
+|  |                       |  |  |  +- old (4) [0]
+|  |                       |  |  |  |
+|  |                       |  |  |  `- λ
+|  |                       |  |  |     |
+|  |                       |  |  |     +- new (5) [0]
+|  |                       |  |  |     |
+|  |                       |  |  |     `- λ
+|  |                       |  |  |        |
+|  |                       |  |  |        +- temp (6) [0]
+|  |                       |  |  |        |
+|  |                       |  |  |        `- Ite
+|  |                       |  |  |           |
+|  |                       |  |  |           +- Lt
+|  |                       |  |  |           |  |
+|  |                       |  |  |           |  +- App
+|  |                       |  |  |           |  |  |
+|  |                       |  |  |           |  |  +- λ
+|  |                       |  |  |           |  |  |  |
+|  |                       |  |  |           |  |  |  +- s (7) [0]
+|  |                       |  |  |           |  |  |  |
+|  |                       |  |  |           |  |  |  `- Div
+|  |                       |  |  |           |  |  |     |
+|  |                       |  |  |           |  |  |     +- 1.0
+|  |                       |  |  |           |  |  |     |
+|  |                       |  |  |           |  |  |     `- App
+|  |                       |  |  |           |  |  |        |
+|  |                       |  |  |           |  |  |        +- App
+|  |                       |  |  |           |  |  |        |  |
+|  |                       |  |  |           |  |  |        |  +- Fix
+|  |                       |  |  |           |  |  |        |  |  |
+|  |                       |  |  |           |  |  |        |  |  +- f (8) [0]
+|  |                       |  |  |           |  |  |        |  |  |
+|  |                       |  |  |           |  |  |        |  |  `- λ
+|  |                       |  |  |           |  |  |        |  |     |
+|  |                       |  |  |           |  |  |        |  |     +- e_idx (9) [0]
+|  |                       |  |  |           |  |  |        |  |     |
+|  |                       |  |  |           |  |  |        |  |     `- λ
+|  |                       |  |  |           |  |  |        |  |        |
+|  |                       |  |  |           |  |  |        |  |        +- s (10) [0]
+|  |                       |  |  |           |  |  |        |  |        |
+|  |                       |  |  |           |  |  |        |  |        `- Ite
+|  |                       |  |  |           |  |  |        |  |           |
+|  |                       |  |  |           |  |  |        |  |           +- Eq
+|  |                       |  |  |           |  |  |        |  |           |  |
+|  |                       |  |  |           |  |  |        |  |           |  +- e_idx (9) [0]
+|  |                       |  |  |           |  |  |        |  |           |  |
+|  |                       |  |  |           |  |  |        |  |           |  `- 4.0
+|  |                       |  |  |           |  |  |        |  |           |
+|  |                       |  |  |           |  |  |        |  |           +- 0.0
+|  |                       |  |  |           |  |  |        |  |           |
+|  |                       |  |  |           |  |  |        |  |           `- Add
+|  |                       |  |  |           |  |  |        |  |              |
+|  |                       |  |  |           |  |  |        |  |              +- App
+|  |                       |  |  |           |  |  |        |  |              |  |
+|  |                       |  |  |           |  |  |        |  |              |  +- App
+|  |                       |  |  |           |  |  |        |  |              |  |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  +- λ
+|  |                       |  |  |           |  |  |        |  |              |  |  |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  |  +- edge (11) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |  |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  |  `- λ
+|  |                       |  |  |           |  |  |        |  |              |  |  |     |
+|  |                       |  |  |           |  |  |        |  |              |  |  |     +- s (12) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |  |     |
+|  |                       |  |  |           |  |  |        |  |              |  |  |     `- Ite
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        +- App
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  +- App
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |  +- λ
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |  |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |  |  +- p (13) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |  |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |  |  `- λ
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |  |     |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |  |     +- q (14) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |  |     |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |  |     `- And
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |  |        |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |  |        +- Or
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |  |        |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |  |        |  +- p (13) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |  |        |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |  |        |  `- q (14) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |  |        |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |  |        `- Not
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |  |           |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |  |           `- And
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |  |              |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |  |              +- p (13) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |  |              |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |  |              `- q (14) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |  `- App
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     +- App
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  +- Fix
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |  +- f (15) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |  `- λ
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |     |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |     +- l (16) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |     |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |     `- λ
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |        |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |        +- idx (17) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |        |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |        `- Ite
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |           |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |           +- Eq
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |           |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |           |  +- idx (17) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |           |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |           |  `- 0.0
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |           |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |           +- Fst
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |           |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |           |  `- l (16) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |           |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |           `- Prev
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |              |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |              +- Substitution List
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |              |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |              `- LApp
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |                 |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |                 +- LApp
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |                 |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |                 |  +- f (15) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |                 |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |                 |  `- Next
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |                 |     |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |                 |     `- Snd
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |                 |        |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |                 |        `- l (16) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |                 |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |                 `- Next
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |                    |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |                    `- Sub
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |                       |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |                       +- idx (17) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |                       |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |                       `- 1.0
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |  `- s (12) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |     `- Fst
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |        |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |        `- edge (11) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |  `- App
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     +- App
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  +- Fix
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |  +- f (18) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |  `- λ
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |     |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |     +- l (19) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |     |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |     `- λ
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |        |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |        +- idx (20) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |        |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |        `- Ite
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |           |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |           +- Eq
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |           |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |           |  +- idx (20) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |           |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |           |  `- 0.0
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |           |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |           +- Fst
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |           |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |           |  `- l (19) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |           |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |           `- Prev
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |              |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |              +- Substitution List
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |              |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |              `- LApp
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |                 |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |                 +- LApp
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |                 |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |                 |  +- f (18) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |                 |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |                 |  `- Next
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |                 |     |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |                 |     `- Snd
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |                 |        |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |                 |        `- l (19) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |                 |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |                 `- Next
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |                    |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |                    `- Sub
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |                       |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |                       +- idx (20) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |                       |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |                       `- 1.0
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |  `- s (12) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |     `- Snd
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |        |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |        `- edge (11) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        +- 1.0
+|  |                       |  |  |           |  |  |        |  |              |  |  |        |
+|  |                       |  |  |           |  |  |        |  |              |  |  |        `- 0.0
+|  |                       |  |  |           |  |  |        |  |              |  |  |
+|  |                       |  |  |           |  |  |        |  |              |  |  `- App
+|  |                       |  |  |           |  |  |        |  |              |  |     |
+|  |                       |  |  |           |  |  |        |  |              |  |     +- App
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |
+|  |                       |  |  |           |  |  |        |  |              |  |     |  +- Fix
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |  |
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |  +- f (21) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |  |
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |  `- λ
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |     |
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |     +- l (22) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |     |
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |     `- λ
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |        |
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |        +- idx (23) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |        |
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |        `- Ite
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |           |
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |           +- Eq
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |           |  |
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |           |  +- idx (23) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |           |  |
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |           |  `- 0.0
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |           |
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |           +- Fst
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |           |  |
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |           |  `- l (22) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |           |
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |           `- Prev
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |              |
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |              +- Substitution List
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |              |
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |              `- LApp
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |                 |
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |                 +- LApp
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |                 |  |
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |                 |  +- f (21) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |                 |  |
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |                 |  `- Next
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |                 |     |
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |                 |     `- Snd
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |                 |        |
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |                 |        `- l (22) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |                 |
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |                 `- Next
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |                    |
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |                    `- Sub
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |                       |
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |                       +- idx (23) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |                       |
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |                       `- 1.0
+|  |                       |  |  |           |  |  |        |  |              |  |     |  |
+|  |                       |  |  |           |  |  |        |  |              |  |     |  `- Pair
+|  |                       |  |  |           |  |  |        |  |              |  |     |     |
+|  |                       |  |  |           |  |  |        |  |              |  |     |     +- Pair
+|  |                       |  |  |           |  |  |        |  |              |  |     |     |  |
+|  |                       |  |  |           |  |  |        |  |              |  |     |     |  +- 0.0
+|  |                       |  |  |           |  |  |        |  |              |  |     |     |  |
+|  |                       |  |  |           |  |  |        |  |              |  |     |     |  `- 1.0
+|  |                       |  |  |           |  |  |        |  |              |  |     |     |
+|  |                       |  |  |           |  |  |        |  |              |  |     |     `- Pair
+|  |                       |  |  |           |  |  |        |  |              |  |     |        |
+|  |                       |  |  |           |  |  |        |  |              |  |     |        +- Pair
+|  |                       |  |  |           |  |  |        |  |              |  |     |        |  |
+|  |                       |  |  |           |  |  |        |  |              |  |     |        |  +- 0.0
+|  |                       |  |  |           |  |  |        |  |              |  |     |        |  |
+|  |                       |  |  |           |  |  |        |  |              |  |     |        |  `- 2.0
+|  |                       |  |  |           |  |  |        |  |              |  |     |        |
+|  |                       |  |  |           |  |  |        |  |              |  |     |        `- Pair
+|  |                       |  |  |           |  |  |        |  |              |  |     |           |
+|  |                       |  |  |           |  |  |        |  |              |  |     |           +- Pair
+|  |                       |  |  |           |  |  |        |  |              |  |     |           |  |
+|  |                       |  |  |           |  |  |        |  |              |  |     |           |  +- 0.0
+|  |                       |  |  |           |  |  |        |  |              |  |     |           |  |
+|  |                       |  |  |           |  |  |        |  |              |  |     |           |  `- 3.0
+|  |                       |  |  |           |  |  |        |  |              |  |     |           |
+|  |                       |  |  |           |  |  |        |  |              |  |     |           `- Pair
+|  |                       |  |  |           |  |  |        |  |              |  |     |              |
+|  |                       |  |  |           |  |  |        |  |              |  |     |              +- Pair
+|  |                       |  |  |           |  |  |        |  |              |  |     |              |  |
+|  |                       |  |  |           |  |  |        |  |              |  |     |              |  +- 1.0
+|  |                       |  |  |           |  |  |        |  |              |  |     |              |  |
+|  |                       |  |  |           |  |  |        |  |              |  |     |              |  `- 2.0
+|  |                       |  |  |           |  |  |        |  |              |  |     |              |
+|  |                       |  |  |           |  |  |        |  |              |  |     |              `- Pair
+|  |                       |  |  |           |  |  |        |  |              |  |     |                 |
+|  |                       |  |  |           |  |  |        |  |              |  |     |                 +- Pair
+|  |                       |  |  |           |  |  |        |  |              |  |     |                 |  |
+|  |                       |  |  |           |  |  |        |  |              |  |     |                 |  +- 2.0
+|  |                       |  |  |           |  |  |        |  |              |  |     |                 |  |
+|  |                       |  |  |           |  |  |        |  |              |  |     |                 |  `- 3.0
+|  |                       |  |  |           |  |  |        |  |              |  |     |                 |
+|  |                       |  |  |           |  |  |        |  |              |  |     |                 `- BFalse
+|  |                       |  |  |           |  |  |        |  |              |  |     |
+|  |                       |  |  |           |  |  |        |  |              |  |     `- e_idx (9) [0]
+|  |                       |  |  |           |  |  |        |  |              |  |
+|  |                       |  |  |           |  |  |        |  |              |  `- s (10) [0]
+|  |                       |  |  |           |  |  |        |  |              |
+|  |                       |  |  |           |  |  |        |  |              `- Prev
+|  |                       |  |  |           |  |  |        |  |                 |
+|  |                       |  |  |           |  |  |        |  |                 +- Substitution List
+|  |                       |  |  |           |  |  |        |  |                 |
+|  |                       |  |  |           |  |  |        |  |                 `- LApp
+|  |                       |  |  |           |  |  |        |  |                    |
+|  |                       |  |  |           |  |  |        |  |                    +- LApp
+|  |                       |  |  |           |  |  |        |  |                    |  |
+|  |                       |  |  |           |  |  |        |  |                    |  +- f (8) [0]
+|  |                       |  |  |           |  |  |        |  |                    |  |
+|  |                       |  |  |           |  |  |        |  |                    |  `- Next
+|  |                       |  |  |           |  |  |        |  |                    |     |
+|  |                       |  |  |           |  |  |        |  |                    |     `- Add
+|  |                       |  |  |           |  |  |        |  |                    |        |
+|  |                       |  |  |           |  |  |        |  |                    |        +- e_idx (9) [0]
+|  |                       |  |  |           |  |  |        |  |                    |        |
+|  |                       |  |  |           |  |  |        |  |                    |        `- 1.0
+|  |                       |  |  |           |  |  |        |  |                    |
+|  |                       |  |  |           |  |  |        |  |                    `- Next
+|  |                       |  |  |           |  |  |        |  |                       |
+|  |                       |  |  |           |  |  |        |  |                       `- s (10) [0]
+|  |                       |  |  |           |  |  |        |  |
+|  |                       |  |  |           |  |  |        |  `- 0.0
+|  |                       |  |  |           |  |  |        |
+|  |                       |  |  |           |  |  |        `- s (7) [0]
+|  |                       |  |  |           |  |  |
+|  |                       |  |  |           |  |  `- new (5) [0]
+|  |                       |  |  |           |  |
+|  |                       |  |  |           |  `- App
+|  |                       |  |  |           |     |
+|  |                       |  |  |           |     +- λ
+|  |                       |  |  |           |     |  |
+|  |                       |  |  |           |     |  +- s (24) [0]
+|  |                       |  |  |           |     |  |
+|  |                       |  |  |           |     |  `- Div
+|  |                       |  |  |           |     |     |
+|  |                       |  |  |           |     |     +- 1.0
+|  |                       |  |  |           |     |     |
+|  |                       |  |  |           |     |     `- App
+|  |                       |  |  |           |     |        |
+|  |                       |  |  |           |     |        +- App
+|  |                       |  |  |           |     |        |  |
+|  |                       |  |  |           |     |        |  +- Fix
+|  |                       |  |  |           |     |        |  |  |
+|  |                       |  |  |           |     |        |  |  +- f (25) [0]
+|  |                       |  |  |           |     |        |  |  |
+|  |                       |  |  |           |     |        |  |  `- λ
+|  |                       |  |  |           |     |        |  |     |
+|  |                       |  |  |           |     |        |  |     +- e_idx (26) [0]
+|  |                       |  |  |           |     |        |  |     |
+|  |                       |  |  |           |     |        |  |     `- λ
+|  |                       |  |  |           |     |        |  |        |
+|  |                       |  |  |           |     |        |  |        +- s (27) [0]
+|  |                       |  |  |           |     |        |  |        |
+|  |                       |  |  |           |     |        |  |        `- Ite
+|  |                       |  |  |           |     |        |  |           |
+|  |                       |  |  |           |     |        |  |           +- Eq
+|  |                       |  |  |           |     |        |  |           |  |
+|  |                       |  |  |           |     |        |  |           |  +- e_idx (26) [0]
+|  |                       |  |  |           |     |        |  |           |  |
+|  |                       |  |  |           |     |        |  |           |  `- 4.0
+|  |                       |  |  |           |     |        |  |           |
+|  |                       |  |  |           |     |        |  |           +- 0.0
+|  |                       |  |  |           |     |        |  |           |
+|  |                       |  |  |           |     |        |  |           `- Add
+|  |                       |  |  |           |     |        |  |              |
+|  |                       |  |  |           |     |        |  |              +- App
+|  |                       |  |  |           |     |        |  |              |  |
+|  |                       |  |  |           |     |        |  |              |  +- App
+|  |                       |  |  |           |     |        |  |              |  |  |
+|  |                       |  |  |           |     |        |  |              |  |  +- λ
+|  |                       |  |  |           |     |        |  |              |  |  |  |
+|  |                       |  |  |           |     |        |  |              |  |  |  +- edge (28) [0]
+|  |                       |  |  |           |     |        |  |              |  |  |  |
+|  |                       |  |  |           |     |        |  |              |  |  |  `- λ
+|  |                       |  |  |           |     |        |  |              |  |  |     |
+|  |                       |  |  |           |     |        |  |              |  |  |     +- s (29) [0]
+|  |                       |  |  |           |     |        |  |              |  |  |     |
+|  |                       |  |  |           |     |        |  |              |  |  |     `- Ite
+|  |                       |  |  |           |     |        |  |              |  |  |        |
+|  |                       |  |  |           |     |        |  |              |  |  |        +- App
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  +- App
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |  |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |  +- λ
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |  |  |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |  |  +- p (30) [0]
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |  |  |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |  |  `- λ
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |  |     |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |  |     +- q (31) [0]
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |  |     |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |  |     `- And
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |  |        |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |  |        +- Or
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |  |        |  |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |  |        |  +- p (30) [0]
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |  |        |  |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |  |        |  `- q (31) [0]
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |  |        |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |  |        `- Not
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |  |           |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |  |           `- And
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |  |              |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |  |              +- p (30) [0]
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |  |              |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |  |              `- q (31) [0]
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |  |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |  `- App
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     +- App
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  +- Fix
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |  |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |  +- f (32) [0]
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |  |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |  `- λ
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |     |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |     +- l (33) [0]
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |     |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |     `- λ
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |        |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |        +- idx (34) [0]
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |        |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |        `- Ite
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |           |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |           +- Eq
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |           |  |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |           |  +- idx (34) [0]
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |           |  |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |           |  `- 0.0
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |           |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |           +- Fst
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |           |  |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |           |  `- l (33) [0]
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |           |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |           `- Prev
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |              |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |              +- Substitution List
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |              |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |              `- LApp
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |                 |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |                 +- LApp
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |                 |  |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |                 |  +- f (32) [0]
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |                 |  |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |                 |  `- Next
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |                 |     |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |                 |     `- Snd
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |                 |        |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |                 |        `- l (33) [0]
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |                 |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |                 `- Next
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |                    |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |                    `- Sub
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |                       |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |                       +- idx (34) [0]
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |                       |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |                       `- 1.0
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |  `- s (29) [0]
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |     `- Fst
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |        |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |        `- edge (28) [0]
+|  |                       |  |  |           |     |        |  |              |  |  |        |  |
+|  |                       |  |  |           |     |        |  |              |  |  |        |  `- App
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |
+|  |                       |  |  |           |     |        |  |              |  |  |        |     +- App
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  +- Fix
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |  |
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |  +- f (35) [0]
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |  |
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |  `- λ
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |     |
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |     +- l (36) [0]
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |     |
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |     `- λ
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |        |
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |        +- idx (37) [0]
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |        |
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |        `- Ite
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |           |
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |           +- Eq
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |           |  |
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |           |  +- idx (37) [0]
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |           |  |
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |           |  `- 0.0
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |           |
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |           +- Fst
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |           |  |
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |           |  `- l (36) [0]
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |           |
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |           `- Prev
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |              |
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |              +- Substitution List
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |              |
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |              `- LApp
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |                 |
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |                 +- LApp
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |                 |  |
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |                 |  +- f (35) [0]
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |                 |  |
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |                 |  `- Next
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |                 |     |
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |                 |     `- Snd
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |                 |        |
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |                 |        `- l (36) [0]
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |                 |
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |                 `- Next
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |                    |
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |                    `- Sub
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |                       |
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |                       +- idx (37) [0]
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |                       |
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |                       `- 1.0
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  |
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |  `- s (29) [0]
+|  |                       |  |  |           |     |        |  |              |  |  |        |     |
+|  |                       |  |  |           |     |        |  |              |  |  |        |     `- Snd
+|  |                       |  |  |           |     |        |  |              |  |  |        |        |
+|  |                       |  |  |           |     |        |  |              |  |  |        |        `- edge (28) [0]
+|  |                       |  |  |           |     |        |  |              |  |  |        |
+|  |                       |  |  |           |     |        |  |              |  |  |        +- 1.0
+|  |                       |  |  |           |     |        |  |              |  |  |        |
+|  |                       |  |  |           |     |        |  |              |  |  |        `- 0.0
+|  |                       |  |  |           |     |        |  |              |  |  |
+|  |                       |  |  |           |     |        |  |              |  |  `- App
+|  |                       |  |  |           |     |        |  |              |  |     |
+|  |                       |  |  |           |     |        |  |              |  |     +- App
+|  |                       |  |  |           |     |        |  |              |  |     |  |
+|  |                       |  |  |           |     |        |  |              |  |     |  +- Fix
+|  |                       |  |  |           |     |        |  |              |  |     |  |  |
+|  |                       |  |  |           |     |        |  |              |  |     |  |  +- f (38) [0]
+|  |                       |  |  |           |     |        |  |              |  |     |  |  |
+|  |                       |  |  |           |     |        |  |              |  |     |  |  `- λ
+|  |                       |  |  |           |     |        |  |              |  |     |  |     |
+|  |                       |  |  |           |     |        |  |              |  |     |  |     +- l (39) [0]
+|  |                       |  |  |           |     |        |  |              |  |     |  |     |
+|  |                       |  |  |           |     |        |  |              |  |     |  |     `- λ
+|  |                       |  |  |           |     |        |  |              |  |     |  |        |
+|  |                       |  |  |           |     |        |  |              |  |     |  |        +- idx (40) [0]
+|  |                       |  |  |           |     |        |  |              |  |     |  |        |
+|  |                       |  |  |           |     |        |  |              |  |     |  |        `- Ite
+|  |                       |  |  |           |     |        |  |              |  |     |  |           |
+|  |                       |  |  |           |     |        |  |              |  |     |  |           +- Eq
+|  |                       |  |  |           |     |        |  |              |  |     |  |           |  |
+|  |                       |  |  |           |     |        |  |              |  |     |  |           |  +- idx (40) [0]
+|  |                       |  |  |           |     |        |  |              |  |     |  |           |  |
+|  |                       |  |  |           |     |        |  |              |  |     |  |           |  `- 0.0
+|  |                       |  |  |           |     |        |  |              |  |     |  |           |
+|  |                       |  |  |           |     |        |  |              |  |     |  |           +- Fst
+|  |                       |  |  |           |     |        |  |              |  |     |  |           |  |
+|  |                       |  |  |           |     |        |  |              |  |     |  |           |  `- l (39) [0]
+|  |                       |  |  |           |     |        |  |              |  |     |  |           |
+|  |                       |  |  |           |     |        |  |              |  |     |  |           `- Prev
+|  |                       |  |  |           |     |        |  |              |  |     |  |              |
+|  |                       |  |  |           |     |        |  |              |  |     |  |              +- Substitution List
+|  |                       |  |  |           |     |        |  |              |  |     |  |              |
+|  |                       |  |  |           |     |        |  |              |  |     |  |              `- LApp
+|  |                       |  |  |           |     |        |  |              |  |     |  |                 |
+|  |                       |  |  |           |     |        |  |              |  |     |  |                 +- LApp
+|  |                       |  |  |           |     |        |  |              |  |     |  |                 |  |
+|  |                       |  |  |           |     |        |  |              |  |     |  |                 |  +- f (38) [0]
+|  |                       |  |  |           |     |        |  |              |  |     |  |                 |  |
+|  |                       |  |  |           |     |        |  |              |  |     |  |                 |  `- Next
+|  |                       |  |  |           |     |        |  |              |  |     |  |                 |     |
+|  |                       |  |  |           |     |        |  |              |  |     |  |                 |     `- Snd
+|  |                       |  |  |           |     |        |  |              |  |     |  |                 |        |
+|  |                       |  |  |           |     |        |  |              |  |     |  |                 |        `- l (39) [0]
+|  |                       |  |  |           |     |        |  |              |  |     |  |                 |
+|  |                       |  |  |           |     |        |  |              |  |     |  |                 `- Next
+|  |                       |  |  |           |     |        |  |              |  |     |  |                    |
+|  |                       |  |  |           |     |        |  |              |  |     |  |                    `- Sub
+|  |                       |  |  |           |     |        |  |              |  |     |  |                       |
+|  |                       |  |  |           |     |        |  |              |  |     |  |                       +- idx (40) [0]
+|  |                       |  |  |           |     |        |  |              |  |     |  |                       |
+|  |                       |  |  |           |     |        |  |              |  |     |  |                       `- 1.0
+|  |                       |  |  |           |     |        |  |              |  |     |  |
+|  |                       |  |  |           |     |        |  |              |  |     |  `- Pair
+|  |                       |  |  |           |     |        |  |              |  |     |     |
+|  |                       |  |  |           |     |        |  |              |  |     |     +- Pair
+|  |                       |  |  |           |     |        |  |              |  |     |     |  |
+|  |                       |  |  |           |     |        |  |              |  |     |     |  +- 0.0
+|  |                       |  |  |           |     |        |  |              |  |     |     |  |
+|  |                       |  |  |           |     |        |  |              |  |     |     |  `- 1.0
+|  |                       |  |  |           |     |        |  |              |  |     |     |
+|  |                       |  |  |           |     |        |  |              |  |     |     `- Pair
+|  |                       |  |  |           |     |        |  |              |  |     |        |
+|  |                       |  |  |           |     |        |  |              |  |     |        +- Pair
+|  |                       |  |  |           |     |        |  |              |  |     |        |  |
+|  |                       |  |  |           |     |        |  |              |  |     |        |  +- 0.0
+|  |                       |  |  |           |     |        |  |              |  |     |        |  |
+|  |                       |  |  |           |     |        |  |              |  |     |        |  `- 2.0
+|  |                       |  |  |           |     |        |  |              |  |     |        |
+|  |                       |  |  |           |     |        |  |              |  |     |        `- Pair
+|  |                       |  |  |           |     |        |  |              |  |     |           |
+|  |                       |  |  |           |     |        |  |              |  |     |           +- Pair
+|  |                       |  |  |           |     |        |  |              |  |     |           |  |
+|  |                       |  |  |           |     |        |  |              |  |     |           |  +- 0.0
+|  |                       |  |  |           |     |        |  |              |  |     |           |  |
+|  |                       |  |  |           |     |        |  |              |  |     |           |  `- 3.0
+|  |                       |  |  |           |     |        |  |              |  |     |           |
+|  |                       |  |  |           |     |        |  |              |  |     |           `- Pair
+|  |                       |  |  |           |     |        |  |              |  |     |              |
+|  |                       |  |  |           |     |        |  |              |  |     |              +- Pair
+|  |                       |  |  |           |     |        |  |              |  |     |              |  |
+|  |                       |  |  |           |     |        |  |              |  |     |              |  +- 1.0
+|  |                       |  |  |           |     |        |  |              |  |     |              |  |
+|  |                       |  |  |           |     |        |  |              |  |     |              |  `- 2.0
+|  |                       |  |  |           |     |        |  |              |  |     |              |
+|  |                       |  |  |           |     |        |  |              |  |     |              `- Pair
+|  |                       |  |  |           |     |        |  |              |  |     |                 |
+|  |                       |  |  |           |     |        |  |              |  |     |                 +- Pair
+|  |                       |  |  |           |     |        |  |              |  |     |                 |  |
+|  |                       |  |  |           |     |        |  |              |  |     |                 |  +- 2.0
+|  |                       |  |  |           |     |        |  |              |  |     |                 |  |
+|  |                       |  |  |           |     |        |  |              |  |     |                 |  `- 3.0
+|  |                       |  |  |           |     |        |  |              |  |     |                 |
+|  |                       |  |  |           |     |        |  |              |  |     |                 `- BFalse
+|  |                       |  |  |           |     |        |  |              |  |     |
+|  |                       |  |  |           |     |        |  |              |  |     `- e_idx (26) [0]
+|  |                       |  |  |           |     |        |  |              |  |
+|  |                       |  |  |           |     |        |  |              |  `- s (27) [0]
+|  |                       |  |  |           |     |        |  |              |
+|  |                       |  |  |           |     |        |  |              `- Prev
+|  |                       |  |  |           |     |        |  |                 |
+|  |                       |  |  |           |     |        |  |                 +- Substitution List
+|  |                       |  |  |           |     |        |  |                 |
+|  |                       |  |  |           |     |        |  |                 `- LApp
+|  |                       |  |  |           |     |        |  |                    |
+|  |                       |  |  |           |     |        |  |                    +- LApp
+|  |                       |  |  |           |     |        |  |                    |  |
+|  |                       |  |  |           |     |        |  |                    |  +- f (25) [0]
+|  |                       |  |  |           |     |        |  |                    |  |
+|  |                       |  |  |           |     |        |  |                    |  `- Next
+|  |                       |  |  |           |     |        |  |                    |     |
+|  |                       |  |  |           |     |        |  |                    |     `- Add
+|  |                       |  |  |           |     |        |  |                    |        |
+|  |                       |  |  |           |     |        |  |                    |        +- e_idx (26) [0]
+|  |                       |  |  |           |     |        |  |                    |        |
+|  |                       |  |  |           |     |        |  |                    |        `- 1.0
+|  |                       |  |  |           |     |        |  |                    |
+|  |                       |  |  |           |     |        |  |                    `- Next
+|  |                       |  |  |           |     |        |  |                       |
+|  |                       |  |  |           |     |        |  |                       `- s (27) [0]
+|  |                       |  |  |           |     |        |  |
+|  |                       |  |  |           |     |        |  `- 0.0
+|  |                       |  |  |           |     |        |
+|  |                       |  |  |           |     |        `- s (24) [0]
+|  |                       |  |  |           |     |
+|  |                       |  |  |           |     `- old (4) [0]
+|  |                       |  |  |           |
+|  |                       |  |  |           +- new (5) [0]
+|  |                       |  |  |           |
+|  |                       |  |  |           `- Ite
+|  |                       |  |  |              |
+|  |                       |  |  |              +- Lt
+|  |                       |  |  |              |  |
+|  |                       |  |  |              |  +- App
+|  |                       |  |  |              |  |  |
+|  |                       |  |  |              |  |  +- λ
+|  |                       |  |  |              |  |  |  |
+|  |                       |  |  |              |  |  |  +- draw (41) [0]
+|  |                       |  |  |              |  |  |  |
+|  |                       |  |  |              |  |  |  `- Ite
+|  |                       |  |  |              |  |  |     |
+|  |                       |  |  |              |  |  |     +- Lt
+|  |                       |  |  |              |  |  |     |  |
+|  |                       |  |  |              |  |  |     |  +- draw (41) [0]
+|  |                       |  |  |              |  |  |     |  |
+|  |                       |  |  |              |  |  |     |  `- 0.0
+|  |                       |  |  |              |  |  |     |
+|  |                       |  |  |              |  |  |     +- 0.0
+|  |                       |  |  |              |  |  |     |
+|  |                       |  |  |              |  |  |     `- Ite
+|  |                       |  |  |              |  |  |        |
+|  |                       |  |  |              |  |  |        +- Gt
+|  |                       |  |  |              |  |  |        |  |
+|  |                       |  |  |              |  |  |        |  +- draw (41) [0]
+|  |                       |  |  |              |  |  |        |  |
+|  |                       |  |  |              |  |  |        |  `- 1.0
+|  |                       |  |  |              |  |  |        |
+|  |                       |  |  |              |  |  |        +- 1.0
+|  |                       |  |  |              |  |  |        |
+|  |                       |  |  |              |  |  |        `- draw (41) [0]
+|  |                       |  |  |              |  |  |
+|  |                       |  |  |              |  |  `- Norm
+|  |                       |  |  |              |  |     |
+|  |                       |  |  |              |  |     `- Pair
+|  |                       |  |  |              |  |        |
+|  |                       |  |  |              |  |        +- 0.5
+|  |                       |  |  |              |  |        |
+|  |                       |  |  |              |  |        `- 0.25
+|  |                       |  |  |              |  |
+|  |                       |  |  |              |  `- App
+|  |                       |  |  |              |     |
+|  |                       |  |  |              |     +- App
+|  |                       |  |  |              |     |  |
+|  |                       |  |  |              |     |  +- App
+|  |                       |  |  |              |     |  |  |
+|  |                       |  |  |              |     |  |  +- λ
+|  |                       |  |  |              |     |  |  |  |
+|  |                       |  |  |              |     |  |  |  +- old (42) [0]
+|  |                       |  |  |              |     |  |  |  |
+|  |                       |  |  |              |     |  |  |  `- λ
+|  |                       |  |  |              |     |  |  |     |
+|  |                       |  |  |              |     |  |  |     +- new (43) [0]
+|  |                       |  |  |              |     |  |  |     |
+|  |                       |  |  |              |     |  |  |     `- λ
+|  |                       |  |  |              |     |  |  |        |
+|  |                       |  |  |              |     |  |  |        +- temp (44) [0]
+|  |                       |  |  |              |     |  |  |        |
+|  |                       |  |  |              |     |  |  |        `- App
+|  |                       |  |  |              |     |  |  |           |
+|  |                       |  |  |              |     |  |  |           +- λ
+|  |                       |  |  |              |     |  |  |           |  |
+|  |                       |  |  |              |     |  |  |           |  +- x (45) [0]
+|  |                       |  |  |              |     |  |  |           |  |
+|  |                       |  |  |              |     |  |  |           |  `- Pow
+|  |                       |  |  |              |     |  |  |           |     |
+|  |                       |  |  |              |     |  |  |           |     +- 2.71828
+|  |                       |  |  |              |     |  |  |           |     |
+|  |                       |  |  |              |     |  |  |           |     `- x (45) [0]
+|  |                       |  |  |              |     |  |  |           |
+|  |                       |  |  |              |     |  |  |           `- App
+|  |                       |  |  |              |     |  |  |              |
+|  |                       |  |  |              |     |  |  |              +- λ
+|  |                       |  |  |              |     |  |  |              |  |
+|  |                       |  |  |              |     |  |  |              |  +- x (46) [0]
+|  |                       |  |  |              |     |  |  |              |  |
+|  |                       |  |  |              |     |  |  |              |  `- Sub
+|  |                       |  |  |              |     |  |  |              |     |
+|  |                       |  |  |              |     |  |  |              |     +- 0.0
+|  |                       |  |  |              |     |  |  |              |     |
+|  |                       |  |  |              |     |  |  |              |     `- x (46) [0]
+|  |                       |  |  |              |     |  |  |              |
+|  |                       |  |  |              |     |  |  |              `- Div
+|  |                       |  |  |              |     |  |  |                 |
+|  |                       |  |  |              |     |  |  |                 +- Sub
+|  |                       |  |  |              |     |  |  |                 |  |
+|  |                       |  |  |              |     |  |  |                 |  +- App
+|  |                       |  |  |              |     |  |  |                 |  |  |
+|  |                       |  |  |              |     |  |  |                 |  |  +- λ
+|  |                       |  |  |              |     |  |  |                 |  |  |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |  +- s (47) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |  `- Div
+|  |                       |  |  |              |     |  |  |                 |  |  |     |
+|  |                       |  |  |              |     |  |  |                 |  |  |     +- 1.0
+|  |                       |  |  |              |     |  |  |                 |  |  |     |
+|  |                       |  |  |              |     |  |  |                 |  |  |     `- App
+|  |                       |  |  |              |     |  |  |                 |  |  |        |
+|  |                       |  |  |              |     |  |  |                 |  |  |        +- App
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  +- Fix
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |  +- f (48) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |  `- λ
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |     |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |     +- e_idx (49) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |     |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |     `- λ
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |        |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |        +- s (50) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |        |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |        `- Ite
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |           |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |           +- Eq
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |           |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |           |  +- e_idx (49) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |           |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |           |  `- 4.0
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |           |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |           +- 0.0
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |           |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |           `- Add
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              +- App
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  +- App
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  +- λ
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |  +- edge (51) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |  `- λ
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |     |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |     +- s (52) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |     |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |     `- Ite
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        +- App
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  +- App
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |  +- λ
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |  |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |  |  +- p (53) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |  |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |  |  `- λ
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |  |     |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |  |     +- q (54) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |  |     |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |  |     `- And
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |  |        |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |  |        +- Or
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |  |        |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |  |        |  +- p (53) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |  |        |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |  |        |  `- q (54) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |  |        |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |  |        `- Not
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |  |           |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |  |           `- And
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |  |              |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |  |              +- p (53) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |  |              |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |  |              `- q (54) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |  `- App
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     +- App
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  +- Fix
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |  +- f (55) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |  `- λ
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |     |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |     +- l (56) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |     |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |     `- λ
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |        |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |        +- idx (57) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |        |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |        `- Ite
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |           |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |           +- Eq
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |           |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |           |  +- idx (57) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |           |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |           |  `- 0.0
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |           |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |           +- Fst
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |           |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |           |  `- l (56) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |           |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |           `- Prev
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |              |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |              +- Substitution List
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |              |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |              `- LApp
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |                 |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |                 +- LApp
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |                 |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |                 |  +- f (55) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |                 |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |                 |  `- Next
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |                 |     |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |                 |     `- Snd
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |                 |        |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |                 |        `- l (56) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |                 |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |                 `- Next
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |                    |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |                    `- Sub
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |                       |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |                       +- idx (57) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |                       |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |                       `- 1.0
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |  `- s (52) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |     `- Fst
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |        |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |        `- edge (51) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |  `- App
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     +- App
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  +- Fix
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |  +- f (58) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |  `- λ
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |     |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |     +- l (59) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |     |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |     `- λ
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |        |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |        +- idx (60) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |        |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |        `- Ite
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |           |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |           +- Eq
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |           |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |           |  +- idx (60) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |           |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |           |  `- 0.0
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |           |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |           +- Fst
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |           |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |           |  `- l (59) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |           |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |           `- Prev
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |              |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |              +- Substitution List
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |              |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |              `- LApp
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |                 |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |                 +- LApp
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |                 |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |                 |  +- f (58) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |                 |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |                 |  `- Next
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |                 |     |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |                 |     `- Snd
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |                 |        |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |                 |        `- l (59) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |                 |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |                 `- Next
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |                    |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |                    `- Sub
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |                       |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |                       +- idx (60) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |                       |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |                       `- 1.0
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |  `- s (52) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |     `- Snd
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |        |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |        `- edge (51) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        +- 1.0
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |        `- 0.0
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |  `- App
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     +- App
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  +- Fix
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |  +- f (61) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |  `- λ
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |     |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |     +- l (62) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |     |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |     `- λ
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |        |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |        +- idx (63) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |        |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |        `- Ite
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |           |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |           +- Eq
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |           |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |           |  +- idx (63) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |           |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |           |  `- 0.0
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |           |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |           +- Fst
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |           |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |           |  `- l (62) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |           |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |           `- Prev
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |              |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |              +- Substitution List
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |              |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |              `- LApp
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |                 |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |                 +- LApp
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |                 |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |                 |  +- f (61) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |                 |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |                 |  `- Next
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |                 |     |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |                 |     `- Snd
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |                 |        |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |                 |        `- l (62) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |                 |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |                 `- Next
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |                    |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |                    `- Sub
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |                       |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |                       +- idx (63) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |                       |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |                       `- 1.0
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |  `- Pair
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |     |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |     +- Pair
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |     |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |     |  +- 0.0
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |     |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |     |  `- 1.0
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |     |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |     `- Pair
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |        |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |        +- Pair
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |        |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |        |  +- 0.0
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |        |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |        |  `- 2.0
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |        |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |        `- Pair
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |           |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |           +- Pair
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |           |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |           |  +- 0.0
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |           |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |           |  `- 3.0
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |           |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |           `- Pair
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |              |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |              +- Pair
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |              |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |              |  +- 1.0
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |              |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |              |  `- 2.0
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |              |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |              `- Pair
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |                 |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |                 +- Pair
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |                 |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |                 |  +- 2.0
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |                 |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |                 |  `- 3.0
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |                 |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |                 `- BFalse
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |     `- e_idx (49) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |  `- s (50) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |              `- Prev
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |                 |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |                 +- Substitution List
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |                 |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |                 `- LApp
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |                    |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |                    +- LApp
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |                    |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |                    |  +- f (48) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |                    |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |                    |  `- Next
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |                    |     |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |                    |     `- Add
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |                    |        |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |                    |        +- e_idx (49) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |                    |        |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |                    |        `- 1.0
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |                    |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |                    `- Next
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |                       |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |                       `- s (50) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  |
+|  |                       |  |  |              |     |  |  |                 |  |  |        |  `- 0.0
+|  |                       |  |  |              |     |  |  |                 |  |  |        |
+|  |                       |  |  |              |     |  |  |                 |  |  |        `- s (47) [0]
+|  |                       |  |  |              |     |  |  |                 |  |  |
+|  |                       |  |  |              |     |  |  |                 |  |  `- new (43) [0]
+|  |                       |  |  |              |     |  |  |                 |  |
+|  |                       |  |  |              |     |  |  |                 |  `- App
+|  |                       |  |  |              |     |  |  |                 |     |
+|  |                       |  |  |              |     |  |  |                 |     +- λ
+|  |                       |  |  |              |     |  |  |                 |     |  |
+|  |                       |  |  |              |     |  |  |                 |     |  +- s (64) [0]
+|  |                       |  |  |              |     |  |  |                 |     |  |
+|  |                       |  |  |              |     |  |  |                 |     |  `- Div
+|  |                       |  |  |              |     |  |  |                 |     |     |
+|  |                       |  |  |              |     |  |  |                 |     |     +- 1.0
+|  |                       |  |  |              |     |  |  |                 |     |     |
+|  |                       |  |  |              |     |  |  |                 |     |     `- App
+|  |                       |  |  |              |     |  |  |                 |     |        |
+|  |                       |  |  |              |     |  |  |                 |     |        +- App
+|  |                       |  |  |              |     |  |  |                 |     |        |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  +- Fix
+|  |                       |  |  |              |     |  |  |                 |     |        |  |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |  +- f (65) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |  `- λ
+|  |                       |  |  |              |     |  |  |                 |     |        |  |     |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |     +- e_idx (66) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |     |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |     `- λ
+|  |                       |  |  |              |     |  |  |                 |     |        |  |        |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |        +- s (67) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |        |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |        `- Ite
+|  |                       |  |  |              |     |  |  |                 |     |        |  |           |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |           +- Eq
+|  |                       |  |  |              |     |  |  |                 |     |        |  |           |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |           |  +- e_idx (66) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |           |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |           |  `- 4.0
+|  |                       |  |  |              |     |  |  |                 |     |        |  |           |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |           +- 0.0
+|  |                       |  |  |              |     |  |  |                 |     |        |  |           |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |           `- Add
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              +- App
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  +- App
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  +- λ
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |  +- edge (68) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |  `- λ
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |     |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |     +- s (69) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |     |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |     `- Ite
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        +- App
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  +- App
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |  +- λ
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |  |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |  |  +- p (70) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |  |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |  |  `- λ
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |  |     |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |  |     +- q (71) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |  |     |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |  |     `- And
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |  |        |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |  |        +- Or
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |  |        |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |  |        |  +- p (70) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |  |        |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |  |        |  `- q (71) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |  |        |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |  |        `- Not
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |  |           |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |  |           `- And
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |  |              |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |  |              +- p (70) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |  |              |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |  |              `- q (71) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |  `- App
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     +- App
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  +- Fix
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |  +- f (72) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |  `- λ
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |     |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |     +- l (73) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |     |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |     `- λ
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |        |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |        +- idx (74) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |        |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |        `- Ite
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |           |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |           +- Eq
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |           |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |           |  +- idx (74) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |           |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |           |  `- 0.0
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |           |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |           +- Fst
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |           |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |           |  `- l (73) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |           |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |           `- Prev
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |              |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |              +- Substitution List
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |              |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |              `- LApp
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |                 |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |                 +- LApp
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |                 |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |                 |  +- f (72) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |                 |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |                 |  `- Next
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |                 |     |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |                 |     `- Snd
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |                 |        |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |                 |        `- l (73) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |                 |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |                 `- Next
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |                    |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |                    `- Sub
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |                       |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |                       +- idx (74) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |                       |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |                       `- 1.0
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |  `- s (69) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |     `- Fst
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |        |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |        `- edge (68) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |  `- App
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     +- App
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  +- Fix
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |  +- f (75) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |  `- λ
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |     |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |     +- l (76) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |     |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |     `- λ
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |        |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |        +- idx (77) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |        |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |        `- Ite
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |           |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |           +- Eq
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |           |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |           |  +- idx (77) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |           |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |           |  `- 0.0
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |           |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |           +- Fst
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |           |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |           |  `- l (76) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |           |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |           `- Prev
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |              |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |              +- Substitution List
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |              |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |              `- LApp
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |                 |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |                 +- LApp
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |                 |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |                 |  +- f (75) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |                 |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |                 |  `- Next
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |                 |     |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |                 |     `- Snd
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |                 |        |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |                 |        `- l (76) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |                 |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |                 `- Next
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |                    |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |                    `- Sub
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |                       |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |                       +- idx (77) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |                       |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |                       `- 1.0
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |  `- s (69) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |     `- Snd
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |        |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |        `- edge (68) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        +- 1.0
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |        `- 0.0
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |  `- App
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     +- App
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  +- Fix
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |  +- f (78) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |  `- λ
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |     |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |     +- l (79) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |     |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |     `- λ
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |        |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |        +- idx (80) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |        |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |        `- Ite
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |           |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |           +- Eq
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |           |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |           |  +- idx (80) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |           |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |           |  `- 0.0
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |           |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |           +- Fst
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |           |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |           |  `- l (79) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |           |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |           `- Prev
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |              |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |              +- Substitution List
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |              |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |              `- LApp
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |                 |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |                 +- LApp
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |                 |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |                 |  +- f (78) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |                 |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |                 |  `- Next
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |                 |     |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |                 |     `- Snd
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |                 |        |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |                 |        `- l (79) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |                 |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |                 `- Next
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |                    |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |                    `- Sub
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |                       |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |                       +- idx (80) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |                       |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |                       `- 1.0
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |  `- Pair
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |     |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |     +- Pair
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |     |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |     |  +- 0.0
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |     |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |     |  `- 1.0
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |     |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |     `- Pair
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |        |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |        +- Pair
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |        |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |        |  +- 0.0
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |        |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |        |  `- 2.0
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |        |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |        `- Pair
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |           |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |           +- Pair
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |           |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |           |  +- 0.0
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |           |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |           |  `- 3.0
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |           |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |           `- Pair
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |              |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |              +- Pair
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |              |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |              |  +- 1.0
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |              |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |              |  `- 2.0
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |              |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |              `- Pair
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |                 |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |                 +- Pair
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |                 |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |                 |  +- 2.0
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |                 |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |                 |  `- 3.0
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |                 |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |                 `- BFalse
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |     `- e_idx (66) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |  `- s (67) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |              `- Prev
+|  |                       |  |  |              |     |  |  |                 |     |        |  |                 |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |                 +- Substitution List
+|  |                       |  |  |              |     |  |  |                 |     |        |  |                 |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |                 `- LApp
+|  |                       |  |  |              |     |  |  |                 |     |        |  |                    |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |                    +- LApp
+|  |                       |  |  |              |     |  |  |                 |     |        |  |                    |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |                    |  +- f (65) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |                    |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |                    |  `- Next
+|  |                       |  |  |              |     |  |  |                 |     |        |  |                    |     |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |                    |     `- Add
+|  |                       |  |  |              |     |  |  |                 |     |        |  |                    |        |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |                    |        +- e_idx (66) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |                    |        |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |                    |        `- 1.0
+|  |                       |  |  |              |     |  |  |                 |     |        |  |                    |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |                    `- Next
+|  |                       |  |  |              |     |  |  |                 |     |        |  |                       |
+|  |                       |  |  |              |     |  |  |                 |     |        |  |                       `- s (67) [0]
+|  |                       |  |  |              |     |  |  |                 |     |        |  |
+|  |                       |  |  |              |     |  |  |                 |     |        |  `- 0.0
+|  |                       |  |  |              |     |  |  |                 |     |        |
+|  |                       |  |  |              |     |  |  |                 |     |        `- s (64) [0]
+|  |                       |  |  |              |     |  |  |                 |     |
+|  |                       |  |  |              |     |  |  |                 |     `- old (42) [0]
+|  |                       |  |  |              |     |  |  |                 |
+|  |                       |  |  |              |     |  |  |                 `- temp (44) [0]
+|  |                       |  |  |              |     |  |  |
+|  |                       |  |  |              |     |  |  `- old (4) [0]
+|  |                       |  |  |              |     |  |
+|  |                       |  |  |              |     |  `- new (5) [0]
+|  |                       |  |  |              |     |
+|  |                       |  |  |              |     `- temp (6) [0]
+|  |                       |  |  |              |
+|  |                       |  |  |              +- new (5) [0]
+|  |                       |  |  |              |
+|  |                       |  |  |              `- old (4) [0]
+|  |                       |  |  |
+|  |                       |  |  `- v (3) [0]
+|  |                       |  |
+|  |                       |  `- App
+|  |                       |     |
+|  |                       |     +- App
+|  |                       |     |  |
+|  |                       |     |  +- Fix
+|  |                       |     |  |  |
+|  |                       |     |  |  +- f (81) [0]
+|  |                       |     |  |  |
+|  |                       |     |  |  `- λ
+|  |                       |     |  |     |
+|  |                       |     |  |     +- idx (82) [0]
+|  |                       |     |  |     |
+|  |                       |     |  |     `- λ
+|  |                       |     |  |        |
+|  |                       |     |  |        +- s (83) [0]
+|  |                       |     |  |        |
+|  |                       |     |  |        `- Ite
+|  |                       |     |  |           |
+|  |                       |     |  |           +- Eq
+|  |                       |     |  |           |  |
+|  |                       |     |  |           |  +- idx (82) [0]
+|  |                       |     |  |           |  |
+|  |                       |     |  |           |  `- 0.0
+|  |                       |     |  |           |
+|  |                       |     |  |           +- Pair
+|  |                       |     |  |           |  |
+|  |                       |     |  |           |  +- Not
+|  |                       |     |  |           |  |  |
+|  |                       |     |  |           |  |  `- Fst
+|  |                       |     |  |           |  |     |
+|  |                       |     |  |           |  |     `- s (83) [0]
+|  |                       |     |  |           |  |
+|  |                       |     |  |           |  `- Snd
+|  |                       |     |  |           |     |
+|  |                       |     |  |           |     `- s (83) [0]
+|  |                       |     |  |           |
+|  |                       |     |  |           `- Pair
+|  |                       |     |  |              |
+|  |                       |     |  |              +- Fst
+|  |                       |     |  |              |  |
+|  |                       |     |  |              |  `- s (83) [0]
+|  |                       |     |  |              |
+|  |                       |     |  |              `- Prev
+|  |                       |     |  |                 |
+|  |                       |     |  |                 +- Substitution List
+|  |                       |     |  |                 |
+|  |                       |     |  |                 `- LApp
+|  |                       |     |  |                    |
+|  |                       |     |  |                    +- LApp
+|  |                       |     |  |                    |  |
+|  |                       |     |  |                    |  +- f (81) [0]
+|  |                       |     |  |                    |  |
+|  |                       |     |  |                    |  `- Next
+|  |                       |     |  |                    |     |
+|  |                       |     |  |                    |     `- Sub
+|  |                       |     |  |                    |        |
+|  |                       |     |  |                    |        +- idx (82) [0]
+|  |                       |     |  |                    |        |
+|  |                       |     |  |                    |        `- 1.0
+|  |                       |     |  |                    |
+|  |                       |     |  |                    `- Next
+|  |                       |     |  |                       |
+|  |                       |     |  |                       `- Snd
+|  |                       |     |  |                          |
+|  |                       |     |  |                          `- s (83) [0]
+|  |                       |     |  |
+|  |                       |     |  `- App
+|  |                       |     |     |
+|  |                       |     |     +- App
+|  |                       |     |     |  |
+|  |                       |     |     |  +- Fix
+|  |                       |     |     |  |  |
+|  |                       |     |     |  |  +- f (84) [0]
+|  |                       |     |     |  |  |
+|  |                       |     |     |  |  `- λ
+|  |                       |     |     |  |     |
+|  |                       |     |     |  |     +- x (85) [0]
+|  |                       |     |     |  |     |
+|  |                       |     |     |  |     `- λ
+|  |                       |     |     |  |        |
+|  |                       |     |     |  |        +- c (86) [0]
+|  |                       |     |     |  |        |
+|  |                       |     |     |  |        `- Ite
+|  |                       |     |     |  |           |
+|  |                       |     |     |  |           +- And
+|  |                       |     |     |  |           |  |
+|  |                       |     |     |  |           |  +- Geq
+|  |                       |     |     |  |           |  |  |
+|  |                       |     |     |  |           |  |  +- x (85) [0]
+|  |                       |     |     |  |           |  |  |
+|  |                       |     |     |  |           |  |  `- Mul
+|  |                       |     |     |  |           |  |     |
+|  |                       |     |     |  |           |  |     +- c (86) [0]
+|  |                       |     |     |  |           |  |     |
+|  |                       |     |     |  |           |  |     `- Div
+|  |                       |     |     |  |           |  |        |
+|  |                       |     |     |  |           |  |        +- 1.0
+|  |                       |     |     |  |           |  |        |
+|  |                       |     |     |  |           |  |        `- 4.0
+|  |                       |     |     |  |           |  |
+|  |                       |     |     |  |           |  `- Leq
+|  |                       |     |     |  |           |     |
+|  |                       |     |     |  |           |     +- x (85) [0]
+|  |                       |     |     |  |           |     |
+|  |                       |     |     |  |           |     `- Mul
+|  |                       |     |     |  |           |        |
+|  |                       |     |     |  |           |        +- Add
+|  |                       |     |     |  |           |        |  |
+|  |                       |     |     |  |           |        |  +- c (86) [0]
+|  |                       |     |     |  |           |        |  |
+|  |                       |     |     |  |           |        |  `- 1.0
+|  |                       |     |     |  |           |        |
+|  |                       |     |     |  |           |        `- Div
+|  |                       |     |     |  |           |           |
+|  |                       |     |     |  |           |           +- 1.0
+|  |                       |     |     |  |           |           |
+|  |                       |     |     |  |           |           `- 4.0
+|  |                       |     |     |  |           |
+|  |                       |     |     |  |           +- c (86) [0]
+|  |                       |     |     |  |           |
+|  |                       |     |     |  |           `- Prev
+|  |                       |     |     |  |              |
+|  |                       |     |     |  |              +- Substitution List
+|  |                       |     |     |  |              |
+|  |                       |     |     |  |              `- LApp
+|  |                       |     |     |  |                 |
+|  |                       |     |     |  |                 +- LApp
+|  |                       |     |     |  |                 |  |
+|  |                       |     |     |  |                 |  +- f (84) [0]
+|  |                       |     |     |  |                 |  |
+|  |                       |     |     |  |                 |  `- Next
+|  |                       |     |     |  |                 |     |
+|  |                       |     |     |  |                 |     `- x (85) [0]
+|  |                       |     |     |  |                 |
+|  |                       |     |     |  |                 `- Next
+|  |                       |     |     |  |                    |
+|  |                       |     |     |  |                    `- Add
+|  |                       |     |     |  |                       |
+|  |                       |     |     |  |                       +- c (86) [0]
+|  |                       |     |     |  |                       |
+|  |                       |     |     |  |                       `- 1.0
+|  |                       |     |     |  |
+|  |                       |     |     |  `- App
+|  |                       |     |     |     |
+|  |                       |     |     |     +- λ
+|  |                       |     |     |     |  |
+|  |                       |     |     |     |  +- draw (87) [0]
+|  |                       |     |     |     |  |
+|  |                       |     |     |     |  `- Ite
+|  |                       |     |     |     |     |
+|  |                       |     |     |     |     +- Lt
+|  |                       |     |     |     |     |  |
+|  |                       |     |     |     |     |  +- draw (87) [0]
+|  |                       |     |     |     |     |  |
+|  |                       |     |     |     |     |  `- 0.0
+|  |                       |     |     |     |     |
+|  |                       |     |     |     |     +- 0.0
+|  |                       |     |     |     |     |
+|  |                       |     |     |     |     `- Ite
+|  |                       |     |     |     |        |
+|  |                       |     |     |     |        +- Gt
+|  |                       |     |     |     |        |  |
+|  |                       |     |     |     |        |  +- draw (87) [0]
+|  |                       |     |     |     |        |  |
+|  |                       |     |     |     |        |  `- 1.0
+|  |                       |     |     |     |        |
+|  |                       |     |     |     |        +- 1.0
+|  |                       |     |     |     |        |
+|  |                       |     |     |     |        `- draw (87) [0]
+|  |                       |     |     |     |
+|  |                       |     |     |     `- Norm
+|  |                       |     |     |        |
+|  |                       |     |     |        `- Pair
+|  |                       |     |     |           |
+|  |                       |     |     |           +- 0.5
+|  |                       |     |     |           |
+|  |                       |     |     |           `- 0.25
+|  |                       |     |     |
+|  |                       |     |     `- 0.0
+|  |                       |     |
+|  |                       |     `- v (3) [0]
+|  |                       |
+|  |                       `- App
+|  |                          |
+|  |                          +- λ
+|  |                          |  |
+|  |                          |  +- k (88) [0]
+|  |                          |  |
+|  |                          |  `- Div
+|  |                          |     |
+|  |                          |     +- 1.0
+|  |                          |     |
+|  |                          |     `- Add
+|  |                          |        |
+|  |                          |        +- k (88) [0]
+|  |                          |        |
+|  |                          |        `- 1.0
+|  |                          |
+|  |                          `- k (2) [0]
+|  |
+|  `- 0.0
+|
+`- Pair
+   |
+   +- BTrue
+   |
+   `- Pair
+      |
+      +- BTrue
+      |
+      `- Pair
+         |
+         +- BFalse
+         |
+         `- Pair
+            |
+            +- BFalse
+            |
+            `- 0.0
+
+
+Evaluating...
+- with random draws: [0.6,0.3,0.4,1.1,0.1,0.8]
+- using the environment: []
+- up to depth: 0
+
+Result (density = 6.755939677122022e-2):
+VPair (VBVal True) (VPair (VBVal False) (VPair (VBVal True) (VPair (VBVal False) (VVal 0.0))))

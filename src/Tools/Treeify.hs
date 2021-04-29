@@ -46,6 +46,7 @@ instance Treeish Exp where
         Abstr x e           -> Node "λ"         [ toTree x, toTree e ]
         Rec f e             -> Node "Fix"       [ toTree f, toTree e ]
         Mul e1 e2           -> Node "Mul"       [ toTree e1, toTree e2 ]
+        Pow e1 e2           -> Node "Pow"       [ toTree e1, toTree e2 ]
         Div e1 e2           -> Node "Div"       [ toTree e1, toTree e2 ]
         Add e1 e2           -> Node "Add"       [ toTree e1, toTree e2 ]
         Sub e1 e2           -> Node "Sub"       [ toTree e1, toTree e2 ]
