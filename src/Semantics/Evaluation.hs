@@ -103,9 +103,7 @@ eval exp@(Snd e) = eval e >>= \case
 -- Normal distribtion sampling
 eval exp@(Norm e) = eval e >>= \case
     VPair e1 e2 -> case (e1,e2) of
-        (VVal m, VVal v) -> do
-            draw <- performDraw m v
-            trace ("Got " ++ show draw ++ " for " ++ show exp) return draw
+        (VVal m, VVal v) -> performDraw m v
         _ -> throwError "Normal pair does not contain reals"
     _ -> throwError $ "Normal argument not a pair: \n" ++ treeTerm exp
 

@@ -26,14 +26,13 @@ let
     # Initial solution
     init_v ← ([true, [true, [false, [false, 0.0]]]]) ;  
     n ← 4.0 ; # And it's size
-    k_max ← 3.0 ; # Maximum number of iteration
     init_temp ← 1.0 ; # Initial temperature
 
     # List getter
     get ← ( fix f . λ l . λ idx . 
         if (idx = 0.0)
             then fst l
-            else prev ( f ⊙ next (snd l) ⊙ next (idx-1.0) )
+            else prevI ( f ⊙ next (snd l) ⊙ next (idx-1.0) )
     ) ;
 
     # Returns 1.0 if v cuts edge e, 0.0 otherwise
@@ -43,25 +42,24 @@ let
             else 0.0 # Not cut otherwise
     ) ;
 
-    # The evaluation function should be lower for better solutions
-    eval ← ( λ s . 1.0 / (cut_count s) ) ;
-
-    # The evaluation function
-    cut_count ← ( ( fix f . λ e_idx . λ s .
+    # The amount of cuts a solution makes (recurstion over adjacency list)
+    cut_count ← ( fix f . λ e_idx . λ s .
         if ( e_idx = n ) 
             then 0.0 # End of vector
             else (
                 cuts (get graph e_idx) s
-                + ( prev ( f ⊙ next (e_idx + 1.0) ⊙ next s ) )
+                + ( prevI ( f ⊙ next (e_idx + 1.0) ⊙ next s ) )
             )
-        ) 0.0
     ) ;
     
+    # The evaluation function should be lower for better solutions
+    eval ← ( λ s . 1.0 / (cut_count 0.0 s) ) ;
+
     # Flip bit at given idx
     flip_bit ← ( fix f . λ idx . λ s . 
         if (idx = 0.0)
             then ([ ¬(fst s), (snd s) ])
-            else ([ fst s, prev ( f ⊙ next (idx-1.0) ⊙ next (snd s) ) ])
+            else ([ fst s, prevI ( f ⊙ next (idx-1.0) ⊙ next (snd s) ) ])
     ) ;
 
     # Random number (NOT UNIFORM) in [0.0, 1.0]
@@ -78,7 +76,7 @@ let
     rand_idx ← ( ( fix f . λ x . λ c .
         if ( x ≥ (c * (1.0/n)) ) ∧ ( x ≤ ((c+1.0) * (1.0/n)) )
             then c # x falls in the interval for idx c
-            else prev (f ⊙ next x ⊙ next (c+1.0))
+            else prevI (f ⊙ next x ⊙ next (c+1.0))
         ) rand 0.0
     ) ;
 
@@ -106,12 +104,13 @@ let
 
 # The actual algorithm
 in: (
-    fix f . λ k . λ v . 
+    fix f . λ k . λ v . λ k_max .
         if (k = k_max)
             then v # Maximum number of iterations reached
-            else prev ( f 
+            else prevI ( f 
                 ⊙ next ( k + 1.0 ) 
                 ⊙ next ( select v ( mutate v ) ( get_temp k ) )
+                ⊙ next ( k_max ) 
             )
-) 0.0 init_v
+) 0.0 init_v k_max
 
