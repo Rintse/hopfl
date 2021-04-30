@@ -3,7 +3,7 @@
 
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
-module Syntax.Abs where
+module Syntax.Raw.Abs where
 
 import Prelude (Char, Double, Integer, String)
 import qualified Prelude as C (Eq, Ord, Show, Read)
@@ -44,7 +44,8 @@ data BConst = BTrue | BFalse
 
 data Exp
     = Var Ident
-    | Val Double
+    | DVal Double
+    | IVal Integer
     | BVal BConst
     | Next Exp
     | Prev Environment Exp
@@ -53,6 +54,7 @@ data Exp
     | Box Environment Exp
     | BoxI Exp
     | Unbox Exp
+    | Print Exp
     | In Exp
     | Out Exp
     | Fst Exp

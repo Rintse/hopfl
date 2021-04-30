@@ -3,10 +3,10 @@
 
 module Args where
 
-import Syntax.Abs
-import Syntax.ErrM
-import Syntax.Par
-import Syntax.Lex
+import Syntax.Raw.Abs
+import Syntax.Raw.ErrM
+import Syntax.Raw.Par
+import Syntax.Raw.Lex
 
 import System.Console.GetOpt
 import Control.Monad.Except

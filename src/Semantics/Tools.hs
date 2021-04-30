@@ -7,10 +7,14 @@
 module Semantics.Tools where
 
 import Syntax.IdAbs
-import qualified Syntax.Abs as Raw
-import Syntax.ErrM
+import Syntax.Number
+import qualified Syntax.Raw.Abs as Raw
+import Syntax.Raw.ErrM
 import Semantics.Values
 
+import Data.Functor.Foldable.TH
+import Data.Functor.Foldable
+import Data.Functor.Foldable.Monadic
 import Data.HashMap.Lazy as HM
 import Control.Monad.Reader
 import Control.Monad.State
@@ -65,35 +69,51 @@ performDraw m v = gets snd >>= \case
 
             | otherwise -> do
                 modify (\(w, _) -> (w * d, rest))
-                return $ VVal c
+                return $ VVal $ Fract c
     _ -> throwError "Draws list too small"
+
+-- Evaluates powers of values
+evalPow :: (Exp -> EvalMonad Value) -> Exp -> Exp -> EvalMonad Value
+evalPow eval e1 e2 = match2 eval e1 e2 >>= \case
+    (VVal v1, VVal v2) -> return $ VVal $ numPow v1 v2
+
+-- Evaluates divisions of values
+evalDiv :: (Exp -> EvalMonad Value) -> Exp -> Exp -> EvalMonad Value
+evalDiv eval e1 e2 = match2 eval e1 e2 >>= \case
+    (VVal v1, VVal v2) -> return $ VVal $ numDiv v1 v2
 
 -- Helper functions to evaluate boolean and aritmetic expresions
 -- Evaluates a binary arithmetic operation
 evalAExp :: (Exp -> EvalMonad Value) -> Exp 
-         -> (Double -> Double -> Double) -> Exp -> EvalMonad Value
+    -> (Number -> Number -> Number) -> Exp -> EvalMonad Value
 evalAExp f e1 op e2 = match2 f e1 e2 >>= \case
     (VVal d1, VVal d2) -> return $ VVal $ op d1 d2
     other -> throwError $ "Non-real args to arithmetic operator:\n" ++ show other
 
--- Evaluates a binary boolean operation
+-- -- Evaluates a binary boolean operation
 evalBExp :: (Exp -> EvalMonad Value) -> Exp 
          -> (Bool -> Bool -> Bool) -> Exp -> EvalMonad Value
 evalBExp f e1 op e2 = match2 f e1 e2 >>= \case
     (VBVal b1, VBVal b2) -> return $ VBVal $ op b1 b2
     other -> throwError $ "Non-bool args to bool operator:\n" ++ show other
 
--- Evaluates a unary boolean operation
+-- -- Evaluates a unary boolean operation
 evalBExp1 :: (Exp -> EvalMonad Value) 
           -> (Bool -> Bool) -> Exp -> EvalMonad Value
 evalBExp1 f op e = f e >>= \case
     VBVal b -> return $ VBVal $ op b
     other -> throwError $ "Non-bool args to bool operator:\n" ++ show other
 
--- Evaluates a relative operator
+-- -- Evaluates a relative operator
 evalRelop :: (Exp -> EvalMonad Value) -> Exp 
-          -> (Double -> Double -> Bool) -> Exp -> EvalMonad Value
+          -> (Number -> Number -> Bool) -> Exp -> EvalMonad Value
 evalRelop f e1 op e2 = match2 f e1 e2 >>= \case
-    (VVal d1, VVal d2) -> return $ VBVal $ op d1 d2
+    (VVal v1, VVal v2) -> return $ VBVal $ op v1 v2
     other -> throwError $ "Non-real args to relative operator:\n" ++ show other
+
+-- Evluates everything underneath pairs to make it readable
+printV :: (Exp -> EvalMonad Value ) -> Value -> EvalMonad Value
+printV f = anaM $ \case
+    VPair e1 e2 -> EPairF <$> f e1 <*> f e2
+    other -> return $ project other
 

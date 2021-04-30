@@ -11,12 +11,15 @@ module Semantics.Evaluation where
 import Semantics.Substitution
 import Semantics.Tools
 import Syntax.IdAbs
-import qualified Syntax.Abs as Raw
-import Syntax.ErrM
+import qualified Syntax.Raw.Abs as Raw
+import Syntax.Number
 import Semantics.Values
 import Tools.Treeify
 import Tools.VerbPrint
 
+import Data.Functor.Foldable.TH
+import Data.Functor.Foldable
+import Data.Functor.Foldable.Monadic
 import Data.HashMap.Lazy as HM
 import Data.Bifunctor
 import Control.Applicative
@@ -39,8 +42,8 @@ evaluate v prog n s env = do
 
     case runExcept r2 of                        -- Run except to catch errors
         Left s -> putStrLn $ "Evaluation failed:\n" ++ s
-        Right (s, (w,_)) ->
-            putStrLn $ "Result (density = " ++ show w ++ "):\n" ++ show s
+        Right (s, (w,d)) ->
+            putStrLn $ "Result (density = " ++ show w ++ ", " ++ show d ++ "):\n" ++ treeValue s
 
 -- Evaluation function: 
 -- Takes an AST and calculates the result of the program using big step semantics
@@ -55,7 +58,7 @@ eval exp@(Var (Ident v _ _)) = asks (HM.lookup v . fst) >>= \case
 eval exp@(Val v) = return $ VVal v
 
 -- Later modality: do no allow calculation past "depth" nexts
-eval exp@(Next e) = asks snd >>= \x -> 
+eval exp@(Next e) = asks snd >>= \x ->
     if x == 0 then return $ VNext e
     else local (second $ subtract 1) (VNext . toExp <$> eval e)
 
@@ -78,34 +81,27 @@ eval exp@(LApp e1 e2) = match2 eval e1 e2 >>= \case
     (x,y) -> throwError $ "Invalid arguments to LApp:\n" ++ treeTerm exp
 
 -- Pair creation
-eval exp@(Pair e1 e2) = liftA2 VPair (eval e1) (eval e2)
--- eval exp@(Pair e1 e2) = return $ VPair e1 e2
+eval exp@(Pair e1 e2) = return $ VPair e1 e2
 
--- First projection
--- eval exp@(Fst e) = eval e >>= \case
-    -- VPair v1 v2 -> eval v1;
-    -- _ -> throwError $ "Took fst of non-pair " ++ treeTerm exp
-
--- Second projection
--- eval exp@(Snd e) = eval e >>= \case
-    -- VPair v1 v2 -> eval v2
-    -- _ -> throwError $ "Took snd of non-pair " ++ treeTerm exp
 -- First projection
 eval exp@(Fst e) = eval e >>= \case
-    VPair v1 v2 -> return v1;
-    _ -> throwError $ "Took fst of non-pair:\n" ++ treeTerm exp
+    VPair v1 v2 -> eval v1;
+    _ -> throwError $ "Took fst of non-pair " ++ treeTerm exp
 
 -- Second projection
 eval exp@(Snd e) = eval e >>= \case
-    VPair v1 v2 -> return v2
-    _ -> throwError $ "Took snd of non-pair:\n" ++ treeTerm exp
+    VPair v1 v2 -> eval v2
+    _ -> throwError $ "Took snd of non-pair " ++ treeTerm exp
 
 -- Normal distribtion sampling
-eval exp@(Norm e) = eval e >>= \case
+eval exp@(Norm e) = trace "nrom:" eval e >>= \case
     VPair e1 e2 -> case (e1,e2) of
-        (VVal m, VVal v) -> performDraw m v
+        (Val (Fract m), Val (Fract v)) -> performDraw m v
         _ -> throwError "Normal pair does not contain reals"
     _ -> throwError $ "Normal argument not a pair: \n" ++ treeTerm exp
+
+-- Evaluate into lists to make them readable
+eval  exp@(Print e) = eval e >>= printV eval
 
 -- If then else
 eval exp@(Ite b e1 e2) = eval b >>= \case
@@ -145,13 +141,14 @@ eval exp@(Unbox e) = eval e >>= \case
 
 -- Boolean and arithmetic expressions
 eval exp = case exp of
-    BVal v      -> return $ VBVal $ toBool v
     Val v       -> return $ VVal v
-    Pow e1 e2   -> evalAExp eval e1 (**) e2
+    BVal v      -> return $ VBVal $ toBool v
+
+    Pow e1 e2   -> evalPow eval e1 e2
+    Div e1 e2   -> evalDiv eval e1 e2
     Add e1 e2   -> evalAExp eval e1 (+) e2
     Sub e1 e2   -> evalAExp eval e1 (-) e2
     Mul e1 e2   -> evalAExp eval e1 (*) e2
-    Div e1 e2   -> evalAExp eval e1 (/) e2
 
     Not e       -> evalBExp1 eval not e
     And e1 e2   -> evalBExp eval e1 (&&) e2
@@ -162,4 +159,5 @@ eval exp = case exp of
     Gt e1 e2    -> evalRelop eval e1 (>) e2
     Leq e1 e2   -> evalRelop eval e1 (<=) e2
     Geq e1 e2   -> evalRelop eval e1 (>=) e2
+
 

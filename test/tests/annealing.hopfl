@@ -15,27 +15,30 @@ let
     # | \ |     to cut such that the two partitions
     # 3 - 2     are {0, 3} and {1, 2} (4 cuts), as adjacency list:
     graph ← ( [   
-        [0.0,1.0], [
-        [0.0,2.0], [
-        [0.0,3.0], [
-        [1.0,2.0], [
-        [2.0,3.0], false
+        [0,1], [
+        [0,2], [
+        [0,3], [
+        [1,2], [
+        [2,3], 0
     ] ] ] ] ] ) ;
-    n_edges ← 5.0 ;
+    n_edges ← 5 ;
+    n_vertices ← 4 ;
 
     # Initial solution
-    init_v ← ([true, [true, [false, [false, 0.0]]]]) ;  
-    n ← 4.0 ; # And it's size
-    init_temp ← 1.0 ; # Initial temperature
+    init_s ← ([true, [true, [false, [false, 0]]]]) ;  
+    # Optimal solution
+    opt_s ← ([true, [false, [true, [false, 0]]]]) ;  
+    # Initial temperature
+    init_temp ← 1.0 ; 
 
     # List getter
     get ← ( fix f . λ l . λ idx . 
-        if (idx = 0.0)
+        if (idx = 0)
             then fst l
-            else prevI ( f ⊙ next (snd l) ⊙ next (idx-1.0) )
+            else prevI ( f ⊙ next (snd l) ⊙ next (idx-1) )
     ) ;
 
-    # Returns 1.0 if v cuts edge e, 0.0 otherwise
+    # Returns 1.0 if s cuts edge, 0.0 otherwise
     cuts ← ( λ edge . λ s . 
         if ( xor ( get s (fst edge) ) ( get s (snd edge) ) )
             then 1.0 # An edge is cut if its verteces are in different partitions
@@ -44,22 +47,22 @@ let
 
     # The amount of cuts a solution makes (recurstion over adjacency list)
     cut_count ← ( fix f . λ e_idx . λ s .
-        if ( e_idx = n ) 
+        if ( e_idx = n_edges ) 
             then 0.0 # End of vector
             else (
                 cuts (get graph e_idx) s
-                + ( prevI ( f ⊙ next (e_idx + 1.0) ⊙ next s ) )
+                + ( prevI ( f ⊙ next (e_idx + 1) ⊙ next s ) )
             )
     ) ;
     
     # The evaluation function should be lower for better solutions
-    eval ← ( λ s . 1.0 / (cut_count 0.0 s) ) ;
+    eval ← ( λ s . 1.0 / (cut_count 0 s) ) ;
 
     # Flip bit at given idx
     flip_bit ← ( fix f . λ idx . λ s . 
-        if (idx = 0.0)
+        if (idx = 0)
             then ([ ¬(fst s), (snd s) ])
-            else ([ fst s, prevI ( f ⊙ next (idx-1.0) ⊙ next (snd s) ) ])
+            else ([ fst s, prevI ( f ⊙ next (idx-1) ⊙ next (snd s) ) ])
     ) ;
 
     # Random number (NOT UNIFORM) in [0.0, 1.0]
@@ -74,17 +77,14 @@ let
 
     # Function that generates a (NOT UNIFORM) random idx between 0 and n
     rand_idx ← ( ( fix f . λ x . λ c .
-        if ( x ≥ (c * (1.0/n)) ) ∧ ( x ≤ ((c+1.0) * (1.0/n)) )
+        if ( x ≥ ( c * (1/n_vertices) ) ) ∧ ( x ≤ ( (c+1) * (1/n_vertices) ) )
             then c # x falls in the interval for idx c
-            else prevI (f ⊙ next x ⊙ next (c+1.0))
-        ) rand 0.0
+            else prevI (f ⊙ next x ⊙ next (c+1))
+        ) rand 0
     ) ;
 
     # Mutation function, randomly flips one bit in the solution vector
     mutate ← ( flip_bit rand_idx ) ;
-
-    # Gets the temperature for round k
-    get_temp ← ( λ k . init_temp / (k + 1.0) ) ;
 
     # The chance of accepting a neigbour if it is worse
     p_accept_new ← ( λ old . λ new . λ temp . 
@@ -100,17 +100,20 @@ let
                     then new 
                     else old
             )
-    )
+    ) ;
+    
+    # Gets the temperature for round k
+    get_temp ← ( λ k . init_temp / (k + 1) ) 
 
 # The actual algorithm
-in: (
-    fix f . λ k . λ v . λ k_max .
+in: print ( (
+    fix f . λ k . λ k_max . λ s .
         if (k = k_max)
-            then v # Maximum number of iterations reached
+            then mutate s # Maximum number of iterations reached
             else prevI ( f 
                 ⊙ next ( k + 1.0 ) 
-                ⊙ next ( select v ( mutate v ) ( get_temp k ) )
                 ⊙ next ( k_max ) 
+                ⊙ next ( select s ( mutate s ) ( get_temp k ) )
             )
-) 0.0 init_v k_max
+) 0 k_max init_s )
 

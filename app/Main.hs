@@ -1,9 +1,9 @@
 module Main where
 
-import Syntax.Par
+import Syntax.Raw.Par
 import Syntax.IdAbs
-import qualified Syntax.Abs as Raw
-import Syntax.ErrM
+import qualified Syntax.Raw.Abs as Raw
+import Syntax.Raw.ErrM
 import Semantics.Evaluation
 import Tools.VerbPrint
 import Tools.Treeify

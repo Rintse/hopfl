@@ -1,6 +1,5 @@
 #!/bin/sh
 
-cd src
-bnfc -d Syntax.bnf
-rm Syntax/*.bak
-rm Syntax/Test.hs
+cd src && \
+bnfc -p Syntax -d Raw.bnf && \
+rm Syntax/Raw/*.bak Syntax/Raw/Test.hs Syntax/Raw/Doc.txt

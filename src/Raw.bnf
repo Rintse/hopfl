@@ -11,7 +11,7 @@ token       Disj    ('∨' | 'o''r') ;
 token       TNot    ('¬' | '!') ;
 token       TLeq    ('≤' | '<''=') ;
 token       TGeq    ('≥' | '>''=') ;
-token       TLApp   ('⊙' | '(''.'')') ;
+token       TLApp   ('⊙' | '(''*'')') ;
 token       TSub    ('←' | '<''-') ;
 token       TMatch  ('→' | '-''>') ;
 
@@ -21,7 +21,8 @@ BFalse.     BConst  ::= "false" ;
 
 -- Terms
 Var.        Exp12   ::= Ident ;
-Val.        Exp12   ::= Double ;
+DVal.       Exp12   ::= Double ;
+IVal.       Exp12   ::= Integer ;
 BVal.       Exp12   ::= BConst ;
 
 -- Later modality (with applicative function LApp)
@@ -34,8 +35,9 @@ PrevI.      Exp11   ::= "prevI" Exp12;
 
 Box.        Exp11   ::= "box" "{" Environment "}" "." Exp11 ;
 BoxI.       Exp11   ::= "boxI" Exp12 ;
-
 Unbox.      Exp11   ::= "unbox" Exp12 ;
+
+Print.      Exp11   ::= "print" Exp12 ;
 
 -- Recursion
 In.         Exp11   ::= "in" Exp12 ;

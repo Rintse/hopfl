@@ -9,7 +9,8 @@
 
 module Syntax.IdAbs where
 
-import qualified Syntax.Abs as Raw
+import qualified Syntax.Raw.Abs as Raw
+import Syntax.Number
 
 import qualified Data.Set as Set
 import Data.Functor.Foldable.TH
@@ -22,11 +23,12 @@ import Data.List.Index
 import Debug.Trace
 
 data Ident = Ident String Int Int
-  deriving (Eq, Ord, Show, Read)
+    deriving (Eq, Ord, Show, Read)
+
 
 data Exp
     = Var   Ident
-    | Val   Double
+    | Val   Number
     | BVal  Raw.BConst
     | Next  Exp
     | Unbox Exp
@@ -38,6 +40,7 @@ data Exp
     | InR   Exp
     | Norm  Exp
     | Not   Exp
+    | Print Exp
     | App   Exp Exp
     | LApp  Exp Exp
     | Pow   Exp Exp
@@ -106,7 +109,7 @@ getSub (Raw.Ident x) m = Ident x (head $ HM.findWithDefault [0] x m) 0
 -- Gets all free variables in an expression
 getFrees :: Exp -> Set.Set Ident
 getFrees = cata $ \case
-    (ValF _)                -> Set.empty
+    (ValF _)               -> Set.empty
     (VarF _)                -> Set.empty
     (BValF _)               -> Set.empty
     (PrevF (Env l) e)       -> do
@@ -138,7 +141,8 @@ freeList e = do
 -- Transforms the raw syntax tree into a version where the 
 -- idenfiers are made unique with an id and recursion depth tag.
 transform exp = case exp of
-    Raw.Val v           -> return $ Val v
+    Raw.DVal v          -> return $ Val $ Fract v
+    Raw.IVal v          -> return $ Val $ Whole v
     Raw.BVal v          -> return $ BVal v
     Raw.Var v           -> asks (Var . getSub v)
     Raw.PrevE e         -> transform $ Raw.Prev (Raw.Env []) e
@@ -154,6 +158,7 @@ transform exp = case exp of
     Raw.InR e           -> fmap   InR   (transform e)
     Raw.Norm e          -> fmap   Norm  (transform e)
     Raw.Not _ e         -> fmap   Not   (transform e)
+    Raw.Print e         -> fmap   Print (transform e)
     Raw.App e1 e2       -> liftA2 App   (transform e1) (transform e2)
     Raw.LApp e1 _ e2    -> liftA2 LApp  (transform e1) (transform e2)
     Raw.Pair e1 e2      -> liftA2 Pair  (transform e1) (transform e2)
@@ -169,7 +174,7 @@ transform exp = case exp of
     Raw.Gt e1 e2        -> liftA2 Gt    (transform e1) (transform e2)
     Raw.Leq e1 o e2     -> liftA2 Leq   (transform e1) (transform e2)
     Raw.Geq e1 o e2     -> liftA2 Geq   (transform e1) (transform e2)
-    Raw.Ite b e1 e2     -> liftA3 Ite   (transform b)  
+    Raw.Ite b e1 e2     -> liftA3 Ite   (transform b)
                                         (transform e1) (transform e2)
     -- WARNING: Here be binders
     Raw.Box (Raw.Env l) e -> do

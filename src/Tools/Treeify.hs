@@ -25,7 +25,7 @@ instance Treeish Assignment where
 instance Treeish Exp where
     toTree exp = case exp of
         Var x               -> toTree x
-        Val v               -> Node (show v)    []
+        Val v              -> Node (show v)    []
         BVal b              -> Node (show b)    []
         Next e              -> Node "Next"      [ toTree e ]
         Unbox e             -> Node "Unbox"     [ toTree e]
@@ -39,6 +39,7 @@ instance Treeish Exp where
         InR e               -> Node "InR"       [ toTree e ]
         Norm e              -> Node "Norm"      [ toTree e ]
         Not e               -> Node "Not"       [ toTree e ]
+        Print e             -> Node "Print"     [ toTree e ]
         App e1 e2           -> Node "App"       [ toTree e1, toTree e2 ]
         LApp e1 e2          -> Node "LApp"      [ toTree e1, toTree e2 ]
         Pair e1 e2          -> Node "Pair"      [ toTree e1, toTree e2 ]
@@ -58,26 +59,28 @@ instance Treeish Exp where
         And e1 e2           -> Node "And"       [ toTree e1, toTree e2 ]
         Or e1 e2            -> Node "Or"        [ toTree e1, toTree e2 ]
         Match e x1 e1 x2 e2 -> Node "Match"     [ toTree e,
-                                                  toTree x1, toTree e1, 
+                                                  toTree x1, toTree e1,
                                                   toTree x2, toTree e2 ]
+
+instance Treeish Value where
+    toTree val = case val of
+        VVal v      -> Node (show v)[ ]
+        VBVal b     -> Node (show b)[ ]
+        VPair t1 t2 -> Node "VPair" [ toTree t1, toTree t2 ]
+        EPair v1 v2 -> Node "Pair"  [ toTree v1, toTree v2 ]
+        VIn t       -> Node "In"    [ toTree t ]
+        VInL t      -> Node "InL"   [ toTree t ]
+        VInR t      -> Node "InR"   [ toTree t ]
+        VNext t     -> Node "Next"  [ toTree t ]
+        VOut t      -> Node "Out"   [ toTree t ]
+        VThunk t    -> Node "Thunk" [ toTree t ]
+        VBox l t    -> Node "Box"   [ toTree t ]
+
+treeValue :: Value -> String
+treeValue v = drawTree $ toTree v
 
 treeTerm :: Exp -> String
 treeTerm e = drawTree $ toTree e
-
-treeValue :: Value -> String
-treeValue val = ( case val of
-    VVal v      -> show val
-    VBVal b     -> show val
-    VPair t1 t2 -> "VPair:\n" ++ treeValue t1 ++ treeValue t2
-    -- VPair t1 t2 -> "VPair:\n" ++ treeTerm t1 ++ treeTerm t2
-    VIn t       -> "VIn:\n" ++ treeTerm t
-    VInL t      -> "VInL:\n" ++ treeTerm t
-    VInR t      -> "VInR:\n" ++ treeTerm t
-    VNext t     -> "VNext:\n" ++ treeTerm t
-    VOut t      -> "VOut:\n" ++ treeTerm t
-    VThunk t    -> "VThunk:\n" ++ treeTerm t
-    VBox l t    -> "VBox:\n" ++ treeTerm t
-    ) ++ "\n"
 
 showProg :: Bool -> Exp -> IO ()
 showProg v prog = do

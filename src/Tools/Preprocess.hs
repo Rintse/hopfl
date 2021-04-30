@@ -2,7 +2,7 @@
 {-# LANGUAGE LambdaCase #-}
 module Tools.Preprocess where
 
-import Syntax.Abs
+import Syntax.Raw.Abs
 import Syntax.AbsF
 import Semantics.Substitution
 

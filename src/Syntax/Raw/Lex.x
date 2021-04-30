@@ -3,7 +3,7 @@
 {
 {-# OPTIONS -fno-warn-incomplete-patterns #-}
 {-# OPTIONS_GHC -w #-}
-module Syntax.Lex where
+module Syntax.Raw.Lex where
 
 import qualified Data.Bits
 import Data.Word (Word8)
@@ -38,7 +38,7 @@ $white+ ;
     { tok (\p s -> PT p (eitherResIdent (T_TLeq . share) s)) }
 \≥ | \> \=
     { tok (\p s -> PT p (eitherResIdent (T_TGeq . share) s)) }
-\⊙ | \( \. \)
+\⊙ | \( \* \)
     { tok (\p s -> PT p (eitherResIdent (T_TLApp . share) s)) }
 \← | \< \-
     { tok (\p s -> PT p (eitherResIdent (T_TSub . share) s)) }
@@ -49,7 +49,8 @@ $l $i*
     { tok (\p s -> PT p (eitherResIdent (TV . share) s)) }
 
 
-
+$d+
+    { tok (\p s -> PT p (TI $ share s))    }
 $d+ \. $d+ (e (\-)? $d+)?
     { tok (\p s -> PT p (TD $ share s)) }
 
@@ -138,7 +139,7 @@ eitherResIdent tv s = treeFind resWords
                               | s == a = t
 
 resWords :: BTree
-resWords = b "fix" 20 (b "<" 10 (b "," 5 (b "*" 3 (b ")" 2 (b "(" 1 N N) N) (b "+" 4 N N)) (b "/" 8 (b "." 7 (b "-" 6 N N) N) (b ";" 9 N N))) (b "^" 15 (b "[" 13 (b ">" 12 (b "=" 11 N N) N) (b "]" 14 N N)) (b "else" 18 (b "boxI" 17 (b "box" 16 N N) N) (b "false" 19 N N)))) (b "normal" 30 (b "inL" 25 (b "in" 23 (b "if" 22 (b "fst" 21 N N) N) (b "in:" 24 N N)) (b "match" 28 (b "let" 27 (b "inR" 26 N N) N) (b "next" 29 N N))) (b "then" 35 (b "prevI" 33 (b "prev" 32 (b "out" 31 N N) N) (b "snd" 34 N N)) (b "{" 38 (b "unbox" 37 (b "true" 36 N N) N) (b "}" 39 N N))))
+resWords = b "fst" 21 (b "=" 11 (b "-" 6 (b "*" 3 (b ")" 2 (b "(" 1 N N) N) (b "," 5 (b "+" 4 N N) N)) (b ";" 9 (b "/" 8 (b "." 7 N N) N) (b "<" 10 N N))) (b "box" 16 (b "]" 14 (b "[" 13 (b ">" 12 N N) N) (b "^" 15 N N)) (b "false" 19 (b "else" 18 (b "boxI" 17 N N) N) (b "fix" 20 N N)))) (b "out" 31 (b "inR" 26 (b "in:" 24 (b "in" 23 (b "if" 22 N N) N) (b "inL" 25 N N)) (b "next" 29 (b "match" 28 (b "let" 27 N N) N) (b "normal" 30 N N))) (b "then" 36 (b "print" 34 (b "prevI" 33 (b "prev" 32 N N) N) (b "snd" 35 N N)) (b "{" 39 (b "unbox" 38 (b "true" 37 N N) N) (b "}" 40 N N))))
    where b s n = let bs = s
                  in  B bs (TS bs n)
 
