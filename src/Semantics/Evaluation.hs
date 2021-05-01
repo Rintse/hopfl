@@ -17,6 +17,7 @@ import Semantics.Values
 import Tools.Treeify
 import Tools.VerbPrint
 
+import Data.Tree
 import Data.Functor.Foldable.TH
 import Data.Functor.Foldable
 import Data.Functor.Foldable.Monadic
@@ -39,26 +40,30 @@ evaluate v prog n s env = do
     let toEval = evalMonad (eval prog)          -- Put program into eval monad
     let r1 = runReaderT toEval (mkEnv env, n)   -- Run the reader (env, depth)
     let r2 = runStateT r1 (1.0, s)              -- Run the state (density, draws)
+    let r3 = runExcept r2                       -- Run except to catch errors
 
-    case runExcept r2 of                        -- Run except to catch errors
+    case r3 of
         Left s -> putStrLn $ "Evaluation failed:\n" ++ s
         Right (s, (w,d)) ->
-            putStrLn $ "Result (density = " ++ show w ++ ", " ++ show d ++ "):\n" ++ treeValue s
+            putStrLn $ "Result (density = " 
+                ++ show w ++ ", " 
+                ++ show d ++ "):\n" 
+                ++ treeValue s
 
 -- Evaluation function: 
 -- Takes an AST and calculates the result of the program using big step semantics
 eval :: Exp -> EvalMonad Value
 
 -- Variables
-eval exp@(Var (Ident v _ _)) = asks (HM.lookup v . fst) >>= \case
+eval exp@(Var (Ident v _ _)) = trace "IDENT" asks (HM.lookup v . fst) >>= \case
     Just (Val v) -> return $ VVal v
     Nothing -> throwError $ "Undefined free variable: " ++ show v
 
 -- Values (reals)
-eval exp@(Val v) = return $ VVal v
+eval exp@(Val v) = trace "VAL" return $ VVal v
 
 -- Later modality: do no allow calculation past "depth" nexts
-eval exp@(Next e) = asks snd >>= \x ->
+eval exp@(Next e) = trace "NEXT" asks snd >>= \x ->
     if x == 0 then return $ VNext e
     else local (second $ subtract 1) (VNext . toExp <$> eval e)
 
@@ -71,43 +76,49 @@ eval exp@(Out e) = eval e >>= \case
     _ -> throwError $ " Out on non-In:\n" ++ treeTerm exp
 
 -- Function application
-eval exp@(App e1 e2) = match2 eval e1 e2 >>= \case
-    (VThunk (Abstr x e), r2) -> eval $ substitute e x $ toExp r2
+eval exp@(App e1 e2) = trace "APP" match2 eval e1 e2 >>= \case
+    (VThunk (Abstr x e), r2) -> 
+        trace ("Substituting: " ++ show x ++ " with:\n" ++ treeValue r2 ++ "\nin:\n" ++ treeTerm e) (do
+            let sub = substitute e x $ toExp r2 
+            trace ("Sub result:\n" ++ show sub) eval sub )
     _ -> throwError $ " Application on non-function:\n" ++ treeTerm exp
 
 -- Delayed function application
-eval exp@(LApp e1 e2) = match2 eval e1 e2 >>= \case
+eval exp@(LApp e1 e2) = trace "DAPP" match2 eval e1 e2 >>= \case
     (VNext t, VNext s) -> eval $ Next $ App t s
     (x,y) -> throwError $ "Invalid arguments to LApp:\n" ++ treeTerm exp
 
 -- Pair creation
-eval exp@(Pair e1 e2) = return $ VPair e1 e2
+eval exp@(Pair e1 e2) = trace "PAIR" return $ VPair e1 e2
 
 -- First projection
-eval exp@(Fst e) = eval e >>= \case
+eval exp@(Fst e) = trace "FST" eval e >>= \case
     VPair v1 v2 -> eval v1;
     _ -> throwError $ "Took fst of non-pair " ++ treeTerm exp
 
 -- Second projection
-eval exp@(Snd e) = eval e >>= \case
+eval exp@(Snd e) = trace "SND" eval e >>= \case
     VPair v1 v2 -> eval v2
     _ -> throwError $ "Took snd of non-pair " ++ treeTerm exp
 
 -- Normal distribtion sampling
-eval exp@(Norm e) = trace "nrom:" eval e >>= \case
+eval exp@(Norm e) = trace "norm:" eval e >>= \case
     VPair e1 e2 -> case (e1,e2) of
         (Val (Fract m), Val (Fract v)) -> performDraw m v
         _ -> throwError "Normal pair does not contain reals"
     _ -> throwError $ "Normal argument not a pair: \n" ++ treeTerm exp
 
--- Evaluate into lists to make them readable
-eval  exp@(Print e) = eval e >>= printV eval
+-- Evaluate into values
+eval exp@(Print e) = eval e >>= printV eval
 
 -- If then else
-eval exp@(Ite b e1 e2) = eval b >>= \case
-    VBVal True  -> eval e1
-    VBVal False -> eval e2
-    _ -> throwError $ "If with non boolean condition:\n" ++ treeTerm exp
+eval exp@(Ite b e1 e2) = trace ("BOOL:\n" ++ treeTerm b) (do 
+    bool <- eval b
+    trace ("Was: " ++ show bool) (
+        case bool of
+            VBVal True  -> eval e1
+            VBVal False -> trace ("ToEval: " ++ show (take 100 (flatten (toTree e2)) )) eval e2
+            _ -> throwError $ "If with non boolean condition:\n" ++ treeTerm exp))
 
 -- Coproduct injection
 eval exp@(InL e) = return $ VInL e
@@ -120,10 +131,12 @@ eval exp@(Match e x e1 y e2) = eval e >>= \case
     _       -> throwError $ "Match on non-coproduct:\n" ++ treeTerm exp
 
 -- Function abstraction
-eval exp@(Abstr x e) = return $ VThunk exp
+eval exp@(Abstr x e) = trace "ABSTR" return $ VThunk exp
 
 -- Recursion
-eval exp@(Rec x e) = eval $ substitute e x $ Next (recName exp)
+eval exp@(Rec x e) = trace "REC" (do 
+    test <- eval $ substitute e x $ Next $ recName exp
+    trace ("Rec result:\n" ++ treeValue test) return test)
 
 -- Prev: next inverse
 -- Empty substitution list, simply remove the next
@@ -140,7 +153,7 @@ eval exp@(Unbox e) = eval e >>= \case
     _ -> throwError $ "Unbox on non-box:\n" ++ treeTerm exp
 
 -- Boolean and arithmetic expressions
-eval exp = case exp of
+eval exp = trace "OTHER (A/B/ROP)" (case exp of
     Val v       -> return $ VVal v
     BVal v      -> return $ VBVal $ toBool v
 
@@ -158,6 +171,6 @@ eval exp = case exp of
     Lt e1 e2    -> evalRelop eval e1 (<) e2
     Gt e1 e2    -> evalRelop eval e1 (>) e2
     Leq e1 e2   -> evalRelop eval e1 (<=) e2
-    Geq e1 e2   -> evalRelop eval e1 (>=) e2
+    Geq e1 e2   -> evalRelop eval e1 (>=) e2)
 
 

@@ -130,12 +130,8 @@ idAssign (Ident x _ _) = Raw.Assign
 
 -- Returns the identity substitution list for all free variables
 -- in term e. Used in boxF and prevF
-freeList :: Raw.Exp -> IdMonad Raw.Environment
-freeList e = do
-    renamed <- transform e
-    let frees = Set.toList $ getFrees renamed
-    let list = Prelude.map idAssign frees
-    return $ Raw.Env list
+freeList :: Raw.Exp -> Raw.Environment
+freeList e = Raw.Env $ Prelude.map idAssign $ Set.toList $ getFrees (idExp e)
 
 -- TODO check for faulty programs?
 -- Transforms the raw syntax tree into a version where the 
@@ -146,8 +142,8 @@ transform exp = case exp of
     Raw.BVal v          -> return $ BVal v
     Raw.Var v           -> asks (Var . getSub v)
     Raw.PrevE e         -> transform $ Raw.Prev (Raw.Env []) e
-    Raw.BoxI e          -> freeList e >>= transform . (`Raw.Box` e)
-    Raw.PrevI e         -> freeList e >>= transform . (`Raw.Prev` e)
+    Raw.BoxI e          -> transform $ Raw.Box (freeList e) e
+    Raw.PrevI e         -> transform $ Raw.Prev (freeList e) e
     Raw.Unbox e         -> fmap   Unbox (transform e)
     Raw.Next e          -> fmap   Next  (transform e)
     Raw.In e            -> fmap   In    (transform e)

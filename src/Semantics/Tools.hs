@@ -111,7 +111,7 @@ evalRelop f e1 op e2 = match2 f e1 e2 >>= \case
     (VVal v1, VVal v2) -> return $ VBVal $ op v1 v2
     other -> throwError $ "Non-real args to relative operator:\n" ++ show other
 
--- Evluates everything underneath pairs to make it readable
+-- Evluates everything underneath values to make it readable
 printV :: (Exp -> EvalMonad Value ) -> Value -> EvalMonad Value
 printV f = anaM $ \case
     VPair e1 e2 -> EPairF <$> f e1 <*> f e2

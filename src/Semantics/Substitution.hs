@@ -7,6 +7,7 @@
 module Semantics.Substitution where
 
 import Syntax.IdAbs
+import Syntax.Number
 
 import Data.Functor.Foldable.TH
 import Data.Functor.Foldable
@@ -32,15 +33,15 @@ recNameL (Env l) = Env $ Prelude.map rec1 l
 -- Renames all variables in body of rec statement to avoid
 -- faulty application substitution in folded out rec terms
 recName :: Exp -> Exp
-recName = ana $ \case
-    Var (Ident x 0 d)   -> VarF $   Ident x 0 d -- Free variable
-    Var v               -> VarF $   incDepth v -- Not free, increment
-    Prev l e            -> PrevF    (recNameL l) e
-    Box l e             -> BoxF     (recNameL l) e
-    Abstr x e           -> AbstrF   (incDepth x) e
-    Rec x e             -> RecF     (incDepth x) e
-    Match e x l y r     -> MatchF e (incDepth x) l (incDepth y) r
-    other               -> project other
+recName = ana go where
+    go (Var (Ident x 0 d))   = VarF $   Ident x 0 d -- Free variable
+    go (Var v            )   = VarF $   incDepth v -- Not free, increment
+    go (Prev l e         )   = PrevF    (recNameL l) e
+    go (Box l e          )   = BoxF     (recNameL l) e
+    go (Abstr x e        )   = AbstrF   (incDepth x) e
+    go (Rec x e          )   = RecF     (incDepth x) e
+    go (Match e x l y r  )   = MatchF e (incDepth x) l (incDepth y) r
+    go other                = project other
 
 -- Performs substitution
 -- Variables are the same if they have the same name, id and depth
@@ -56,11 +57,12 @@ substL (Env l) = Env <$> mapM (\(Assign x t) -> Assign x <$> subst t) l
 
 -- Substitutes, in exp, x for s
 subst :: Exp -> Reader (Ident, Exp) Exp
-subst = anaM $ \case
-    Var x           -> asks (project . doSub x)
-    Prev l e        -> PrevF <$> substL l <*> return e
-    Box l e         -> BoxF <$> substL l <*> return e
-    other           -> return $ project other
+subst = apoM go where
+    go :: Exp -> Reader (Ident, Exp) (ExpF (Either Exp Exp))
+    go (Var x)  = asks (fmap Left . project . doSub x)
+    go (Prev l e) =  PrevF <$> substL l <*> return (Right e)
+    go (Box l e) = BoxF <$> substL l <*> return (Right e)
+    go other = return $ Right <$> project other
 
 -- Substitutes in exp, s for x
 substitute :: Exp -> Ident -> Exp -> Exp

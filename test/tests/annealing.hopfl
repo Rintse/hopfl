@@ -76,11 +76,12 @@ let
     ) ;
 
     # Function that generates a (NOT UNIFORM) random idx between 0 and n
-    rand_idx ← ( ( fix f . λ x . λ c .
-        if ( x ≥ ( c * (1/n_vertices) ) ) ∧ ( x ≤ ( (c+1) * (1/n_vertices) ) )
-            then c # x falls in the interval for idx c
-            else prevI (f ⊙ next x ⊙ next (c+1))
-        ) rand 0
+    rand_idx ← ( ( fix f . λ gen . λ n . λ c . λ inc .
+        if ( n = (n_vertices-1) ) then n else (  # Catch rounding errors
+            if ( gen ≥ c ) ∧ ( gen < ( c + inc ) )
+                then n # x falls in the interval for idx n
+                else prevI (f ⊙ next gen ⊙ next (n+1) ⊙ next (c+inc) ⊙ next inc)
+        ) ) rand 0 0.0 (1 / n_vertices)
     ) ;
 
     # Mutation function, randomly flips one bit in the solution vector
@@ -105,15 +106,31 @@ let
     # Gets the temperature for round k
     get_temp ← ( λ k . init_temp / (k + 1) ) 
 
-# The actual algorithm
+# in:
+    # ( fix f . λ s . λ k . if (k = k_max)
+        # then s
+        # else prevI (f (*) next (flip_bit 1 s) (*) next (k+1))
+    # ) init_s 0
+
 in: print ( (
-    fix f . λ k . λ k_max . λ s .
+    fix f . λ k . λ s .
         if (k = k_max)
-            then mutate s # Maximum number of iterations reached
+            then s # Maximum number of iterations reached
             else prevI ( f 
-                ⊙ next ( k + 1.0 ) 
-                ⊙ next ( k_max ) 
+                ⊙ next ( k + 1 ) 
                 ⊙ next ( select s ( mutate s ) ( get_temp k ) )
             )
-) 0 k_max init_s )
+) 0 init_s )
+
+# The actual algorithm
+# in: print ( (
+    # fix f . λ k . λ k_max . λ s .
+        # if (k = k_max)
+            # then mutate s # Maximum number of iterations reached
+            # else prevI ( f 
+                # ⊙ next ( k + 1.0 ) 
+                # ⊙ next ( k_max ) 
+                # ⊙ next ( select s ( mutate s ) ( get_temp k ) )
+            # )
+# ) 0 k_max init_s )
 
