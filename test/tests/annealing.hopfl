@@ -106,12 +106,6 @@ let
     # Gets the temperature for round k
     get_temp ← ( λ k . init_temp / (k + 1) ) 
 
-# in:
-    # ( fix f . λ s . λ k . if (k = k_max)
-        # then s
-        # else prevI (f (*) next (flip_bit 1 s) (*) next (k+1))
-    # ) init_s 0
-
 in: print ( (
     fix f . λ k . λ s .
         if (k = k_max)
@@ -121,16 +115,4 @@ in: print ( (
                 ⊙ next ( select s ( mutate s ) ( get_temp k ) )
             )
 ) 0 init_s )
-
-# The actual algorithm
-# in: print ( (
-    # fix f . λ k . λ k_max . λ s .
-        # if (k = k_max)
-            # then mutate s # Maximum number of iterations reached
-            # else prevI ( f 
-                # ⊙ next ( k + 1.0 ) 
-                # ⊙ next ( k_max ) 
-                # ⊙ next ( select s ( mutate s ) ( get_temp k ) )
-            # )
-# ) 0 k_max init_s )
 
