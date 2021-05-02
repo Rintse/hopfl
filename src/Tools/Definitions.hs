@@ -1,6 +1,5 @@
-
 {-# LANGUAGE LambdaCase #-}
-module Tools.Preprocess where
+module Tools.Definitions where
 
 import Syntax.Raw.Abs
 import Syntax.AbsF

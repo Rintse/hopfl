@@ -1,11 +1,11 @@
 module Main where
 
+import Args
 import Syntax.IdAbs
 import Semantics.Evaluation
 import Tools.VerbPrint
 import Tools.Treeify
-import Tools.Preprocess
-import Args
+import Tools.Definitions
 import Syntax.Parse
 
 import Control.Monad.Reader
@@ -37,14 +37,13 @@ main = do
 
     -- Parse input
     prog <- input >>= parse verb
-
     -- Preprocess definitions
-    let exp = handleDefs prog
-
+    let defd = handleDefs prog
     -- Annotate identifiers with a unique id
-    let annotated = idExp exp
+    let annotated = idExp defd
+    
+    -- Show the result
     showProg verb annotated
-
     -- Evaluate if requested
     when eval $ evaluate verb annotated depth draws env
 

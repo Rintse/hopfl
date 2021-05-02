@@ -33,7 +33,7 @@ makeBaseFunctor ''Value
 fromBool :: Bool -> Raw.BConst
 fromBool b = if b then Raw.BTrue else Raw.BFalse
 toBool :: Raw.BConst -> Bool
-toBool b = case b of
+toBool = \case
     Raw.BTrue -> True
     Raw.BFalse -> False
 

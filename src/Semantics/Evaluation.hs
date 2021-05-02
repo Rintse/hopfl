@@ -149,8 +149,8 @@ eval exp = case exp of
     Val v       -> return $ VVal v
     BVal v      -> return $ VBVal $ toBool v
 
-    Pow e1 e2   -> evalPow eval e1 e2
-    Div e1 e2   -> evalDiv eval e1 e2
+    Pow e1 e2   -> evalAExp eval e1 numPow e2
+    Div e1 e2   -> evalAExp eval e1 numDiv e2
     Add e1 e2   -> evalAExp eval e1 (+) e2
     Sub e1 e2   -> evalAExp eval e1 (-) e2
     Mul e1 e2   -> evalAExp eval e1 (*) e2

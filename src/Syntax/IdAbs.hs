@@ -22,10 +22,8 @@ import qualified Data.HashMap.Lazy as HM
 import Data.List.Index
 import Debug.Trace
 
-data Ident = Ident String Int Int
-    deriving (Eq, Ord, Show, Read)
-
-
+-- Better expression data type that removes unnecessary data, desugars
+-- some expressions, and allows variables to be annotated with identifiers
 data Exp
     = Var   Ident
     | Val   Number
@@ -62,6 +60,9 @@ data Exp
     | Box   Environment Exp
     | Prev  Environment Exp
     | Match Exp Ident Exp Ident Exp
+    deriving (Eq, Ord, Show, Read)
+
+data Ident = Ident String Int Int
     deriving (Eq, Ord, Show, Read)
 
 data Assignment = Assign Ident Exp

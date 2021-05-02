@@ -16,9 +16,10 @@ myLLexer = myLexer
 type ParseMonad a = IO (Either SomeException a)
 
 -- Custom parsing exception
-data ParseException = DrawListException 
-                    | EnvironmentException
-                    | DepthException
+data ParseException 
+    = DrawListException 
+    | EnvironmentException
+    | DepthException
    deriving (Show, Typeable)
 instance Exception ParseException
 

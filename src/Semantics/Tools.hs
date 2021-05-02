@@ -34,14 +34,15 @@ newtype EvalMonad a = EvalMonad {
 -- Environment as hashmap from names to values
 type Env = HashMap String Exp
 
+
 -- Transform the environment AST into a hashmap
 mkEnv :: Raw.Environment -> Env
 mkEnv (Raw.Env e) = fromList $ fmap mkAssign e
     where mkAssign (Raw.Assign (Raw.Ident x) _ exp) = (x, idExp exp)
 
 printEnv :: Env -> String
-printEnv m = show $ Prelude.map (\x -> 
-    fst x ++ "=" ++ case snd x of 
+printEnv m = show $ Prelude.map 
+    (\x -> fst x ++ "=" ++ case snd x of 
         Val v -> show v
     ) (toList m)
 
@@ -71,16 +72,6 @@ performDraw m v = gets snd >>= \case
                 modify (\(w, _) -> (w * d, rest))
                 return $ VVal $ Fract c
     _ -> throwError "Draws list too small"
-
--- Evaluates powers of values
-evalPow :: (Exp -> EvalMonad Value) -> Exp -> Exp -> EvalMonad Value
-evalPow eval e1 e2 = match2 eval e1 e2 >>= \case
-    (VVal v1, VVal v2) -> return $ VVal $ numPow v1 v2
-
--- Evaluates divisions of values
-evalDiv :: (Exp -> EvalMonad Value) -> Exp -> Exp -> EvalMonad Value
-evalDiv eval e1 e2 = match2 eval e1 e2 >>= \case
-    (VVal v1, VVal v2) -> return $ VVal $ numDiv v1 v2
 
 -- Helper functions to evaluate boolean and aritmetic expresions
 -- Evaluates a binary arithmetic operation
