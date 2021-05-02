@@ -9,6 +9,8 @@ let
     exp ← (λ x . e ^ x) ;
     neg ← (λ x . 0.0 - x) ;
     xor ← ( λ p . λ q . ( p ∨ q ) ∧ ¬ ( p ∧ q ) ) ;
+    head ← ( λ s . fst (out ( unbox s ) ) );
+    tail ← ( λ s . boxI ( prevI ( snd ( out ( ( unbox s ) ) ) ) ) );
 
     # We want to optimize for the following graph:
     # 0 - 1     Here the optimal solution is obviously
@@ -104,15 +106,20 @@ let
     ) ;
     
     # Gets the temperature for round k
-    get_temp ← ( λ k . init_temp / (k + 1) ) 
+    get_temp ← ( λ k . init_temp / (k + 1) ) ; 
 
-in: print ( (
-    fix f . λ k . λ s .
-        if (k = k_max)
-            then s # Maximum number of iterations reached
-            else prevI ( f 
-                ⊙ next ( k + 1 ) 
-                ⊙ next ( select s ( mutate s ) ( get_temp k ) )
-            )
-) 0 init_s )
+    # The optimization stream
+    opt_stream ← ( boxI ( ( fix f . λ k . λ s . in (
+        [ s, f ⊙ next ( k + 1 ) 
+               ⊙ next ( select s ( mutate s ) ( get_temp k ) ) 
+        ] ) ) 0 init_s )
+    ) ;
 
+    # Get the result at iteration it
+    get_result ← ( fix f . λ idx . λ stream .
+        if (idx = 0)
+            then head stream
+            else prevI ( f ⊙ next (idx - 1) ⊙ next (tail stream) )
+    )
+
+in: print ( get_result iteration opt_stream )

@@ -4,33 +4,17 @@
 module Args where
 
 import Syntax.Raw.Abs
-import Syntax.Raw.ErrM
-import Syntax.Raw.Par
-import Syntax.Raw.Lex
+import Syntax.Parse
 
 import System.Console.GetOpt
-import Control.Monad.Except
 import Control.Exception
 import System.IO as IO 
 import System.Exit
 import System.Environment
 import Data.Char
-import Data.Typeable
 import Data.List.Split
 import Text.Read (readMaybe)
 import Data.Maybe
-
-type ParseMonad a = IO (Either SomeException a)
-
--- Custom parsing exception
-data ParseException = DrawListException 
-                    | EnvironmentException
-                    | DepthException
-   deriving (Show, Typeable)
-instance Exception ParseException
-
-type ParseFun a = [Token] -> Err a
-myLLexer = myLexer
 
 -- The option list
 data Options = Options
@@ -60,12 +44,6 @@ readFile arg opt = do
             putStrLn $ "Error opening file:\n" ++ show ex
             exitFailure
         Right content -> return opt { optInput = return content }
-
--- Parses the environment if such an argument is given
-parseEnv :: String -> IO Environment
-parseEnv s = case pEnvironment (myLLexer s) of 
-    Bad s -> throw EnvironmentException
-    Ok ev -> return ev
 
 readEnv :: String -> Options -> IO Options
 readEnv arg opt = do

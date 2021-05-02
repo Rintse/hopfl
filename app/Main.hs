@@ -1,42 +1,31 @@
 module Main where
 
-import Syntax.Raw.Par
 import Syntax.IdAbs
-import qualified Syntax.Raw.Abs as Raw
-import Syntax.Raw.ErrM
 import Semantics.Evaluation
 import Tools.VerbPrint
 import Tools.Treeify
 import Tools.Preprocess
-import Semantics.Substitution
 import Args
+import Syntax.Parse
 
+import Control.Monad.Reader
 import System.Environment ( getArgs )
 import System.Console.GetOpt
 import Control.Monad (when)
 import System.Exit
-
-import Control.Monad.Reader
-
--- Parses contents of given input file
-parse :: Bool -> String -> IO Raw.Prg
-parse v s = do
-    putStrV v "Parsing program"
-    let ts = myLLexer s
-    case pPrg ts of
-        Bad r -> do
-            putStrLn $"Parse failed: " ++ r
-            putStrV v $ "Tokens still in stream:\n" ++ show ts
-            exitFailure
-        Ok r -> do
-            putStrV v "Parse successful"
-            return r
 
 -- Parses the arguments, input and performs the requested actions
 main :: IO ()
 main = do
     args <- getArgs -- Get and parse options
     let (optArgs, nonOpts, errs) = getOpt RequireOrder Args.options args
+
+    -- Errors parsing arguments
+    unless (null errs) ( do
+        putStrLn "Errors parsing arguments:"
+        mapM_ putStr errs
+        exitFailure )
+
     opts <- foldl (>>=) (return defaultOpts) optArgs
 
     let Options {   optVerbose  = verb,
@@ -48,11 +37,14 @@ main = do
 
     -- Parse input
     prog <- input >>= parse verb
+
     -- Preprocess definitions
     let exp = handleDefs prog
+
     -- Annotate identifiers with a unique id
     let annotated = idExp exp
     showProg verb annotated
 
     -- Evaluate if requested
     when eval $ evaluate verb annotated depth draws env
+
