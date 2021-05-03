@@ -7,10 +7,15 @@ let
     # Mathematical tools
     e ← 2.71828 ;
     exp ← (λ x . e ^ x) ;
-    neg ← (λ x . 0.0 - x) ;
     xor ← ( λ p . λ q . ( p ∨ q ) ∧ ¬ ( p ∧ q ) ) ;
     head ← ( λ s . fst (out ( unbox s ) ) );
     tail ← ( λ s . boxI ( prevI ( snd ( out ( ( unbox s ) ) ) ) ) );
+    # List getter (get item at idx from l)
+    get ← ( fix f . λ l . λ idx . 
+        if (idx = 0) 
+            then fst l
+            else prevI ( f ⊙ next (snd l) ⊙ next (idx-1) )
+    ) ;
 
     # We want to optimize for the following graph:
     # 0 - 1     Here the optimal solution is obviously
@@ -28,17 +33,8 @@ let
 
     # Initial solution
     init_s ← ([true, [true, [false, [false, 0]]]]) ;  
-    # Optimal solution
-    opt_s ← ([true, [false, [true, [false, 0]]]]) ;  
     # Initial temperature
     init_temp ← 1.0 ; 
-
-    # List getter
-    get ← ( fix f . λ l . λ idx . 
-        if (idx = 0)
-            then fst l
-            else prevI ( f ⊙ next (snd l) ⊙ next (idx-1) )
-    ) ;
 
     # Returns 1.0 if s cuts edge, 0.0 otherwise
     cuts ← ( λ edge . λ s . 
@@ -48,19 +44,20 @@ let
     ) ;
 
     # The amount of cuts a solution makes (recurstion over adjacency list)
-    cut_count ← ( fix f . λ e_idx . λ s .
+    cut_count ← ( ( fix f . λ e_idx . λ s .
         if ( e_idx = n_edges ) 
-            then 0.0 # End of vector
+            then 0 # End of vector
             else (
                 cuts (get graph e_idx) s
                 + ( prevI ( f ⊙ next (e_idx + 1) ⊙ next s ) )
-            )
+            ) 
+        ) 0
     ) ;
     
     # The evaluation function should be lower for better solutions
-    eval ← ( λ s . 1.0 / (cut_count 0 s) ) ;
+    eval ← ( λ s . 1.0 / (cut_count s) ) ;
 
-    # Flip bit at given idx
+    # Flip bit in s at given idx
     flip_bit ← ( fix f . λ idx . λ s . 
         if (idx = 0)
             then ([ ¬(fst s), (snd s) ])
@@ -68,21 +65,23 @@ let
     ) ;
 
     # Random number (NOT UNIFORM) in [0.0, 1.0]
-    rand ← ( ( λ draw . if (draw < 0.0)
-        then 0.0
-        else (
-            if (draw > 1.0)
-                then 1.0
-                else draw
-        ) ) ( normal [0.5, 0.25] )
+    rand ← ( ( λ draw . 
+        if (draw < 0.0)
+            then 0.0
+            else (
+                if (draw > 1.0)
+                    then 1.0
+                    else draw
+            ) 
+        ) ( normal [0.5, 0.25] )
     ) ;
 
     # Function that generates a (NOT UNIFORM) random idx between 0 and n
-    rand_idx ← ( ( fix f . λ gen . λ n . λ c . λ inc .
+    rand_idx ← ( ( fix f . λ r . λ n . λ c . λ inc .
         if ( n = (n_vertices-1) ) then n else (  # Catch rounding errors
-            if ( gen ≥ c ) ∧ ( gen < ( c + inc ) )
+            if ( r ≥ c ) ∧ ( r < ( c + inc ) )
                 then n # x falls in the interval for idx n
-                else prevI (f ⊙ next gen ⊙ next (n+1) ⊙ next (c+inc) ⊙ next inc)
+                else prevI (f ⊙ next r ⊙ next (n+1) ⊙ next (c+inc) ⊙ next inc)
         ) ) rand 0 0.0 (1 / n_vertices)
     ) ;
 
@@ -115,7 +114,7 @@ let
         ] ) ) 0 init_s )
     ) ;
 
-    # Get the result at iteration it
+    # Get the result at iteration idx
     get_result ← ( fix f . λ idx . λ stream .
         if (idx = 0)
             then head stream
