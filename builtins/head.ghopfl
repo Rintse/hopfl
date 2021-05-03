@@ -1,1 +1,4 @@
-λ s . fst (out ( unbox s ) )
+λ l . match l { 
+    inL x → false ;  # Shouldn't happen
+    inR y → fst y
+}

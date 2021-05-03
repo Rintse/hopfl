@@ -1,1 +1,4 @@
-λ s . boxI ( prevI ( snd ( out ( ( unbox s ) ) ) ) )
+λ l . match l {
+    inL x → x ; # Shouldn't happen
+    inR y → snd y
+}
