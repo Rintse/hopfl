@@ -15,18 +15,23 @@ import Data.Functor.Foldable.TH
 
 -- Result values
 data Value
-  = VVal Number
-  | VBVal Bool
-  | VPair Exp Exp
-  | EPair Value Value -- Evaluated pair
-  | VIn Exp
-  | VInL Exp
-  | VInR Exp
-  | VNext Exp
-  | VBox Environment Exp
-  | VOut Exp
-  | VThunk Exp
-  deriving (Eq, Ord, Show, Read)
+    = VSingle
+    | VVal Number
+    | VBVal Bool
+    | VPair Exp Exp
+    | VIn Exp
+    | VInL Exp
+    | VInR Exp
+    | VNext Exp
+    | VBox Environment Exp
+    | VOut Exp
+    | VThunk Exp
+
+    -- Evailuated results
+    | EPair Value Value 
+    | EInL Value
+    | EInR Value
+    deriving (Eq, Ord, Show, Read)
 
 makeBaseFunctor ''Value
 
@@ -45,8 +50,11 @@ toExp (VInL e) = InL e
 toExp (VInR e) = InR e
 toExp (VThunk e) = e
 toExp (VPair e1 e2) = Pair e1 e2
-toExp (EPair e1 e2) = Pair (toExp e1) (toExp e2)
 toExp (VNext e) = Next e
 toExp (VOut e) = Out e
 toExp (VBox l e) = Box l e
+
+toExp (EPair e1 e2) = Pair (toExp e1) (toExp e2)
+toExp (EInL e) = InL $ toExp e
+toExp (EInR e) = InR $ toExp e
 

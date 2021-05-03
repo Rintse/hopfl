@@ -25,7 +25,8 @@ import Debug.Trace
 -- Better expression data type that removes unnecessary data, desugars
 -- some expressions, and allows variables to be annotated with identifiers
 data Exp
-    = Var   Ident
+    = Single
+    | Var   Ident
     | Val   Number
     | BVal  Raw.BConst
     | Next  Exp
@@ -137,6 +138,7 @@ freeList e = Raw.Env $ Prelude.map idAssign $ Set.toList $ getFrees (idExp e)
 -- Transforms the raw syntax tree into a version where the 
 -- idenfiers are made unique with an id and recursion depth tag.
 transform exp = case exp of
+    Raw.Single t        -> return Single
     Raw.DVal v          -> return $ Val $ Fract v
     Raw.IVal v          -> return $ Val $ Whole v
     Raw.BVal v          -> return $ BVal v

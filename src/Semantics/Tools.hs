@@ -111,5 +111,7 @@ evalRelop f e1 op e2 = match2 f e1 e2 >>= \case
 forceEval :: (Exp -> EvalMonad Value ) -> Value -> EvalMonad Value
 forceEval f = anaM $ \case
     VPair e1 e2 -> EPairF <$> f e1 <*> f e2
+    VInL e -> EInLF <$> f e
+    VInR e -> EInRF <$> f e
     other -> return $ project other
 

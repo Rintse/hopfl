@@ -37,7 +37,7 @@ main = do
     -- Parse input into an AST
     prog <- input >>= parse verb
     -- Preprocess definitions
-    let defd = handleDefs prog
+    defd <- handleDefs prog
     -- Annotate identifiers with a unique id
     let annotated = idExp defd
     

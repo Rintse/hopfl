@@ -1,0 +1,7 @@
+fix f . λ func . λ list .
+    match list {
+        inL end → list ;
+        inR lst → inR ( [ func ( fst lst ), prevI (
+            f ⊙ next func ⊙ next ( snd lst )
+        ) ] )
+    }

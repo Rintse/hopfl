@@ -46,11 +46,10 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - hopfl
-
-tests:
-  hopfl-test:
-    main:                Spec.hs
-    source-dirs:         test
+  
+  ast-exe:
+    main:                Main.hs
+    source-dirs:         ast
     ghc-options:
     - -threaded
     - -rtsopts

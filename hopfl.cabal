@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c85b488e7a497f55f96db7ae0ddccf9b622a43ca98276ba1feb99c53eedfcf5d
+-- hash: eec82a0f95729396551b50d6df5d9c375b482d6f1bfa1132d2b766dc706dd339
 
 name:           hopfl
 version:        0.1.0.0
@@ -26,6 +26,7 @@ source-repository head
 library
   exposed-modules:
       Args
+      Semantics.Builtins
       Semantics.Evaluation
       Semantics.Substitution
       Semantics.Tools
@@ -64,12 +65,12 @@ library
     , unordered-containers >=0.2.12.0
   default-language: Haskell2010
 
-executable hopfl-exe
+executable ast-exe
   main-is: Main.hs
   other-modules:
       Paths_hopfl
   hs-source-dirs:
-      app
+      ast
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       MonadRandom
@@ -89,13 +90,12 @@ executable hopfl-exe
     , unordered-containers >=0.2.12.0
   default-language: Haskell2010
 
-test-suite hopfl-test
-  type: exitcode-stdio-1.0
-  main-is: Spec.hs
+executable hopfl-exe
+  main-is: Main.hs
   other-modules:
       Paths_hopfl
   hs-source-dirs:
-      test
+      app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       MonadRandom

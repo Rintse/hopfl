@@ -44,6 +44,8 @@ $white+ ;
     { tok (\p s -> PT p (eitherResIdent (T_TSub . share) s)) }
 \→ | \- \>
     { tok (\p s -> PT p (eitherResIdent (T_TMatch . share) s)) }
+𝟙 | \{ \* \}
+    { tok (\p s -> PT p (eitherResIdent (T_TSingle . share) s)) }
 
 $l $i*
     { tok (\p s -> PT p (eitherResIdent (TV . share) s)) }
@@ -78,6 +80,7 @@ data Tok =
  | T_TLApp !String
  | T_TSub !String
  | T_TMatch !String
+ | T_TSingle !String
 
  deriving (Eq,Show,Ord)
 
@@ -124,6 +127,7 @@ tokenText t = case t of
   PT _ (T_TLApp s) -> s
   PT _ (T_TSub s) -> s
   PT _ (T_TMatch s) -> s
+  PT _ (T_TSingle s) -> s
 
 prToken :: Token -> String
 prToken t = tokenText t

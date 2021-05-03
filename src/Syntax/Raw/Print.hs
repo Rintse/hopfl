@@ -127,6 +127,9 @@ instance Print Syntax.Raw.Abs.TSub where
 instance Print Syntax.Raw.Abs.TMatch where
   prt _ (Syntax.Raw.Abs.TMatch i) = doc $ showString $ i
 
+instance Print Syntax.Raw.Abs.TSingle where
+  prt _ (Syntax.Raw.Abs.TSingle i) = doc $ showString $ i
+
 instance Print Syntax.Raw.Abs.BConst where
   prt i e = case e of
     Syntax.Raw.Abs.BTrue -> prPrec i 0 (concatD [doc (showString "true")])
@@ -134,6 +137,7 @@ instance Print Syntax.Raw.Abs.BConst where
 
 instance Print Syntax.Raw.Abs.Exp where
   prt i e = case e of
+    Syntax.Raw.Abs.Single tsingle -> prPrec i 12 (concatD [prt 0 tsingle])
     Syntax.Raw.Abs.Var id -> prPrec i 12 (concatD [prt 0 id])
     Syntax.Raw.Abs.DVal d -> prPrec i 12 (concatD [prt 0 d])
     Syntax.Raw.Abs.IVal n -> prPrec i 12 (concatD [prt 0 n])
@@ -171,7 +175,7 @@ instance Print Syntax.Raw.Abs.Exp where
     Syntax.Raw.Abs.Pair exp1 exp2 -> prPrec i 3 (concatD [doc (showString "["), prt 3 exp1, doc (showString ","), prt 3 exp2, doc (showString "]")])
     Syntax.Raw.Abs.Norm exp -> prPrec i 3 (concatD [doc (showString "normal"), prt 3 exp])
     Syntax.Raw.Abs.Ite exp1 exp2 exp3 -> prPrec i 2 (concatD [doc (showString "if"), prt 4 exp1, doc (showString "then"), prt 7 exp2, doc (showString "else"), prt 7 exp3])
-    Syntax.Raw.Abs.Match exp1 id1 tmatch1 exp2 id2 tmatch2 exp3 -> prPrec i 1 (concatD [doc (showString "match"), prt 11 exp1, doc (showString "{"), prt 0 id1, prt 0 tmatch1, prt 1 exp2, doc (showString ";"), prt 0 id2, prt 0 tmatch2, prt 1 exp3, doc (showString "}")])
+    Syntax.Raw.Abs.Match exp1 id1 tmatch1 exp2 id2 tmatch2 exp3 -> prPrec i 1 (concatD [doc (showString "match"), prt 11 exp1, doc (showString "{"), doc (showString "inL"), prt 0 id1, prt 0 tmatch1, prt 1 exp2, doc (showString ";"), doc (showString "inR"), prt 0 id2, prt 0 tmatch2, prt 1 exp3, doc (showString "}")])
     Syntax.Raw.Abs.Abstr lam id exp -> prPrec i 0 (concatD [prt 0 lam, prt 0 id, doc (showString "."), prt 0 exp])
     Syntax.Raw.Abs.Rec id exp -> prPrec i 0 (concatD [doc (showString "fix"), prt 0 id, doc (showString "."), prt 0 exp])
 

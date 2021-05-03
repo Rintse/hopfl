@@ -165,5 +165,5 @@ eval exp = case exp of
     Gt e1 e2    -> evalRelop eval e1 (>) e2
     Leq e1 e2   -> evalRelop eval e1 (<=) e2
     Geq e1 e2   -> evalRelop eval e1 (>=) e2
-
+    Single      -> return VSingle
 

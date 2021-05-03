@@ -24,6 +24,7 @@ instance Treeish Assignment where
 
 instance Treeish Exp where
     toTree exp = case exp of
+        Single              -> Node "" []
         Var x               -> toTree x
         Val v               -> Node (show v)    []
         BVal b              -> Node (show b)    []
@@ -65,10 +66,10 @@ instance Treeish Exp where
 
 instance Treeish Value where
     toTree val = case val of
+        VSingle     -> Node "" []
         VVal v      -> Node (show v)[ ]
         VBVal b     -> Node (show b)[ ]
         VPair t1 t2 -> Node "VPair" [ toTree t1, toTree t2 ]
-        EPair v1 v2 -> Node "Pair"  [ toTree v1, toTree v2 ]
         VIn t       -> Node "In"    [ toTree t ]
         VInL t      -> Node "InL"   [ toTree t ]
         VInR t      -> Node "InR"   [ toTree t ]
@@ -76,6 +77,11 @@ instance Treeish Value where
         VOut t      -> Node "Out"   [ toTree t ]
         VThunk t    -> Node "Thunk" [ toTree t ]
         VBox l t    -> Node "Box"   [ toTree t ]
+
+        -- Evaluated results
+        EPair v1 v2 -> Node "Pair"  [ toTree v1, toTree v2 ]
+        EInL v      -> Node "InL" [ toTree v]
+        EInR v      -> Node "InR" [ toTree v]
 
 treeValue :: Value -> String
 treeValue v = drawTree $ toTree v

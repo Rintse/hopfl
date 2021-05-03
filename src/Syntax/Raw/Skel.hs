@@ -40,12 +40,16 @@ transTSub x = case x of
 transTMatch :: Syntax.Raw.Abs.TMatch -> Result
 transTMatch x = case x of
   Syntax.Raw.Abs.TMatch string -> failure x
+transTSingle :: Syntax.Raw.Abs.TSingle -> Result
+transTSingle x = case x of
+  Syntax.Raw.Abs.TSingle string -> failure x
 transBConst :: Syntax.Raw.Abs.BConst -> Result
 transBConst x = case x of
   Syntax.Raw.Abs.BTrue -> failure x
   Syntax.Raw.Abs.BFalse -> failure x
 transExp :: Syntax.Raw.Abs.Exp -> Result
 transExp x = case x of
+  Syntax.Raw.Abs.Single tsingle -> failure x
   Syntax.Raw.Abs.Var ident -> failure x
   Syntax.Raw.Abs.DVal double -> failure x
   Syntax.Raw.Abs.IVal integer -> failure x

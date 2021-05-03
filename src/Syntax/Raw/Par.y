@@ -65,6 +65,7 @@ import Syntax.Raw.Lex
   L_TLApp { PT _ (T_TLApp $$) }
   L_TSub { PT _ (T_TSub $$) }
   L_TMatch { PT _ (T_TMatch $$) }
+  L_TSingle { PT _ (T_TSingle $$) }
 
 %%
 
@@ -104,12 +105,16 @@ TSub  : L_TSub { Syntax.Raw.Abs.TSub $1 }
 TMatch :: { Syntax.Raw.Abs.TMatch}
 TMatch  : L_TMatch { Syntax.Raw.Abs.TMatch $1 }
 
+TSingle :: { Syntax.Raw.Abs.TSingle}
+TSingle  : L_TSingle { Syntax.Raw.Abs.TSingle $1 }
+
 BConst :: { Syntax.Raw.Abs.BConst }
 BConst : 'true' { Syntax.Raw.Abs.BTrue }
        | 'false' { Syntax.Raw.Abs.BFalse }
 
 Exp12 :: { Syntax.Raw.Abs.Exp }
-Exp12 : Ident { Syntax.Raw.Abs.Var $1 }
+Exp12 : TSingle { Syntax.Raw.Abs.Single $1 }
+      | Ident { Syntax.Raw.Abs.Var $1 }
       | Double { Syntax.Raw.Abs.DVal $1 }
       | Integer { Syntax.Raw.Abs.IVal $1 }
       | BConst { Syntax.Raw.Abs.BVal $1 }
@@ -178,7 +183,7 @@ Exp2 : 'if' Exp4 'then' Exp7 'else' Exp7 { Syntax.Raw.Abs.Ite $2 $4 $6 }
      | Exp3 { $1 }
 
 Exp1 :: { Syntax.Raw.Abs.Exp }
-Exp1 : 'match' Exp11 '{' Ident TMatch Exp1 ';' Ident TMatch Exp1 '}' { Syntax.Raw.Abs.Match $2 $4 $5 $6 $8 $9 $10 }
+Exp1 : 'match' Exp11 '{' 'inL' Ident TMatch Exp1 ';' 'inR' Ident TMatch Exp1 '}' { Syntax.Raw.Abs.Match $2 $5 $6 $7 $10 $11 $12 }
      | Exp2 { $1 }
 
 Exp :: { Syntax.Raw.Abs.Exp }

@@ -4,14 +4,16 @@
 #   idx:    The index of the number to get from the stream
 
 let
+    # The random walk stream
+    RW ← (
+        fix f . λ x . in ( [ x , f ⊙ next ( normal [x , s] ) ] )
+    ) ;
+
     # The the requested idx
     getIdx ← (
         fix f . λ idx . λ rw . if ( idx <= 0.0 ) 
             then fst ( out rw )
             else f ⊙ next ( idx - 1.0 ) ⊙ ( snd ( out rw ) )
-    );
-    # The random walk stream
-    RW ← (
-        fix f . λ x . in ( [ x , f ⊙ next ( normal [x , s] ) ] )
     )
+
 in: (getIdx idx) (RW x0)

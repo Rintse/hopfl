@@ -13,61 +13,62 @@ let
     e ← 2.71828 ;
     exp ← (λ x . e ^ x) ;
     xor ← ( λ p . λ q . ( p ∨ q ) ∧ ¬ ( p ∧ q ) ) ;
-    head ← ( λ s . fst (out ( unbox s ) ) );
-    tail ← ( λ s . boxI ( prevI ( snd ( out ( ( unbox s ) ) ) ) ) );
-    # List getter (get item at idx from l)
+    add ← ( λ x . λ y . x + y ) ;
+
+    # Get item at idx in l
     get ← ( fix f . λ l . λ idx . 
-        if (idx = 0) 
-            then fst l
-            else prevI ( f ⊙ next (snd l) ⊙ next (idx-1) )
+        match l {
+            inL x → false ; # Should not happen
+            inR y → if ( idx = 0 )
+                then fst y
+                else prevI ( f ⊙ next ( snd y ) ⊙ next ( idx - 1 ) )
+        }
+    ) ;
+    
+    # Flip bit in s at given idx
+    flip_bit ← ( fix f . λ idx . λ s . 
+        match s {
+            inL x → false ; # Should not happen
+            inR y → if ( idx = 0 )
+                then ( inR ( [ ¬( fst y ), ( snd y ) ] ) )
+                else ( inR ( [ fst y, prevI ( f ⊙ next ( idx-1 ) ⊙ next ( snd y ) ) ] ) )
+        }
     ) ;
 
     # We want to optimize for the following graph:
-    # 0 - 1     Here the optimal solution is obviously
-    # | \ |     to cut such that the two partitions
-    # 3 - 2     are {0, 3} and {1, 2} (4 cuts), as adjacency list:
-    graph ← ( [   
-        [0,1], [ 
-        [0,2], [
-        [0,3], [
-        [1,2], [
-        [2,3], 0
-    ] ] ] ] ] ) ;
-    n_edges ← 5 ;
-    n_vertices ← 4 ;
+    # 0 - 1     Here the optimal solution is to cut 
+    # | \ |     such that the two partitions are {0, 3}
+    # 3 - 2     and {1, 2} (4 cuts), as adjacency list:
+    graph ← (  inR ( [
+        [0,1], inR ( [ 
+        [0,2], inR ( [ 
+        [0,3], inR ( [ 
+        [1,2], inR ( [ 
+        [2,3], inL 𝟙 ] 
+    ) ] ) ] ) ] ) ] ) ) ;
 
     # Initial solution
-    init_s ← ([true, [true, [false, [false, 0]]]]) ;  
+    init_s ← (  inR ( [ 
+        true,   inR ( [
+        true,   inR ( [
+        false,  inR ( [
+        false,  inL 𝟙 ]
+    ) ] ) ] ) ] ) ) ; 
+    n_vertices ← length init_s ;
     # Initial temperature
     init_temp ← 1.0 ; 
 
     # Returns 1.0 if s cuts edge, 0.0 otherwise
-    cuts ← ( λ edge . λ s . 
-        if ( xor ( get s (fst edge) ) ( get s (snd edge) ) )
-            then 1.0 # An edge is cut if its verteces are in different partitions
-            else 0.0 # Not cut otherwise
+    # An edge is cut if its verteces are in different partitions
+    cuts ← ( λ s . λ edge .
+        if ( xor ( get s ( fst edge ) ) ( get s ( snd edge ) ) ) then 1 else 0
     ) ;
 
     # The amount of cuts a solution makes (recurstion over adjacency list)
-    cut_count ← ( ( fix f . λ e_idx . λ s .
-        if ( e_idx = n_edges ) 
-            then 0 # End of vector
-            else (
-                cuts (get graph e_idx) s
-                + ( prevI ( f ⊙ next (e_idx + 1) ⊙ next s ) )
-            ) 
-        ) 0
-    ) ;
+    cut_count ← ( λ s . foldl add 0 ( map ( cuts s ) graph ) ) ;
     
     # The evaluation function should be lower for better solutions
-    eval ← ( λ s . 1.0 / (cut_count s) ) ;
-
-    # Flip bit in s at given idx
-    flip_bit ← ( fix f . λ idx . λ s . 
-        if (idx = 0)
-            then ([ ¬(fst s), (snd s) ])
-            else ([ fst s, prevI ( f ⊙ next (idx-1) ⊙ next (snd s) ) ])
-    ) ;
+    eval ← ( λ s . 1.0 / ( cut_count s ) ) ;
 
     # Random number (NOT UNIFORM) in [0.0, 1.0]
     rand ← ( ( λ draw . 
@@ -80,6 +81,7 @@ let
             ) 
         ) ( normal [0.5, 0.25] )
     ) ;
+
 
     # Function that generates a (NOT UNIFORM) random idx between 0 and n
     rand_idx ← ( ( fix f . λ r . λ n . λ c . λ inc .
@@ -126,5 +128,6 @@ let
             else prevI ( f ⊙ next (idx - 1) ⊙ next (tail stream) )
     )
 
+# in: print ( mutate init_s )
 in: print ( get_result iteration opt_stream )
 

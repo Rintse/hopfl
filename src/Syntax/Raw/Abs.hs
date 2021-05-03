@@ -39,11 +39,15 @@ newtype TSub = TSub String
 newtype TMatch = TMatch String
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 
+newtype TSingle = TSingle String
+  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
+
 data BConst = BTrue | BFalse
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Exp
-    = Var Ident
+    = Single TSingle
+    | Var Ident
     | DVal Double
     | IVal Integer
     | BVal BConst
