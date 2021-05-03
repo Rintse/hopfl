@@ -30,8 +30,8 @@ let
         match s {
             inL x → false ; # Should not happen
             inR y → if ( idx = 0 )
-                then ( inR ( [ ¬( fst y ), ( snd y ) ] ) )
-                else ( inR ( [ fst y, prevI ( f ⊙ next ( idx-1 ) ⊙ next ( snd y ) ) ] ) )
+                then ( inR ( ( ¬( fst y ), ( snd y ) ) ) )
+                else ( inR ( ( fst y, prevI ( f ⊙ next ( idx-1 ) ⊙ next ( snd y ) ) ) ) )
         }
     ) ;
 
@@ -39,22 +39,12 @@ let
     # 0 - 1     Here the optimal solution is to cut 
     # | \ |     such that the two partitions are {0, 3}
     # 3 - 2     and {1, 2} (4 cuts), as adjacency list:
-    graph ← (  inR ( [
-        [0,1], inR ( [ 
-        [0,2], inR ( [ 
-        [0,3], inR ( [ 
-        [1,2], inR ( [ 
-        [2,3], inL 𝟙 ] 
-    ) ] ) ] ) ] ) ] ) ) ;
-
+    graph ← [ (0,1), (0,2), (0,3), (1,2), (2,3) ] ;
+    
     # Initial solution
-    init_s ← (  inR ( [ 
-        true,   inR ( [
-        true,   inR ( [
-        false,  inR ( [
-        false,  inL 𝟙 ]
-    ) ] ) ] ) ] ) ) ; 
+    init_s ← [ true, true, false, false ] ;
     n_vertices ← length init_s ;
+    
     # Initial temperature
     init_temp ← 1.0 ; 
 
@@ -79,7 +69,7 @@ let
                     then 1.0
                     else draw
             ) 
-        ) ( normal [0.5, 0.25] )
+        ) ( normal (0.5, 0.25) )
     ) ;
 
 
@@ -116,9 +106,9 @@ let
 
     # The optimization stream
     opt_stream ← ( boxI ( ( fix f . λ k . λ s . in (
-        [ s, f ⊙ next ( k + 1 ) 
+        ( s, f ⊙ next ( k + 1 ) 
                ⊙ next ( select s ( mutate s ) ( get_temp k ) ) 
-        ] ) ) 0 init_s )
+        ) ) ) 0 init_s )
     ) ;
 
     # Get the result at iteration idx
@@ -128,6 +118,6 @@ let
             else prevI ( f ⊙ next (idx - 1) ⊙ next (tail stream) )
     )
 
-# in: print ( mutate init_s )
+# in: print ( cut_count init_s )
 in: print ( get_result iteration opt_stream )
 

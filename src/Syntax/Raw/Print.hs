@@ -172,17 +172,40 @@ instance Print Syntax.Raw.Abs.Exp where
     Syntax.Raw.Abs.Not tnot exp -> prPrec i 5 (concatD [prt 0 tnot, prt 6 exp])
     Syntax.Raw.Abs.And exp1 conj exp2 -> prPrec i 4 (concatD [prt 4 exp1, prt 0 conj, prt 5 exp2])
     Syntax.Raw.Abs.Or exp1 disj exp2 -> prPrec i 4 (concatD [prt 4 exp1, prt 0 disj, prt 5 exp2])
-    Syntax.Raw.Abs.Pair exp1 exp2 -> prPrec i 3 (concatD [doc (showString "["), prt 3 exp1, doc (showString ","), prt 3 exp2, doc (showString "]")])
+    Syntax.Raw.Abs.Pair exp1 exp2 -> prPrec i 3 (concatD [doc (showString "("), prt 3 exp1, doc (showString ","), prt 4 exp2, doc (showString ")")])
     Syntax.Raw.Abs.Norm exp -> prPrec i 3 (concatD [doc (showString "normal"), prt 3 exp])
+    Syntax.Raw.Abs.EList lst -> prPrec i 3 (concatD [prt 0 lst])
     Syntax.Raw.Abs.Ite exp1 exp2 exp3 -> prPrec i 2 (concatD [doc (showString "if"), prt 4 exp1, doc (showString "then"), prt 7 exp2, doc (showString "else"), prt 7 exp3])
     Syntax.Raw.Abs.Match exp1 id1 tmatch1 exp2 id2 tmatch2 exp3 -> prPrec i 1 (concatD [doc (showString "match"), prt 11 exp1, doc (showString "{"), doc (showString "inL"), prt 0 id1, prt 0 tmatch1, prt 1 exp2, doc (showString ";"), doc (showString "inR"), prt 0 id2, prt 0 tmatch2, prt 1 exp3, doc (showString "}")])
     Syntax.Raw.Abs.Abstr lam id exp -> prPrec i 0 (concatD [prt 0 lam, prt 0 id, doc (showString "."), prt 0 exp])
     Syntax.Raw.Abs.Rec id exp -> prPrec i 0 (concatD [doc (showString "fix"), prt 0 id, doc (showString "."), prt 0 exp])
 
+instance Print Syntax.Raw.Abs.Lst where
+  prt i e = case e of
+    Syntax.Raw.Abs.List els -> prPrec i 0 (concatD [doc (showString "["), prt 0 els, doc (showString "]")])
+
+instance Print Syntax.Raw.Abs.Els where
+  prt i e = case e of
+    Syntax.Raw.Abs.Elems els -> prPrec i 0 (concatD [prt 0 els])
+
+instance Print Syntax.Raw.Abs.El where
+  prt i e = case e of
+    Syntax.Raw.Abs.Elem exp -> prPrec i 0 (concatD [prt 0 exp])
+  prtList _ [] = concatD []
+  prtList _ [x] = concatD [prt 0 x]
+  prtList _ (x:xs) = concatD [prt 0 x, doc (showString ","), prt 0 xs]
+
+instance Print [Syntax.Raw.Abs.El] where
+  prt = prtList
+
 instance Print Syntax.Raw.Abs.Prg where
   prt i e = case e of
     Syntax.Raw.Abs.DefProg environment exp -> prPrec i 0 (concatD [doc (showString "let"), prt 0 environment, doc (showString "in:"), prt 0 exp])
     Syntax.Raw.Abs.Prog exp -> prPrec i 0 (concatD [prt 0 exp])
+
+instance Print Syntax.Raw.Abs.Environment where
+  prt i e = case e of
+    Syntax.Raw.Abs.Env assignments -> prPrec i 0 (concatD [prt 0 assignments])
 
 instance Print Syntax.Raw.Abs.Assignment where
   prt i e = case e of
@@ -190,10 +213,6 @@ instance Print Syntax.Raw.Abs.Assignment where
   prtList _ [] = concatD []
   prtList _ [x] = concatD [prt 0 x]
   prtList _ (x:xs) = concatD [prt 0 x, doc (showString ";"), prt 0 xs]
-
-instance Print Syntax.Raw.Abs.Environment where
-  prt i e = case e of
-    Syntax.Raw.Abs.Env assignments -> prPrec i 0 (concatD [prt 0 assignments])
 
 instance Print [Syntax.Raw.Abs.Assignment] where
   prt = prtList

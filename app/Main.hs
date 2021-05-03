@@ -5,7 +5,7 @@ import Syntax.IdAbs
 import Semantics.Evaluation
 import Tools.VerbPrint
 import Tools.Treeify
-import Tools.Definitions
+import Tools.Preprocess
 import Syntax.Parse
 
 import Control.Monad.Reader
@@ -38,8 +38,11 @@ main = do
     prog <- input >>= parse verb
     -- Preprocess definitions
     defd <- handleDefs prog
+
+    -- Desugar list notation
+    let deListed = desugarLists defd
     -- Annotate identifiers with a unique id
-    let annotated = idExp defd
+    let annotated = idExp deListed
     
     -- Show the result
     showProg verb annotated

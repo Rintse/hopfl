@@ -1,5 +1,5 @@
 {-# LANGUAGE LambdaCase #-}
-module Tools.Definitions where
+module Tools.Preprocess where
 
 import Syntax.Raw.Abs
 import Syntax.AbsF
@@ -29,7 +29,11 @@ defSub = anaM $ \case
     Box (Env l) e -> do
         a <- ask
         let rl = Env $ map (\(Assign x o t) -> Assign x o $ runDef t a) l
-        return $ PrevF rl e
+        return $ BoxF rl e
+    EList (List (Elems l)) -> do
+        a <- ask
+        let rl = Elems $ map (\(Elem e) -> Elem $ runDef e a) l
+        return $ EListF $ List rl
     other -> return $ project other
 
 -- Runs definition substitution inside a reader monad
@@ -60,4 +64,16 @@ handleDefs (DefProg (Env l) e) = do
 
     return $ foldl runDef e $ inDefs (l ++ builtins)
 handleDefs (Prog e) = return e
+
+-- A list is repeated pairing in InR followed by the singleton in InL
+desugarList :: [El] -> Exp
+desugarList l = do
+    let end = InL $ Single $ TSingle ""
+    foldr ((\x y -> InR $ Pair x y) . (\(Elem e) -> e)) end l
+
+-- Desugar lists
+desugarLists :: Exp -> Exp
+desugarLists = ana $ \case
+    EList (List (Elems l)) -> project $ desugarList l
+    other -> project other
 

@@ -174,8 +174,9 @@ Exp4 : Exp4 Conj Exp5 { Syntax.Raw.Abs.And $1 $2 $3 }
      | Exp5 { $1 }
 
 Exp3 :: { Syntax.Raw.Abs.Exp }
-Exp3 : '[' Exp3 ',' Exp3 ']' { Syntax.Raw.Abs.Pair $2 $4 }
+Exp3 : '(' Exp3 ',' Exp4 ')' { Syntax.Raw.Abs.Pair $2 $4 }
      | 'normal' Exp3 { Syntax.Raw.Abs.Norm $2 }
+     | Lst { Syntax.Raw.Abs.EList $1 }
      | Exp4 { $1 }
 
 Exp2 :: { Syntax.Raw.Abs.Exp }
@@ -191,15 +192,29 @@ Exp : Lam Ident '.' Exp { Syntax.Raw.Abs.Abstr $1 $2 $4 }
     | 'fix' Ident '.' Exp { Syntax.Raw.Abs.Rec $2 $4 }
     | Exp1 { $1 }
 
+Lst :: { Syntax.Raw.Abs.Lst }
+Lst : '[' Els ']' { Syntax.Raw.Abs.List $2 }
+
+Els :: { Syntax.Raw.Abs.Els }
+Els : ListEl { Syntax.Raw.Abs.Elems $1 }
+
+El :: { Syntax.Raw.Abs.El }
+El : Exp { Syntax.Raw.Abs.Elem $1 }
+
+ListEl :: { [Syntax.Raw.Abs.El] }
+ListEl : {- empty -} { [] }
+       | El { (:[]) $1 }
+       | El ',' ListEl { (:) $1 $3 }
+
 Prg :: { Syntax.Raw.Abs.Prg }
 Prg : 'let' Environment 'in:' Exp { Syntax.Raw.Abs.DefProg $2 $4 }
     | Exp { Syntax.Raw.Abs.Prog $1 }
 
-Assignment :: { Syntax.Raw.Abs.Assignment }
-Assignment : Ident TSub Exp { Syntax.Raw.Abs.Assign $1 $2 $3 }
-
 Environment :: { Syntax.Raw.Abs.Environment }
 Environment : ListAssignment { Syntax.Raw.Abs.Env $1 }
+
+Assignment :: { Syntax.Raw.Abs.Assignment }
+Assignment : Ident TSub Exp { Syntax.Raw.Abs.Assign $1 $2 $3 }
 
 ListAssignment :: { [Syntax.Raw.Abs.Assignment] }
 ListAssignment : {- empty -} { [] }

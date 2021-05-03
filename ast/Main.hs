@@ -3,7 +3,7 @@ module Main where
 import Args
 import Syntax.Parse
 import Syntax.IdAbs
-import Tools.Definitions
+import Tools.Preprocess
 
 import System.Environment ( getArgs )
 import System.Console.GetOpt

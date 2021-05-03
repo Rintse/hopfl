@@ -91,12 +91,12 @@ eval exp@(Pair e1 e2) = return $ VPair e1 e2
 -- First projection
 eval exp@(Fst e) = eval e >>= \case
     VPair v1 v2 -> eval v1;
-    _ -> throwError $ "Took fst of non-pair " ++ treeTerm exp
+    _ -> throwError $ "Took fst of non-pair:\n" ++ treeTerm exp
 
 -- Second projection
 eval exp@(Snd e) = eval e >>= \case
     VPair v1 v2 -> eval v2
-    _ -> throwError $ "Took snd of non-pair " ++ treeTerm exp
+    _ -> throwError $ "Took snd of non-pair:\n" ++ treeTerm exp
 
 -- Normal distribtion sampling
 eval exp@(Norm e) = eval e >>= \case

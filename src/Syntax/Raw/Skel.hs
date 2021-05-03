@@ -86,18 +86,28 @@ transExp x = case x of
   Syntax.Raw.Abs.Or exp1 disj exp2 -> failure x
   Syntax.Raw.Abs.Pair exp1 exp2 -> failure x
   Syntax.Raw.Abs.Norm exp -> failure x
+  Syntax.Raw.Abs.EList lst -> failure x
   Syntax.Raw.Abs.Ite exp1 exp2 exp3 -> failure x
   Syntax.Raw.Abs.Match exp1 ident1 tmatch1 exp2 ident2 tmatch2 exp3 -> failure x
   Syntax.Raw.Abs.Abstr lam ident exp -> failure x
   Syntax.Raw.Abs.Rec ident exp -> failure x
+transLst :: Syntax.Raw.Abs.Lst -> Result
+transLst x = case x of
+  Syntax.Raw.Abs.List els -> failure x
+transEls :: Syntax.Raw.Abs.Els -> Result
+transEls x = case x of
+  Syntax.Raw.Abs.Elems els -> failure x
+transEl :: Syntax.Raw.Abs.El -> Result
+transEl x = case x of
+  Syntax.Raw.Abs.Elem exp -> failure x
 transPrg :: Syntax.Raw.Abs.Prg -> Result
 transPrg x = case x of
   Syntax.Raw.Abs.DefProg environment exp -> failure x
   Syntax.Raw.Abs.Prog exp -> failure x
-transAssignment :: Syntax.Raw.Abs.Assignment -> Result
-transAssignment x = case x of
-  Syntax.Raw.Abs.Assign ident tsub exp -> failure x
 transEnvironment :: Syntax.Raw.Abs.Environment -> Result
 transEnvironment x = case x of
   Syntax.Raw.Abs.Env assignments -> failure x
+transAssignment :: Syntax.Raw.Abs.Assignment -> Result
+transAssignment x = case x of
+  Syntax.Raw.Abs.Assign ident tsub exp -> failure x
 

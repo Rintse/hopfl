@@ -83,18 +83,28 @@ data Exp
     | Or Exp Disj Exp
     | Pair Exp Exp
     | Norm Exp
+    | EList Lst
     | Ite Exp Exp Exp
     | Match Exp Ident TMatch Exp Ident TMatch Exp
     | Abstr Lam Ident Exp
     | Rec Ident Exp
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
+data Lst = List Els
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
+data Els = Elems [El]
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
+data El = Elem Exp
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
 data Prg = DefProg Environment Exp | Prog Exp
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data Assignment = Assign Ident TSub Exp
+data Environment = Env [Assignment]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data Environment = Env [Assignment]
+data Assignment = Assign Ident TSub Exp
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
