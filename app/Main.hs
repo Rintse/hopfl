@@ -23,8 +23,7 @@ main = do
     -- Errors parsing arguments
     unless (null errs) ( do
         putStrLn "Errors parsing arguments:"
-        mapM_ putStr errs
-        exitFailure )
+        mapM_ putStr errs >> exitFailure )
 
     opts <- foldl (>>=) (return defaultOpts) optArgs
 
@@ -35,7 +34,7 @@ main = do
                     optDraws    = draws,
                     optDepth    = depth     } = opts
 
-    -- Parse input
+    -- Parse input into an AST
     prog <- input >>= parse verb
     -- Preprocess definitions
     let defd = handleDefs prog

@@ -25,13 +25,14 @@ instance Treeish Assignment where
 instance Treeish Exp where
     toTree exp = case exp of
         Var x               -> toTree x
-        Val v              -> Node (show v)    []
+        Val v               -> Node (show v)    []
         BVal b              -> Node (show b)    []
         Next e              -> Node "Next"      [ toTree e ]
         Unbox e             -> Node "Unbox"     [ toTree e]
         Box l e             -> Node "Box"       [ toTree l, toTree e]
         Prev l e            -> Node "Prev"      [ toTree l, toTree e ]
         In e                -> Node "In"        [ toTree e ]
+        Min e               -> Node "Min"       [ toTree e ]
         Out e               -> Node "Out"       [ toTree e ]
         Fst e               -> Node "Fst"       [ toTree e ]
         Snd e               -> Node "Snd"       [ toTree e ]

@@ -78,8 +78,13 @@ performDraw m v = gets snd >>= \case
 evalAExp :: (Exp -> EvalMonad Value) -> Exp 
     -> (Number -> Number -> Number) -> Exp -> EvalMonad Value
 evalAExp f e1 op e2 = match2 f e1 e2 >>= \case
-    (VVal d1, VVal d2) -> return $ VVal $ op d1 d2
+    (VVal v1, VVal v2) -> return $ VVal $ op v1 v2
     other -> throwError $ "Non-real args to arithmetic operator:\n" ++ show other
+
+evalAExp1 :: (Exp -> EvalMonad Value) -> (Number -> Number) -> Exp -> EvalMonad Value
+evalAExp1 f op e = f e >>= \case
+    (VVal v) -> return $ VVal $ op v
+    other -> throwError $ "Non-real arg to arithmetic operator:\n" ++ show other
 
 -- -- Evaluates a binary boolean operation
 evalBExp :: (Exp -> EvalMonad Value) -> Exp 
@@ -103,8 +108,8 @@ evalRelop f e1 op e2 = match2 f e1 e2 >>= \case
     other -> throwError $ "Non-real args to relative operator:\n" ++ show other
 
 -- Evluates everything underneath values to make it readable
-printV :: (Exp -> EvalMonad Value ) -> Value -> EvalMonad Value
-printV f = anaM $ \case
+forceEval :: (Exp -> EvalMonad Value ) -> Value -> EvalMonad Value
+forceEval f = anaM $ \case
     VPair e1 e2 -> EPairF <$> f e1 <*> f e2
     other -> return $ project other
 

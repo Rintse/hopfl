@@ -38,6 +38,7 @@ data Exp
     | InR   Exp
     | Norm  Exp
     | Not   Exp
+    | Min   Exp
     | Print Exp
     | App   Exp Exp
     | LApp  Exp Exp
@@ -107,21 +108,19 @@ varAssign (Raw.Assign x _ t) = do
 getSub :: Raw.Ident -> IdMap -> Ident
 getSub (Raw.Ident x) m = Ident x (head $ HM.findWithDefault [0] x m) 0
 
+-- Gets all free variables in an assignment list
+getFreesL :: [Assignment] -> Set.Set Ident
+getFreesL = foldr (Set.union . (\(Assign x t) -> getFrees t)) Set.empty
+
 -- Gets all free variables in an expression
 getFrees :: Exp -> Set.Set Ident
 getFrees = cata $ \case
-    (ValF _)               -> Set.empty
-    (VarF _)                -> Set.empty
-    (BValF _)               -> Set.empty
-    (PrevF (Env l) e)       -> do
-        let frees = Prelude.map (\(Assign x t) -> getFrees t) l
-        let free = Prelude.foldr Set.union Set.empty frees
-        Set.union free e
-    (BoxF (Env l) e)         -> do
-        let frees = Prelude.map (\(Assign x t) -> getFrees t) l
-        let free = Prelude.foldr Set.union Set.empty frees
-        Set.union free e
-    fFree                    -> foldr Set.union Set.empty fFree
+    (ValF _)            -> Set.empty
+    (VarF _)            -> Set.empty
+    (BValF _)           -> Set.empty
+    (PrevF (Env l) e)   -> Set.union e $ getFreesL l
+    (BoxF (Env l) e)    -> Set.union e $ getFreesL l
+    fFree               -> foldr Set.union Set.empty fFree
 
 -- Transforms an identifier into an identity substitution
 -- for that identifier
@@ -146,19 +145,22 @@ transform exp = case exp of
     Raw.BoxI e          -> transform $ Raw.Box (freeList e) e
     Raw.PrevI e         -> transform $ Raw.Prev (freeList e) e
     Raw.Unbox e         -> fmap   Unbox (transform e)
+    Raw.Print e         -> fmap   Print (transform e)
+    Raw.Norm e          -> fmap   Norm  (transform e)
     Raw.Next e          -> fmap   Next  (transform e)
-    Raw.In e            -> fmap   In    (transform e)
     Raw.Out e           -> fmap   Out   (transform e)
     Raw.Fst e           -> fmap   Fst   (transform e)
     Raw.Snd e           -> fmap   Snd   (transform e)
     Raw.InL e           -> fmap   InL   (transform e)
     Raw.InR e           -> fmap   InR   (transform e)
-    Raw.Norm e          -> fmap   Norm  (transform e)
     Raw.Not _ e         -> fmap   Not   (transform e)
-    Raw.Print e         -> fmap   Print (transform e)
-    Raw.App e1 e2       -> liftA2 App   (transform e1) (transform e2)
+    Raw.Min e           -> fmap   Min   (transform e)
+    Raw.In e            -> fmap   In    (transform e)
     Raw.LApp e1 _ e2    -> liftA2 LApp  (transform e1) (transform e2)
     Raw.Pair e1 e2      -> liftA2 Pair  (transform e1) (transform e2)
+    Raw.Leq e1 o e2     -> liftA2 Leq   (transform e1) (transform e2)
+    Raw.Geq e1 o e2     -> liftA2 Geq   (transform e1) (transform e2)
+    Raw.App e1 e2       -> liftA2 App   (transform e1) (transform e2)
     Raw.Add e1 e2       -> liftA2 Add   (transform e1) (transform e2)
     Raw.Sub e1 e2       -> liftA2 Sub   (transform e1) (transform e2)
     Raw.Mul e1 e2       -> liftA2 Mul   (transform e1) (transform e2)
@@ -169,8 +171,6 @@ transform exp = case exp of
     Raw.Eq e1 e2        -> liftA2 Eq    (transform e1) (transform e2)
     Raw.Lt e1 e2        -> liftA2 Lt    (transform e1) (transform e2)
     Raw.Gt e1 e2        -> liftA2 Gt    (transform e1) (transform e2)
-    Raw.Leq e1 o e2     -> liftA2 Leq   (transform e1) (transform e2)
-    Raw.Geq e1 o e2     -> liftA2 Geq   (transform e1) (transform e2)
     Raw.Ite b e1 e2     -> liftA3 Ite   (transform b)
                                         (transform e1) (transform e2)
     -- WARNING: Here be binders

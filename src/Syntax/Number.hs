@@ -38,7 +38,10 @@ instance Num Number where
     Fract d1 * Fract d2 = Fract (d1 * d2)
     Whole i1 * Fract d2 = Fract (fromIntegral i1 * d2)
     Fract d1 * Whole i2 = Fract (d1 * fromIntegral i2)
-    -- Fract d1 * Fract d2 = Fract (d1 * d2)
+    
+    -- Negation
+    negate (Whole i) = Whole (negate i)
+    negate (Fract d) = Fract (negate d)
 
 instance Eq Number where
     Fract d1 == Fract d2 = d1 == d2

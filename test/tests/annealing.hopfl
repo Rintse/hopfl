@@ -91,7 +91,7 @@ let
 
     # The chance of accepting a neigbour if it is worse
     p_accept_new ← ( λ old . λ new . λ temp . 
-        exp( neg ( ( eval(new) - eval(old) ) / temp ) )
+        exp( - ( ( eval(new) - eval(old) ) / temp ) )
     ) ;
 
     # Non-deterministically select between neighbour and original
@@ -123,3 +123,4 @@ let
     )
 
 in: print ( get_result iteration opt_stream )
+

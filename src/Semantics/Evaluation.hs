@@ -106,7 +106,7 @@ eval exp@(Norm e) = eval e >>= \case
     _ -> throwError $ "Normal argument not a pair: \n" ++ treeTerm exp
 
 -- Evaluate into values
-eval exp@(Print e) = eval e >>= printV eval
+eval exp@(Print e) = eval e >>= forceEval eval
 
 -- If then else
 eval exp@(Ite b e1 e2) = eval b >>= \case
@@ -149,6 +149,7 @@ eval exp = case exp of
     Val v       -> return $ VVal v
     BVal v      -> return $ VBVal $ toBool v
 
+    Min e       -> evalAExp1 eval negate e
     Pow e1 e2   -> evalAExp eval e1 numPow e2
     Div e1 e2   -> evalAExp eval e1 numDiv e2
     Add e1 e2   -> evalAExp eval e1 (+) e2

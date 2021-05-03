@@ -56,6 +56,7 @@ App.        Exp10    ::= Exp10 Exp11 ;
 LApp.       Exp10    ::= Exp10 TLApp Exp11;
 
 -- Arithmetic
+Min.        Exp9    ::= "-" Exp10 ;
 Pow.        Exp9    ::= Exp9 "^" Exp10 ;
 Mul.        Exp8    ::= Exp8 "*" Exp9 ;
 Div.        Exp8    ::= Exp8 "/" Exp9 ;

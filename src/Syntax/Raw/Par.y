@@ -138,7 +138,9 @@ Exp10 : Exp10 Exp11 { Syntax.Raw.Abs.App $1 $2 }
       | Exp11 { $1 }
 
 Exp9 :: { Syntax.Raw.Abs.Exp }
-Exp9 : Exp9 '^' Exp10 { Syntax.Raw.Abs.Pow $1 $3 } | Exp10 { $1 }
+Exp9 : '-' Exp10 { Syntax.Raw.Abs.Min $2 }
+     | Exp9 '^' Exp10 { Syntax.Raw.Abs.Pow $1 $3 }
+     | Exp10 { $1 }
 
 Exp8 :: { Syntax.Raw.Abs.Exp }
 Exp8 : Exp8 '*' Exp9 { Syntax.Raw.Abs.Mul $1 $3 }
