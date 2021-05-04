@@ -34,7 +34,6 @@ newtype EvalMonad a = EvalMonad {
 -- Environment as hashmap from names to values
 type Env = HashMap String Exp
 
-
 -- Transform the environment AST into a hashmap
 mkEnv :: Raw.Environment -> Env
 mkEnv (Raw.Env e) = fromList $ fmap mkAssign e

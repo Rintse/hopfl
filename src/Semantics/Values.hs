@@ -12,6 +12,7 @@ import qualified Syntax.Raw.Abs as Raw
 
 import Data.Functor.Foldable
 import Data.Functor.Foldable.TH
+import Debug.Trace
 
 -- Result values
 data Value
@@ -58,3 +59,4 @@ toExp (EPair e1 e2) = Pair (toExp e1) (toExp e2)
 toExp (EInL e) = InL $ toExp e
 toExp (EInR e) = InR $ toExp e
 
+toExp e = trace (show e) BVal Raw.BTrue

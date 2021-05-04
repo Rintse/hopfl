@@ -91,18 +91,18 @@ eval exp@(Pair e1 e2) = return $ VPair e1 e2
 -- First projection
 eval exp@(Fst e) = eval e >>= \case
     VPair v1 v2 -> eval v1;
-    _ -> throwError $ "Took fst of non-pair:\n" ++ treeTerm exp
+    err -> throwError $ "Took fst of non-pair:\n" ++ treeValue err
 
 -- Second projection
 eval exp@(Snd e) = eval e >>= \case
     VPair v1 v2 -> eval v2
-    _ -> throwError $ "Took snd of non-pair:\n" ++ treeTerm exp
+    err -> throwError $ "Took snd of non-pair:\n" ++ treeValue err
 
 -- Normal distribtion sampling
 eval exp@(Norm e) = eval e >>= \case
-    VPair e1 e2 -> case (e1,e2) of
-        (Val (Fract m), Val (Fract v)) -> performDraw m v
-        _ -> throwError "Normal pair does not contain reals"
+    VPair e1 e2 -> match2 eval e1 e2 >>= \case
+        (VVal (Fract m), VVal (Fract v)) -> performDraw m v
+        err -> throwError $ "Normal pair does not contain reals: " ++ show err
     _ -> throwError $ "Normal argument not a pair: \n" ++ treeTerm exp
 
 -- Evaluate into values

@@ -22,12 +22,14 @@ builtins = glob.glob(DIR + "*.ghopfl")
 result = PRE
 
 for b in builtins:
+    print("\nGenerating builtins: {}".format(b))
+
     ast = subprocess.run(
         ["stack", "exec", "builtin-exe", "--", "-i"] + [b], 
         capture_output=True
     ).stdout.decode("utf-8").replace("\\\"", "\"")[1:-2]
     
-    print (ast)
+    print (ast + "\n")
     name = os.path.basename(b).split(".")[0] 
     result += "    " + ast
     if b != builtins[-1]:

@@ -5,89 +5,54 @@
 #   iteration:  The optimization iteration to get the result from
 #
 # Example run:
-#   stack run -- -E -d "0.6;0.3;0.4;0.1;0.9;" -e "" -v -i test/tests/annealing.hopfl
+#   stack run hopfl-exe -- -v -E -e "iteration<-3" -d "0.6;0.3;0.4;0.1;0.9" -i test/tests/annealing2.hopfl
 # Should give the optimal, after first accepting a worse solution
 
 let
-    # Mathematical tools
-    e ← 2.71828 ;
-    exp ← (λ x . e ^ x) ;
-    xor ← ( λ p . λ q . ( p ∨ q ) ∧ ¬ ( p ∧ q ) ) ;
-    head ← ( λ s . fst (out ( unbox s ) ) );
-    tail ← ( λ s . boxI ( prevI ( snd ( out ( ( unbox s ) ) ) ) ) );
-    # List getter (get item at idx from l)
-    get ← ( fix f . λ l . λ idx . 
-        if (idx = 0) 
-            then fst l
-            else prevI ( f ⊙ next (snd l) ⊙ next (idx-1) )
-    ) ;
-
     # We want to optimize for the following graph:
-    # 0 - 1     Here the optimal solution is obviously
-    # | \ |     to cut such that the two partitions
-    # 3 - 2     are {0, 3} and {1, 2} (4 cuts), as adjacency list:
-    graph ← ( [   
-        [0,1], [ 
-        [0,2], [
-        [0,3], [
-        [1,2], [
-        [2,3], 0
-    ] ] ] ] ] ) ;
-    n_edges ← 5 ;
-    n_vertices ← 4 ;
-
+    # 0 - 1     Here the optimal solution is to cut 
+    # | \ |     such that the two partitions are {0, 3}
+    # 3 - 2     and {1, 2} (4 cuts), as adjacency list:
+    graph ← [ (0,1), (0,2), (0,3), (1,2), (2,3) ] ;
+    
     # Initial solution
-    init_s ← ([true, [true, [false, [false, 0]]]]) ;  
+    init_s ← [ true, true, false, false ] ;
+    n_vertices ← length init_s ;
+    
     # Initial temperature
     init_temp ← 1.0 ; 
 
     # Returns 1.0 if s cuts edge, 0.0 otherwise
-    cuts ← ( λ edge . λ s . 
-        if ( xor ( get s (fst edge) ) ( get s (snd edge) ) )
-            then 1.0 # An edge is cut if its verteces are in different partitions
-            else 0.0 # Not cut otherwise
+    # An edge is cut if its verteces are in different partitions
+    cuts ← ( λ s . λ edge .
+        if ( xor ( index ( fst edge ) s ) ( index ( snd edge ) s ) ) 
+            then 1 
+            else 0
     ) ;
 
-    # The amount of cuts a solution makes (recurstion over adjacency list)
-    cut_count ← ( ( fix f . λ e_idx . λ s .
-        if ( e_idx = n_edges ) 
-            then 0 # End of vector
-            else (
-                cuts (get graph e_idx) s
-                + ( prevI ( f ⊙ next (e_idx + 1) ⊙ next s ) )
-            ) 
-        ) 0
-    ) ;
+    # The amount of cuts a solution makes
+    cut_count ← ( λ s . foldl add 0 ( map ( cuts s ) graph ) ) ;
     
     # The evaluation function should be lower for better solutions
-    eval ← ( λ s . 1.0 / (cut_count s) ) ;
-
-    # Flip bit in s at given idx
-    flip_bit ← ( fix f . λ idx . λ s . 
-        if (idx = 0)
-            then ([ ¬(fst s), (snd s) ])
-            else ([ fst s, prevI ( f ⊙ next (idx-1) ⊙ next (snd s) ) ])
-    ) ;
+    eval ← ( λ s . 1.0 / ( cut_count s ) ) ;
 
     # Random number (NOT UNIFORM) in [0.0, 1.0]
-    rand ← ( ( λ draw . 
-        if (draw < 0.0)
-            then 0.0
-            else (
-                if (draw > 1.0)
-                    then 1.0
-                    else draw
-            ) 
-        ) ( normal [0.5, 0.25] )
-    ) ;
+    rand ← ( ( λ draw . max 0.0 ( min 1.0 draw ) ) ( normal (0.5, 0.25) ) ) ;
 
     # Function that generates a (NOT UNIFORM) random idx between 0 and n
-    rand_idx ← ( ( fix f . λ r . λ n . λ c . λ inc .
-        if ( n = (n_vertices-1) ) then n else (  # Catch rounding errors
-            if ( r ≥ c ) ∧ ( r < ( c + inc ) )
-                then n # x falls in the interval for idx n
-                else prevI (f ⊙ next r ⊙ next (n+1) ⊙ next (c+inc) ⊙ next inc)
-        ) ) rand 0 0.0 (1 / n_vertices)
+    rand_idx ← ( ( fix f . λ r . λ n .
+        if ( r ≤ n * ( 1 / n_vertices ) )
+            then n - 1 # This iteration is 1 too far
+            else prevI ( f ⊙ next r ⊙ next (n+1) )
+        ) rand 0
+    ) ;
+
+    # Flip bit in s at given idx
+    flip_bit ← ( λ idx . λ s . 
+        append ( take idx s ) ( cons 
+            ( ¬ ( index idx s ) ) 
+            ( drop ( idx + 1 ) s )
+        )
     ) ;
 
     # Mutation function, randomly flips one bit in the solution vector
@@ -101,7 +66,7 @@ let
     # Non-deterministically select between neighbour and original
     select ← ( λ old . λ new . λ temp . 
         if ( (eval new) < (eval old) )
-            then new
+            then new 
             else (
                 if ( rand < ( p_accept_new old new temp ) )
                     then new 
@@ -114,17 +79,10 @@ let
 
     # The optimization stream
     opt_stream ← ( boxI ( ( fix f . λ k . λ s . in (
-        [ s, f ⊙ next ( k + 1 ) 
+        ( s, f ⊙ next ( k + 1 ) 
                ⊙ next ( select s ( mutate s ) ( get_temp k ) ) 
-        ] ) ) 0 init_s )
+        ) ) ) 0 init_s )
     ) ;
 
-    # Get the result at iteration idx
-    get_result ← ( fix f . λ idx . λ stream .
-        if (idx = 0)
-            then head stream
-            else prevI ( f ⊙ next (idx - 1) ⊙ next (tail stream) )
-    )
-
-in: print ( get_result iteration opt_stream )
+in: print ( idx_g iteration opt_stream )
 

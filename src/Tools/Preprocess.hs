@@ -62,7 +62,7 @@ handleDefs (DefProg (Env l) e) = do
         mapM_ putStrLn (Set.toList usedBuiltinNames)
         exitFailure )
 
-    return $ foldl runDef e $ inDefs (l ++ builtins)
+    return $ foldl runDef e $ inDefs (builtins ++ l)
 handleDefs (Prog e) = return e
 
 -- A list is repeated pairing in InR followed by the singleton in InL

@@ -15,22 +15,57 @@ length  ← ( fix f . λ l .
         inR y → 1 + prevI ( f ⊙ next ( snd y ) )
     }
 ) ;
+    
+index ← ( fix f . λ idx . λ list .
+    if ( idx = 0 )
+        then head list
+        else prevI ( f ⊙ next (idx - 1) ⊙ next (tail list) )
+) ;
 
 append  ← ( fix f . λ l1 . λ l2 .
     match l1 {
         inL end → l2 ;
-        inR lst → inR ( fst lst, prevI (
-            f ⊙ next (snd lst) ⊙ next l2
-        ) )
+        inR lst → cons ( fst lst ) 
+            ( prevI ( f ⊙ next (snd lst) ⊙ next l2 ) )
     }
 ) ;
 
+
+# Sublists
 take    ← ( fix f . λ n . λ l . 
     match l {
-        inL x → l ;
-        inR y → if (n = 0)
+        inL end → l ;
+        inR lst → if (n = 0)
             then inL 𝟙
-            else inR ( fst y, prevI ( f ⊙ next (n-1) ⊙ next (snd y) ) )
+            else cons ( fst lst )
+                ( prevI ( f ⊙ next (n-1) ⊙ next (snd lst) ) )
+    }
+) ;
+
+drop    ← ( fix f . λ n . λ l .
+    match l {
+        inL end → l ;
+        inR lst → 
+            ( if ( n = 0 ) 
+                then ( cons ( fst lst ) )
+                else (λ x . x) 
+            ) ( prevI ( 
+                f ⊙ next (if ( n = 0 ) then 0 else n - 1) 
+                  ⊙ next (snd lst) 
+            ) )
+    }
+) ;
+
+filter  ← ( fix f . λ pred . λ l .
+    match l {
+        inL end → l ;
+        inR lst → 
+            ( if ( pred ( fst lst ) )
+                then ( cons ( fst lst ) ) 
+                else (λ x . x) 
+            ) ( prevI ( 
+                f ⊙ next pred ⊙ next (snd lst) 
+            ) )
     }
 ) ;
 

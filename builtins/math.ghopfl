@@ -1,0 +1,19 @@
+# Defines some common mathematical tools
+let
+
+exp         ← ( λ x . 2.71828 ^ x) ;
+min         ← ( λ x . λ y . if ( x < y ) then x else y ) ;
+max         ← ( λ x . λ y . if ( x > y ) then x else y ) ;
+
+# Prefix synonyms for mathematical operators
+add         ← ( λ x . λ y . x + y ) ;
+subtract    ← ( λ x . λ y . x - y ) ;
+divide      ← ( λ x . λ y . x / y ) ;
+multiply    ← ( λ x . λ y . x * y ) ;
+power       ← ( λ x . λ y . x ^ y ) ;
+
+# Logic
+xor         ← ( λ p . λ q . ( p ∨ q ) ∧ ¬ ( p ∧ q ) ) ;
+implies     ← ( λ p . λ q . ¬ p ∨ q )
+
+in: builtin
