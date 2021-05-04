@@ -47,9 +47,9 @@ executables:
     dependencies:
     - hopfl
   
-  ast-exe:
+  builtin-exe:
     main:                Main.hs
-    source-dirs:         ast
+    source-dirs:         builtin
     ghc-options:
     - -threaded
     - -rtsopts

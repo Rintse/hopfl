@@ -1,4 +1,0 @@
-λ l . match l { 
-    inL x → false ;  # Shouldn't happen
-    inR y → fst y
-}

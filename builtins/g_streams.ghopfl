@@ -1,0 +1,14 @@
+# Defines some builtin functions around guarded steams
+let
+
+# Basic functions
+head_g  ← ( λ s . fst (out ( unbox s ) ) ) ;
+tail_g  ← ( λ s . boxI ( prevI ( snd ( out ( ( unbox s ) ) ) ) ) ) ;
+
+idx_g   ← ( fix f . λ idx . λ s .
+    if (idx = 0)
+        then head_g s
+        else prevI ( f ⊙ next (idx - 1) ⊙ next (tail_g s) )
+) ;
+
+in: builtin

@@ -1,0 +1,72 @@
+# Builtin function definitions for common list operations
+let
+    
+# Coinductive list construction
+cons ← ( λ e . λ l . inR ( e, l ) ) ;
+
+# Basic functions
+head    ← ( λ l . match l { inL x → x ; inR y → fst y } ) ;
+tail    ← ( λ l . match l { inL x → x ; inR y → snd y } ) ;
+null    ← ( λ l . match l { inL x → true ; inR y → false } ) ;
+
+length  ← ( fix f . λ l .
+    match l {
+        inL x → 0 ;
+        inR y → 1 + prevI ( f ⊙ next ( snd y ) )
+    }
+) ;
+
+append  ← ( fix f . λ l1 . λ l2 .
+    match l1 {
+        inL end → l2 ;
+        inR lst → inR ( fst lst, prevI (
+            f ⊙ next (snd lst) ⊙ next l2
+        ) )
+    }
+) ;
+
+take    ← ( fix f . λ n . λ l . 
+    match l {
+        inL x → l ;
+        inR y → if (n = 0)
+            then inL 𝟙
+            else inR ( fst y, prevI ( f ⊙ next (n-1) ⊙ next (snd y) ) )
+    }
+) ;
+
+
+# Tranformations
+map     ← ( fix f . λ func . λ list .
+    match list {
+        inL end → list ;
+        inR lst → inR ( func ( fst lst ), prevI (
+            f ⊙ next func ⊙ next ( snd lst )
+        ) )
+    }
+) ;
+
+
+# Folds
+foldl   ← ( fix f . λ func . λ val . λ list .
+    match ( list ) {
+        inL end → val ;
+        inR lst → prevI ( 
+            f ⊙ next func 
+              ⊙ next ( func ( fst lst ) val )
+              ⊙ next ( snd lst )
+        )
+    }
+) ;
+
+foldr   ← ( fix f . λ func . λ val . λ list .
+    match ( list ) {
+        inL end → val ;
+        inR lst → func ( prevI ( 
+            f ⊙ next func 
+              ⊙ next ( val )
+              ⊙ next ( snd lst )
+        ) ) ( fst lst )
+    }
+) ;
+
+in: builtin
