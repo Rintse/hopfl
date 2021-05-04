@@ -5,7 +5,7 @@
 #   iteration:  The optimization iteration to get the result from
 #
 # Example run:
-#   stack run -- -E -d "0.6;0.3;0.4;0.1;0.9;" -e "" -v -i test/tests/annealing.hopfl
+#   stack run hopfl-exe -- -v -E -e "iteration<-3" -d "0.6;0.3;0.4;0.1;0.9" -i test/tests/annealing2.hopfl
 # Should give the optimal, after first accepting a worse solution
 
 let
@@ -16,17 +16,14 @@ let
     add ← ( λ x . λ y . x + y ) ;
 
     # Get item at idx in l
-    get ← ( fix f . λ l . λ idx . 
-        match l {
-            inL x → false ; # Should not happen
-            inR y → if ( idx = 0 )
-                then fst y
-                else prevI ( f ⊙ next ( snd y ) ⊙ next ( idx - 1 ) )
-        }
+    get ← ( fix f . λ list . λ idx .
+        if ( idx = 0 )
+            then head list
+            else prevI ( f ⊙ next (tail list) ⊙ next (idx - 1) )
     ) ;
     
     # Flip bit in s at given idx
-    flip_bit ← ( fix f . λ idx . λ s . 
+    flip_biti ← ( fix f . λ idx . λ s . 
         match s {
             inL x → false ; # Should not happen
             inR y → if ( idx = 0 )
@@ -124,10 +121,9 @@ let
     # Get the result at iteration idx
     get_result ← ( fix f . λ idx . λ stream .
         if (idx = 0)
-            then head stream
-            else prevI ( f ⊙ next (idx - 1) ⊙ next (tail stream) )
+            then head_g stream
+            else prevI ( f ⊙ next (idx - 1) ⊙ next (tail_g stream) )
     )
 
-# in: print (0 , (append [1,2,3] [4,5,6]) )
 in: print ( get_result iteration opt_stream )
 

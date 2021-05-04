@@ -1,0 +1,9 @@
+fix f . λ func . λ val . λ list .
+    match ( list ) {
+        inL end → val ;
+        inR lst → func ( prevI ( 
+            f ⊙ next func 
+              ⊙ next ( val )
+              ⊙ next ( snd lst )
+        ) ) ( fst lst )
+    }
