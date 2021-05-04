@@ -1,0 +1,8 @@
+fix f . λ l1 . λ l2 .
+    match l1 {
+        inL end → l2 ;
+        inR lst → inR ( ( fst lst, prevI (
+            f ⊙ next (snd lst) ⊙ next l2
+        ) ) )
+    }
+

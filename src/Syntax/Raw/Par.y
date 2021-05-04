@@ -112,13 +112,18 @@ BConst :: { Syntax.Raw.Abs.BConst }
 BConst : 'true' { Syntax.Raw.Abs.BTrue }
        | 'false' { Syntax.Raw.Abs.BFalse }
 
-Exp12 :: { Syntax.Raw.Abs.Exp }
-Exp12 : TSingle { Syntax.Raw.Abs.Single $1 }
+Exp13 :: { Syntax.Raw.Abs.Exp }
+Exp13 : TSingle { Syntax.Raw.Abs.Single $1 }
       | Ident { Syntax.Raw.Abs.Var $1 }
       | Double { Syntax.Raw.Abs.DVal $1 }
       | Integer { Syntax.Raw.Abs.IVal $1 }
       | BConst { Syntax.Raw.Abs.BVal $1 }
       | '(' Exp ')' { $2 }
+
+Exp12 :: { Syntax.Raw.Abs.Exp }
+Exp12 : Lst { Syntax.Raw.Abs.EList $1 }
+      | '(' Exp ',' Exp1 ')' { Syntax.Raw.Abs.Pair $2 $4 }
+      | Exp13 { $1 }
 
 Exp11 :: { Syntax.Raw.Abs.Exp }
 Exp11 : 'next' Exp12 { Syntax.Raw.Abs.Next $2 }
@@ -174,17 +179,14 @@ Exp4 : Exp4 Conj Exp5 { Syntax.Raw.Abs.And $1 $2 $3 }
      | Exp5 { $1 }
 
 Exp3 :: { Syntax.Raw.Abs.Exp }
-Exp3 : '(' Exp3 ',' Exp4 ')' { Syntax.Raw.Abs.Pair $2 $4 }
-     | 'normal' Exp3 { Syntax.Raw.Abs.Norm $2 }
-     | Lst { Syntax.Raw.Abs.EList $1 }
-     | Exp4 { $1 }
+Exp3 : 'normal' Exp3 { Syntax.Raw.Abs.Norm $2 } | Exp4 { $1 }
 
 Exp2 :: { Syntax.Raw.Abs.Exp }
-Exp2 : 'if' Exp4 'then' Exp7 'else' Exp7 { Syntax.Raw.Abs.Ite $2 $4 $6 }
+Exp2 : 'if' Exp13 'then' Exp3 'else' Exp3 { Syntax.Raw.Abs.Ite $2 $4 $6 }
      | Exp3 { $1 }
 
 Exp1 :: { Syntax.Raw.Abs.Exp }
-Exp1 : 'match' Exp11 '{' 'inL' Ident TMatch Exp1 ';' 'inR' Ident TMatch Exp1 '}' { Syntax.Raw.Abs.Match $2 $5 $6 $7 $10 $11 $12 }
+Exp1 : 'match' Exp13 '{' 'inL' Ident TMatch Exp2 ';' 'inR' Ident TMatch Exp2 '}' { Syntax.Raw.Abs.Match $2 $5 $6 $7 $10 $11 $12 }
      | Exp2 { $1 }
 
 Exp :: { Syntax.Raw.Abs.Exp }

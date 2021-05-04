@@ -51,6 +51,8 @@ data Exp
     | DVal Double
     | IVal Integer
     | BVal BConst
+    | EList Lst
+    | Pair Exp Exp
     | Next Exp
     | Prev Environment Exp
     | PrevE Exp
@@ -81,9 +83,7 @@ data Exp
     | Not TNot Exp
     | And Exp Conj Exp
     | Or Exp Disj Exp
-    | Pair Exp Exp
     | Norm Exp
-    | EList Lst
     | Ite Exp Exp Exp
     | Match Exp Ident TMatch Exp Ident TMatch Exp
     | Abstr Lam Ident Exp

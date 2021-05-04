@@ -22,11 +22,15 @@ BTrue.      BConst  ::= "true" ;
 BFalse.     BConst  ::= "false" ;
 
 -- Terms
-Single.     Exp12   ::= TSingle ;
-Var.        Exp12   ::= Ident ;
-DVal.       Exp12   ::= Double ;
-IVal.       Exp12   ::= Integer ;
-BVal.       Exp12   ::= BConst ;
+Single.     Exp13   ::= TSingle ;
+Var.        Exp13   ::= Ident ;
+DVal.       Exp13   ::= Double ;
+IVal.       Exp13   ::= Integer ;
+BVal.       Exp13   ::= BConst ;
+
+-- Single objects (super high precedence)
+EList.      Exp12    ::= Lst ;
+Pair.       Exp12    ::= "(" Exp "," Exp1 ")" ;
 
 -- Later modality (with applicative function LApp)
 Next.       Exp11   ::= "next" Exp12 ;
@@ -77,16 +81,14 @@ Not.        Exp5    ::= TNot Exp6 ;
 And.        Exp4    ::= Exp4 Conj Exp5 ;
 Or.         Exp4    ::= Exp4 Disj Exp5 ;
 
-Pair.       Exp3    ::= "(" Exp3 "," Exp4 ")" ;
 Norm.       Exp3    ::= "normal" Exp3 ;
-EList.      Exp3    ::= Lst ;
 
-Ite.        Exp2    ::= "if" Exp4 "then" Exp7 "else" Exp7 ;
-Match.      Exp1    ::= "match" Exp11 "{" "inL" Ident TMatch Exp1 ";" "inR" Ident TMatch Exp1 "}" ;
+Ite.        Exp2    ::= "if" Exp13 "then" Exp3 "else" Exp3 ;
+Match.      Exp1    ::= "match" Exp13 "{" "inL" Ident TMatch Exp2 ";" "inR" Ident TMatch Exp2 "}" ;
 
 Abstr.      Exp     ::= Lam Ident "." Exp ;
 Rec.        Exp     ::= "fix" Ident "." Exp ;
-coercions Exp 12 ;
+coercions Exp 13 ;
 
 -- List syntactic sugar
 List.       Lst     ::= "[" Els "]" ;

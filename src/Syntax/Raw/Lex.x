@@ -17,7 +17,7 @@ $d = [0-9]           -- digit
 $i = [$l $d _ ']     -- identifier character
 $u = [. \n]          -- universal: any character
 @rsyms =    -- symbols and non-identifier-like reserved words
-   \{ | \} | \. | \- | \^ | \* | \/ | \+ | \= | \< | \> | \( | \, | \) | \; | \[ | \] | "in" \:
+   \( | \, | \) | \{ | \} | \. | \- | \^ | \* | \/ | \+ | \= | \< | \> | \; | \[ | \] | "in" \:
 :-
 
 -- Line comments

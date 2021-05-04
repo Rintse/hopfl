@@ -137,11 +137,13 @@ instance Print Syntax.Raw.Abs.BConst where
 
 instance Print Syntax.Raw.Abs.Exp where
   prt i e = case e of
-    Syntax.Raw.Abs.Single tsingle -> prPrec i 12 (concatD [prt 0 tsingle])
-    Syntax.Raw.Abs.Var id -> prPrec i 12 (concatD [prt 0 id])
-    Syntax.Raw.Abs.DVal d -> prPrec i 12 (concatD [prt 0 d])
-    Syntax.Raw.Abs.IVal n -> prPrec i 12 (concatD [prt 0 n])
-    Syntax.Raw.Abs.BVal bconst -> prPrec i 12 (concatD [prt 0 bconst])
+    Syntax.Raw.Abs.Single tsingle -> prPrec i 13 (concatD [prt 0 tsingle])
+    Syntax.Raw.Abs.Var id -> prPrec i 13 (concatD [prt 0 id])
+    Syntax.Raw.Abs.DVal d -> prPrec i 13 (concatD [prt 0 d])
+    Syntax.Raw.Abs.IVal n -> prPrec i 13 (concatD [prt 0 n])
+    Syntax.Raw.Abs.BVal bconst -> prPrec i 13 (concatD [prt 0 bconst])
+    Syntax.Raw.Abs.EList lst -> prPrec i 12 (concatD [prt 0 lst])
+    Syntax.Raw.Abs.Pair exp1 exp2 -> prPrec i 12 (concatD [doc (showString "("), prt 0 exp1, doc (showString ","), prt 1 exp2, doc (showString ")")])
     Syntax.Raw.Abs.Next exp -> prPrec i 11 (concatD [doc (showString "next"), prt 12 exp])
     Syntax.Raw.Abs.Prev environment exp -> prPrec i 11 (concatD [doc (showString "prev"), doc (showString "{"), prt 0 environment, doc (showString "}"), doc (showString "."), prt 12 exp])
     Syntax.Raw.Abs.PrevE exp -> prPrec i 11 (concatD [doc (showString "prev"), prt 12 exp])
@@ -172,11 +174,9 @@ instance Print Syntax.Raw.Abs.Exp where
     Syntax.Raw.Abs.Not tnot exp -> prPrec i 5 (concatD [prt 0 tnot, prt 6 exp])
     Syntax.Raw.Abs.And exp1 conj exp2 -> prPrec i 4 (concatD [prt 4 exp1, prt 0 conj, prt 5 exp2])
     Syntax.Raw.Abs.Or exp1 disj exp2 -> prPrec i 4 (concatD [prt 4 exp1, prt 0 disj, prt 5 exp2])
-    Syntax.Raw.Abs.Pair exp1 exp2 -> prPrec i 3 (concatD [doc (showString "("), prt 3 exp1, doc (showString ","), prt 4 exp2, doc (showString ")")])
     Syntax.Raw.Abs.Norm exp -> prPrec i 3 (concatD [doc (showString "normal"), prt 3 exp])
-    Syntax.Raw.Abs.EList lst -> prPrec i 3 (concatD [prt 0 lst])
-    Syntax.Raw.Abs.Ite exp1 exp2 exp3 -> prPrec i 2 (concatD [doc (showString "if"), prt 4 exp1, doc (showString "then"), prt 7 exp2, doc (showString "else"), prt 7 exp3])
-    Syntax.Raw.Abs.Match exp1 id1 tmatch1 exp2 id2 tmatch2 exp3 -> prPrec i 1 (concatD [doc (showString "match"), prt 11 exp1, doc (showString "{"), doc (showString "inL"), prt 0 id1, prt 0 tmatch1, prt 1 exp2, doc (showString ";"), doc (showString "inR"), prt 0 id2, prt 0 tmatch2, prt 1 exp3, doc (showString "}")])
+    Syntax.Raw.Abs.Ite exp1 exp2 exp3 -> prPrec i 2 (concatD [doc (showString "if"), prt 13 exp1, doc (showString "then"), prt 3 exp2, doc (showString "else"), prt 3 exp3])
+    Syntax.Raw.Abs.Match exp1 id1 tmatch1 exp2 id2 tmatch2 exp3 -> prPrec i 1 (concatD [doc (showString "match"), prt 13 exp1, doc (showString "{"), doc (showString "inL"), prt 0 id1, prt 0 tmatch1, prt 2 exp2, doc (showString ";"), doc (showString "inR"), prt 0 id2, prt 0 tmatch2, prt 2 exp3, doc (showString "}")])
     Syntax.Raw.Abs.Abstr lam id exp -> prPrec i 0 (concatD [prt 0 lam, prt 0 id, doc (showString "."), prt 0 exp])
     Syntax.Raw.Abs.Rec id exp -> prPrec i 0 (concatD [doc (showString "fix"), prt 0 id, doc (showString "."), prt 0 exp])
 

@@ -54,6 +54,8 @@ transExp x = case x of
   Syntax.Raw.Abs.DVal double -> failure x
   Syntax.Raw.Abs.IVal integer -> failure x
   Syntax.Raw.Abs.BVal bconst -> failure x
+  Syntax.Raw.Abs.EList lst -> failure x
+  Syntax.Raw.Abs.Pair exp1 exp2 -> failure x
   Syntax.Raw.Abs.Next exp -> failure x
   Syntax.Raw.Abs.Prev environment exp -> failure x
   Syntax.Raw.Abs.PrevE exp -> failure x
@@ -84,9 +86,7 @@ transExp x = case x of
   Syntax.Raw.Abs.Not tnot exp -> failure x
   Syntax.Raw.Abs.And exp1 conj exp2 -> failure x
   Syntax.Raw.Abs.Or exp1 disj exp2 -> failure x
-  Syntax.Raw.Abs.Pair exp1 exp2 -> failure x
   Syntax.Raw.Abs.Norm exp -> failure x
-  Syntax.Raw.Abs.EList lst -> failure x
   Syntax.Raw.Abs.Ite exp1 exp2 exp3 -> failure x
   Syntax.Raw.Abs.Match exp1 ident1 tmatch1 exp2 ident2 tmatch2 exp3 -> failure x
   Syntax.Raw.Abs.Abstr lam ident exp -> failure x

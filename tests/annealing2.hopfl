@@ -30,7 +30,7 @@ let
         match s {
             inL x → false ; # Should not happen
             inR y → if ( idx = 0 )
-                then ( inR ( ( ¬( fst y ), ( snd y ) ) ) )
+                then inR ( ¬( fst y ), snd y )
                 else ( inR ( ( fst y, prevI ( f ⊙ next ( idx-1 ) ⊙ next ( snd y ) ) ) ) )
         }
     ) ;
@@ -76,7 +76,7 @@ let
     # Function that generates a (NOT UNIFORM) random idx between 0 and n
     rand_idx ← ( ( fix f . λ r . λ n . λ c . λ inc .
         if ( n = (n_vertices-1) ) then n else (  # Catch rounding errors
-            if ( r ≥ c ) ∧ ( r < ( c + inc ) )
+            if ( ( r ≥ c ) ∧ ( r < ( c + inc ) ) )
                 then n # x falls in the interval for idx n
                 else prevI (f ⊙ next r ⊙ next (n+1) ⊙ next (c+inc) ⊙ next inc)
         ) ) rand 0 0.0 (1 / n_vertices)
@@ -110,6 +110,16 @@ let
                ⊙ next ( select s ( mutate s ) ( get_temp k ) ) 
         ) ) ) 0 init_s )
     ) ;
+    
+
+    flip_bit ← ( fix f . λ idx . λ s . 
+        match s {
+            inL x → false ; # Should not happen
+            inR y → if ( idx = 0 )
+                then ( inR ( ( ¬( fst y ), ( snd y ) ) ) )
+                else ( inR ( ( fst y, prevI ( f ⊙ next ( idx-1 ) ⊙ next ( snd y ) ) ) ) )
+        }
+    ) ;
 
     # Get the result at iteration idx
     get_result ← ( fix f . λ idx . λ stream .
@@ -118,6 +128,6 @@ let
             else prevI ( f ⊙ next (idx - 1) ⊙ next (tail stream) )
     )
 
-# in: print ( cut_count init_s )
+# in: print (0 , (append [1,2,3] [4,5,6]) )
 in: print ( get_result iteration opt_stream )
 
