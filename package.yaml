@@ -49,7 +49,7 @@ executables:
   
   builtin-exe:
     main:                Main.hs
-    source-dirs:         builtin
+    source-dirs:         mk_builtins
     ghc-options:
     - -threaded
     - -rtsopts

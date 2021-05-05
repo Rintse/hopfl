@@ -3,7 +3,7 @@
 
 module Tools.Treeify where
 
-import Syntax.IdAbs
+import Syntax.Expression
 import Semantics.Values
 import Tools.VerbPrint
 

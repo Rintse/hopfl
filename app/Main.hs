@@ -1,18 +1,25 @@
 module Main where
 
 import Args
-import Syntax.IdAbs
+import Syntax.Parse
 import Semantics.Evaluation
+import Syntax.Expression
 import Tools.VerbPrint
 import Tools.Treeify
-import Tools.Preprocess
-import Syntax.Parse
+
+import Preprocess.Definitions
+import Preprocess.Lists
+import Preprocess.AnnotateVars
 
 import Control.Monad.Reader
 import System.Environment ( getArgs )
 import System.Console.GetOpt
 import Control.Monad (when)
 import System.Exit
+
+preprocess :: Exp -> IO Exp
+preprocess e = do
+    withDefinitions <- handleDefs e
 
 -- Parses the arguments, input and performs the requested actions
 main :: IO ()

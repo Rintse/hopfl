@@ -6,7 +6,7 @@
 
 module Semantics.Values where
 
-import Syntax.IdAbs
+import Syntax.Expression
 import Syntax.Number
 import qualified Syntax.Raw.Abs as Raw
 

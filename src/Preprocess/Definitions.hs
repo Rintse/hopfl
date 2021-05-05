@@ -1,5 +1,6 @@
 {-# LANGUAGE LambdaCase #-}
-module Tools.Preprocess where
+
+module Preprocess.Definitions where
 
 import Syntax.Raw.Abs
 import Syntax.AbsF
@@ -64,16 +65,4 @@ handleDefs (DefProg (Env l) e) = do
 
     return $ foldl runDef e $ inDefs (builtins ++ l)
 handleDefs (Prog e) = return e
-
--- A list is repeated pairing in InR followed by the singleton in InL
-desugarList :: [El] -> Exp
-desugarList l = do
-    let end = InL $ Single $ TSingle ""
-    foldr ((\x y -> InR $ Pair x y) . (\(Elem e) -> e)) end l
-
--- Desugar lists
-desugarLists :: Exp -> Exp
-desugarLists = ana $ \case
-    EList (List (Elems l)) -> project $ desugarList l
-    other -> project other
 

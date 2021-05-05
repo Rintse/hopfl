@@ -10,7 +10,7 @@ module Semantics.Evaluation where
 
 import Semantics.Substitution
 import Semantics.Tools
-import Syntax.IdAbs
+import Syntax.Expression
 import qualified Syntax.Raw.Abs as Raw
 import Syntax.Number
 import Semantics.Values

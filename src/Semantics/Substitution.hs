@@ -6,7 +6,7 @@
 
 module Semantics.Substitution where
 
-import Syntax.IdAbs
+import Syntax.Expression
 import Syntax.Number
 
 import Data.Functor.Foldable

@@ -6,7 +6,8 @@
 
 module Semantics.Tools where
 
-import Syntax.IdAbs
+import Syntax.Expression
+import Preprocess.AnnotateVars
 import Syntax.Number
 import qualified Syntax.Raw.Abs as Raw
 import Syntax.Raw.ErrM

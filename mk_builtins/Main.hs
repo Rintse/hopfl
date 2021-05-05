@@ -2,9 +2,8 @@ module Main where
 
 import Args
 import Syntax.Parse
-import qualified Syntax.IdAbs as ID
 import Syntax.Raw.Abs
-import Tools.Preprocess
+import Preprocess.Definitions
 
 import System.Environment ( getArgs )
 import System.Console.GetOpt
