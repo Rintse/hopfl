@@ -6,6 +6,7 @@ import Syntax.Raw.Abs
 import Syntax.AbsF
 
 import Data.Functor.Foldable
+import Data.Functor.Foldable.Monadic
 
 -- A list is repeated pairing in InR followed by the singleton in InL
 desugarList :: [El] -> Exp
@@ -14,8 +15,8 @@ desugarList l = do
     foldr ((\x y -> InR $ Pair x y) . (\(Elem e) -> e)) end l
 
 -- Desugar lists
-desugarLists :: Exp -> Exp
-desugarLists = ana $ \case
-    EList (List (Elems l)) -> project $ desugarList l
-    other -> project other
+desugarLists :: Exp -> IO Exp
+desugarLists = anaM $ \case
+    EList (List (Elems l)) -> return $ project $ desugarList l
+    other -> return $ project other
 

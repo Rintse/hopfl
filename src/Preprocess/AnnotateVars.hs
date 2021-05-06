@@ -81,11 +81,12 @@ idAssign (Ident x _ _) = Raw.Assign
 -- Returns the identity substitution list for all free variables
 -- in term e. Used in boxF and prevF
 freeList :: Raw.Exp -> Raw.Environment
-freeList e = Raw.Env $ Prelude.map idAssign $ Set.toList $ getFrees (idExp e)
+freeList e = Raw.Env $ Prelude.map idAssign $ Set.toList $ getFrees (annotateVars e)
 
 -- TODO check for faulty programs?
 -- Transforms the raw syntax tree into a version where the 
 -- idenfiers are made unique with an id and recursion depth tag.
+transform :: Raw.Exp -> IdMonad Exp
 transform exp = case exp of
     Raw.Single t        -> return Single
     Raw.DVal v          -> return $ Val $ Fract v
@@ -156,6 +157,6 @@ transform exp = case exp of
         return $ Rec r1 r2
 
 -- Translate a raw tree into the id tree with annotated identifiers
-idExp :: Raw.Exp -> Exp
-idExp e = runReader (evalStateT (runId(transform e)) 0) HM.empty
+annotateVars :: Raw.Exp -> Exp
+annotateVars e = runReader (evalStateT (runId(transform e)) 0) HM.empty
 

@@ -4,12 +4,13 @@ import Args
 import Syntax.Parse
 import Semantics.Evaluation
 import Syntax.Expression
+import qualified Syntax.Raw.Abs as Raw
 import Tools.VerbPrint
 import Tools.Treeify
 
 import Preprocess.Definitions
-import Preprocess.Lists
 import Preprocess.AnnotateVars
+import Preprocess.Lists
 
 import Control.Monad.Reader
 import System.Environment ( getArgs )
@@ -17,9 +18,11 @@ import System.Console.GetOpt
 import Control.Monad (when)
 import System.Exit
 
-preprocess :: Exp -> IO Exp
+preprocess :: Raw.Prg -> IO Exp
 preprocess e = do
     withDefinitions <- handleDefs e
+    withLists       <- desugarLists withDefinitions
+    return $ annotateVars withLists
 
 -- Parses the arguments, input and performs the requested actions
 main :: IO ()
@@ -41,18 +44,15 @@ main = do
                     optDraws    = draws,
                     optDepth    = depth     } = opts
 
-    -- Parse input into an AST
+    -- Parse input into a program AST
     prog <- input >>= parse verb
-    -- Preprocess definitions
-    defd <- handleDefs prog
+   
+    -- Preprocess raw AST into one expression
+    exp <- preprocess prog
 
-    -- Desugar list notation
-    let deListed = desugarLists defd
-    -- Annotate identifiers with a unique id
-    let annotated = idExp deListed
-    
     -- Show the result
-    showProg verb annotated
+    showProg verb exp
+
     -- Evaluate if requested
-    when eval $ evaluate verb annotated depth draws env
+    when eval $ evaluate verb exp depth draws env
 
