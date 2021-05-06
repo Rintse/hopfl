@@ -16,18 +16,29 @@ length  ← ( fix f . λ l .
     }
 ) ;
     
-index ← ( fix f . λ idx . λ list .
-    if ( idx = 0 )
-        then head list
-        else prevI ( f ⊙ next (idx - 1) ⊙ next (tail list) )
-) ;
-
 append  ← ( fix f . λ l1 . λ l2 .
     match l1 {
         inL end → l2 ;
         inR lst → cons ( fst lst ) 
             ( prevI ( f ⊙ next (snd lst) ⊙ next l2 ) )
     }
+) ;
+
+elem ← ( fix f . λ e . λ l .
+    match l {
+        inL x → false ;
+        inR lst → if ( ( fst lst ) = e )
+            then true
+            else ( prevI ( f ⊙ next e ⊙ next ( snd lst ) ) )
+    }
+) ;
+
+
+# Access
+index ← ( fix f . λ idx . λ list .
+    if ( idx = 0 )
+        then head list
+        else prevI ( f ⊙ next (idx - 1) ⊙ next (tail list) )
 ) ;
 
 
@@ -77,6 +88,13 @@ map     ← ( fix f . λ func . λ list .
         inR lst → inR ( func ( fst lst ), prevI (
             f ⊙ next func ⊙ next ( snd lst )
         ) )
+    }
+) ;
+    
+reverse ← ( fix f . λ l .
+    match l {
+        inL x → l ;
+        inR lst → append ( prevI ( f ⊙ next (snd lst) ) ) [fst lst]
     }
 ) ;
 

@@ -18,11 +18,13 @@ import System.Console.GetOpt
 import Control.Monad (when)
 import System.Exit
 
+-- Run all the preprocess steps
 preprocess :: Raw.Prg -> IO Exp
 preprocess e = do
     withDefinitions <- handleDefs e
     withLists       <- desugarLists withDefinitions
     return $ annotateVars withLists
+
 
 -- Parses the arguments, input and performs the requested actions
 main :: IO ()

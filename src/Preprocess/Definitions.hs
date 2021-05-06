@@ -64,5 +64,6 @@ handleDefs (DefProg (Env l) e) = do
         exitFailure )
 
     return $ foldl runDef e $ inDefs (builtins ++ l)
-handleDefs (Prog e) = return e
+
+handleDefs (Prog e) = return $ foldl runDef e $ inDefs builtins 
 
