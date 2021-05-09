@@ -50,9 +50,9 @@ pushVars l c m = do
 varAssign :: Raw.Assignment -> IdMonad Assignment
 varAssign (Raw.Assign x _ t) = do
     cur <- modify (+1) >> get
-    sub1 <- asks (getSub x . pushVar x cur)
     -- x is not bound in t
-    Assign sub1 <$> transform t
+    trace ("HIER?" ++ show cur)  
+        asks (Assign . (getSub x . pushVar x cur)) <*> transform t
 
 -- Gets the latest substitute for x from m[x] (returns x if none are found)
 getSub :: Raw.Ident -> IdMap -> Ident
@@ -65,12 +65,12 @@ getFreesL = foldr (Set.union . (\(Assign x t) -> getFrees t)) Set.empty
 -- Gets all free variables in an expression
 getFrees :: Exp -> Set.Set Ident
 getFrees = cata $ \case
-    (ValF _)            -> Set.empty
-    (VarF _)            -> Set.empty
-    (BValF _)           -> Set.empty
-    (PrevF (Env l) e)   -> Set.union e $ getFreesL l
-    (BoxF (Env l) e)    -> Set.union e $ getFreesL l
-    fFree               -> foldr Set.union Set.empty fFree
+    (VarF id@(Ident x d _)) -> if d == 0 then Set.singleton id else Set.empty
+    (ValF _)                -> Set.empty
+    (BValF _)               -> Set.empty
+    (PrevF (Env l) e)       -> Set.union e $ getFreesL l
+    (BoxF (Env l) e)        -> Set.union e $ getFreesL l
+    fFree                   -> foldr Set.union Set.empty fFree
 
 -- Transforms an identifier into an identity substitution
 -- for that identifier

@@ -3,8 +3,8 @@ module Main where
 import Args
 import Syntax.Parse
 import Semantics.Evaluation
-import Syntax.Expression
-import qualified Syntax.Raw.Abs as Raw
+import qualified Syntax.Expression as Exp
+import Syntax.Raw.Abs as Raw
 import Tools.VerbPrint
 import Tools.Treeify
 
@@ -19,11 +19,11 @@ import Control.Monad (when)
 import System.Exit
 
 -- Run all the preprocess steps
-preprocess :: Raw.Prg -> IO Exp
+preprocess :: Raw.Prg -> IO Exp.Exp
 preprocess e = do
     withDefinitions <- handleDefs e
     withLists       <- desugarLists withDefinitions
-    return $ annotateVars withLists
+    return          $  annotateVars withLists
 
 
 -- Parses the arguments, input and performs the requested actions
@@ -45,7 +45,7 @@ main = do
                     optEnv      = env,
                     optDraws    = draws,
                     optDepth    = depth     } = opts
-
+    
     -- Parse input into a program AST
     prog <- input >>= parse verb
    
