@@ -11,8 +11,8 @@ import Data.Functor.Foldable.Monadic
 -- A list is repeated pairing in InR followed by the singleton in InL
 desugarList :: [El] -> Exp
 desugarList l = do
-    let end = InL $ Single $ TSingle ""
-    foldr ((\x y -> InR $ Pair x y) . (\(Elem e) -> e)) end l
+    let end = In $ InL $ Single $ TSingle ""
+    BoxI $ foldr ((\x y -> In $ InR $ Pair x $ Next y) . (\(Elem e) -> e)) end l
 
 -- Desugar lists
 desugarLists :: Exp -> IO Exp

@@ -1,0 +1,14 @@
+# Defines some builtin functions around coinductive streams
+let
+
+# Basic functions
+head_c  ← ( λ s . fst (out ( unbox s ) ) ) ;
+tail_c  ← ( λ s . boxI ( prevI ( snd ( out ( ( unbox s ) ) ) ) ) ) ;
+
+idx_c   ← ( fix f . λ idx . λ s .
+    if (idx = 0)
+        then head_c s
+        else prevI ( f ⊙ next (idx - 1) ⊙ next (tail_c s) )
+) ;
+
+in: builtin

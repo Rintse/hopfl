@@ -30,8 +30,12 @@ data Value
 
     -- Evailuated results
     | EPair Value Value 
+    | EBox Value
+    | EIn Value
+    | ENext Value
     | EInL Value
     | EInR Value
+    | EList Value
     deriving (Eq, Ord, Show, Read)
 
 makeBaseFunctor ''Value

@@ -86,21 +86,21 @@ evalAExp1 f op e = f e >>= \case
     (VVal v) -> return $ VVal $ op v
     other -> throwError $ "Non-real arg to arithmetic operator:\n" ++ show other
 
--- -- Evaluates a binary boolean operation
+-- Evaluates a binary boolean operation
 evalBExp :: (Exp -> EvalMonad Value) -> Exp 
          -> (Bool -> Bool -> Bool) -> Exp -> EvalMonad Value
 evalBExp f e1 op e2 = match2 f e1 e2 >>= \case
     (VBVal b1, VBVal b2) -> return $ VBVal $ op b1 b2
     other -> throwError $ "Non-bool args to bool operator:\n" ++ show other
 
--- -- Evaluates a unary boolean operation
+-- Evaluates a unary boolean operation
 evalBExp1 :: (Exp -> EvalMonad Value) 
           -> (Bool -> Bool) -> Exp -> EvalMonad Value
 evalBExp1 f op e = f e >>= \case
     VBVal b -> return $ VBVal $ op b
     other -> throwError $ "Non-bool args to bool operator:\n" ++ show other
 
--- -- Evaluates a relative operator
+-- Evaluates a relative operator
 evalRelop :: (Exp -> EvalMonad Value) -> Exp 
           -> (Number -> Number -> Bool) -> Exp -> EvalMonad Value
 evalRelop f e1 op e2 = match2 f e1 e2 >>= \case
@@ -110,8 +110,11 @@ evalRelop f e1 op e2 = match2 f e1 e2 >>= \case
 -- Evluates everything underneath values to make it readable
 forceEval :: (Exp -> EvalMonad Value ) -> Value -> EvalMonad Value
 forceEval f = anaM $ \case
-    VPair e1 e2 -> EPairF <$> f e1 <*> f e2
-    VInL e -> EInLF <$> f e
-    VInR e -> EInRF <$> f e
+    VPair e1 e2 -> EPairF   <$> f e1 <*> f e2
+    VIn e       -> EInF     <$> f e
+    VNext e     -> ENextF   <$> f e
+    VInL e      -> EInLF    <$> f e
+    VInR e      -> EInRF    <$> f e
+    VBox l e    -> EBoxF    <$> f (Unbox (toExp (VBox l e)))
     other -> return $ project other
 

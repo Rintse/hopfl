@@ -1,35 +1,37 @@
 # Builtin function definitions for common list operations
 let
-    
+   
 # Coinductive list construction
-cons ← ( λ e . λ l . inR ( e, l ) ) ;
+l_empty ← ( boxI ( in ( inL 𝟙 ) ) );
+cons ← ( λ e . λ l . boxI ( in ( inR ( e, next ( unbox l ) ) ) ) ) ;
 
 # Basic functions
-head    ← ( λ l . match l { inL x → x ; inR y → fst y } ) ;
-tail    ← ( λ l . match l { inL x → x ; inR y → snd y } ) ;
-null    ← ( λ l . match l { inL x → true ; inR y → false } ) ;
+head    ← ( λ l . match ( out ( unbox l ) ) { inL x → x ; inR y → fst y } ) ;
+tail    ← ( λ l . match ( out ( unbox l ) ) { inL x → x ; inR y → boxI ( prevI ( snd y ) ) } ) ;
+null    ← ( λ l . match ( out ( unbox l ) ) { inL x → true ; inR y → false } ) ;
 
 length  ← ( fix f . λ l .
-    match l {
+    match ( out ( unbox l ) ) {
         inL x → 0 ;
-        inR y → 1 + prevI ( f ⊙ next ( snd y ) )
+        inR y → 1 + prevI ( f ⊙ next ( tail l ) )
     }
 ) ;
     
 append  ← ( fix f . λ l1 . λ l2 .
-    match l1 {
-        inL end → l2 ;
-        inR lst → cons ( fst lst ) 
-            ( prevI ( f ⊙ next (snd lst) ⊙ next l2 ) )
-    }
+    boxI ( match ( out ( unbox l1 ) ) {
+        inL end → unbox l2 ;
+        inR lst → unbox ( cons ( head l1 ) 
+            ( prevI ( f ⊙ next ( tail l1 ) ⊙ next l2 ) )
+        )
+    } )
 ) ;
 
 elem ← ( fix f . λ e . λ l .
-    match l {
+    match ( out ( unbox l ) ) {
         inL x → false ;
-        inR lst → if ( ( fst lst ) = e )
+        inR lst → if ( ( head l ) = e )
             then true
-            else ( prevI ( f ⊙ next e ⊙ next ( snd lst ) ) )
+            else ( prevI ( f ⊙ next e ⊙ next ( tail l ) ) )
     }
 ) ;
 
@@ -44,81 +46,80 @@ index ← ( fix f . λ idx . λ list .
 
 # Sublists
 take    ← ( fix f . λ n . λ l . 
-    match l {
+    match ( out ( unbox l ) ) {
         inL end → l ;
         inR lst → if (n = 0)
-            then inL 𝟙
-            else cons ( fst lst )
-                ( prevI ( f ⊙ next (n-1) ⊙ next (snd lst) ) )
+            then l_empty
+            else cons ( head l )
+                ( prevI ( f ⊙ next ( n - 1 ) ⊙ next ( tail l ) ) )
     }
 ) ;
 
 drop    ← ( fix f . λ n . λ l .
-    match l {
+    match ( out ( unbox l ) ) {
         inL end → l ;
         inR lst → 
             ( if ( n = 0 ) 
-                then ( cons ( fst lst ) )
+                then ( cons ( head l ) )
                 else (λ x . x) 
             ) ( prevI ( 
-                f ⊙ next (if ( n = 0 ) then 0 else n - 1) 
-                  ⊙ next (snd lst) 
+                f ⊙ next ( if ( n = 0 ) then 0 else n - 1 )
+                  ⊙ next ( tail l )
             ) )
     }
 ) ;
 
 filter  ← ( fix f . λ pred . λ l .
-    match l {
+    match ( out ( unbox l ) ) {
         inL end → l ;
         inR lst → 
-            ( if ( pred ( fst lst ) )
-                then ( cons ( fst lst ) ) 
+            ( if ( pred ( head l ) )
+                then ( cons ( head l ) ) 
                 else (λ x . x) 
             ) ( prevI ( 
-                f ⊙ next pred ⊙ next (snd lst) 
+                f ⊙ next pred ⊙ next ( tail l ) 
             ) )
     }
 ) ;
 
 
 # Tranformations
-map     ← ( fix f . λ func . λ list .
-    match list {
-        inL end → list ;
-        inR lst → inR ( func ( fst lst ), prevI (
-            f ⊙ next func ⊙ next ( snd lst )
-        ) )
+map     ← ( fix f . λ func . λ l .
+    match ( out ( unbox l ) ) {
+        inL end → l ;
+        inR lst → cons ( func ( head l ) )
+            ( prevI ( f ⊙ next func ⊙ next ( tail l ) ) )
     }
 ) ;
     
 reverse ← ( fix f . λ l .
-    match l {
+    match ( out ( unbox l ) ) {
         inL x → l ;
-        inR lst → append ( prevI ( f ⊙ next (snd lst) ) ) [fst lst]
+        inR lst → append ( prevI ( f ⊙ next ( tail l ) ) ) [ head l ]
     }
 ) ;
 
 
 # Folds
-foldl   ← ( fix f . λ func . λ val . λ list .
-    match ( list ) {
+foldl   ← ( fix f . λ func . λ val . λ l .
+    match ( out ( unbox l ) ) {
         inL end → val ;
         inR lst → prevI ( 
             f ⊙ next func 
-              ⊙ next ( func ( fst lst ) val )
-              ⊙ next ( snd lst )
+              ⊙ next ( func ( head l ) val )
+              ⊙ next ( tail l )
         )
     }
 ) ;
 
-foldr   ← ( fix f . λ func . λ val . λ list .
-    match ( list ) {
+foldr   ← ( fix f . λ func . λ val . λ l .
+    match ( l ) {
         inL end → val ;
         inR lst → func ( prevI ( 
             f ⊙ next func 
               ⊙ next ( val )
-              ⊙ next ( snd lst )
-        ) ) ( fst lst )
+              ⊙ next ( tail l )
+        ) ) ( head l )
     }
 ) ;
 

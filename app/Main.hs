@@ -25,7 +25,6 @@ preprocess e = do
     withLists       <- desugarLists withDefinitions
     return          $  annotateVars withLists
 
-
 -- Parses the arguments, input and performs the requested actions
 main :: IO ()
 main = do

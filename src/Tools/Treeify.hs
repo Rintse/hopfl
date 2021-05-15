@@ -45,7 +45,7 @@ instance Treeish Exp where
         App e1 e2           -> Node "App"       [ toTree e1, toTree e2 ]
         LApp e1 e2          -> Node "LApp"      [ toTree e1, toTree e2 ]
         Pair e1 e2          -> Node "Pair"      [ toTree e1, toTree e2 ]
-        Ite b e1 e2         -> Node "Ite"       [toTree b, toTree e1, toTree e2 ]
+        Ite b e1 e2         -> Node "Ite"       [ toTree b, toTree e1, toTree e2 ]
         Abstr x e           -> Node "λ"         [ toTree x, toTree e ]
         Rec f e             -> Node "Fix"       [ toTree f, toTree e ]
         Mul e1 e2           -> Node "Mul"       [ toTree e1, toTree e2 ]
@@ -64,6 +64,15 @@ instance Treeish Exp where
                                                   toTree x1, toTree e1,
                                                   toTree x2, toTree e2 ]
 
+isLast ( EIn ( EInR ( EPair v ( ENext ( EIn (EInL _) ) ) ) ) ) = True
+isLast _ = False
+
+printList l@(EIn ( EInR ( EPair v (ENext l2) ) ) ) = 
+    init (drawTree (toTree v)) 
+    ++ if isLast l then "" else ", " ++ printList l2
+printList (EIn ( EInL _ ) ) = ""
+printList o = trace (show o) ""
+
 instance Treeish Value where
     toTree val = case val of
         VSingle     -> Node "" []
@@ -80,8 +89,10 @@ instance Treeish Value where
 
         -- Evaluated results
         EPair v1 v2 -> Node "Pair"  [ toTree v1, toTree v2 ]
-        EInL v      -> Node "InL" [ toTree v]
-        EInR v      -> Node "InR" [ toTree v]
+        EBox v      -> Node "Box"   [ toTree v ]
+        EInL v      -> Node "InL"   [ toTree v ]
+        EInR v      -> Node "InR"   [ toTree v ]
+        EList (EBox l) -> Node ("[" ++ printList l ++ "]") []
 
 treeValue :: Value -> String
 treeValue v = drawTree $ toTree v

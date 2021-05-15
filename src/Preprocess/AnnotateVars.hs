@@ -51,8 +51,7 @@ varAssign :: Raw.Assignment -> IdMonad Assignment
 varAssign (Raw.Assign x _ t) = do
     cur <- modify (+1) >> get
     -- x is not bound in t
-    trace ("HIER?" ++ show cur)  
-        asks (Assign . (getSub x . pushVar x cur)) <*> transform t
+    asks (Assign . (getSub x . pushVar x cur)) <*> transform t
 
 -- Gets the latest substitute for x from m[x] (returns x if none are found)
 getSub :: Raw.Ident -> IdMap -> Ident
