@@ -8,11 +8,15 @@ import Syntax.AbsF
 import Data.Functor.Foldable
 import Data.Functor.Foldable.Monadic
 
+lEmpty :: Exp
+lEmpty = In $ InL $ Single $ TSingle ""
+
+lCons :: El -> Exp -> Exp
+lCons (Elem e) l = In $ InR $ Pair e $ Next l
+
 -- A list is repeated pairing in InR followed by the singleton in InL
 desugarList :: [El] -> Exp
-desugarList l = do
-    let end = In $ InL $ Single $ TSingle ""
-    BoxI $ foldr ((\x y -> In $ InR $ Pair x $ Next y) . (\(Elem e) -> e)) end l
+desugarList l = BoxI $ foldr lCons lEmpty l
 
 -- Desugar lists
 desugarLists :: Exp -> IO Exp

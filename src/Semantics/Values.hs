@@ -28,7 +28,7 @@ data Value
     | VOut Exp
     | VThunk Exp
 
-    -- Evailuated results
+    -- Evaluated results
     | EPair Value Value 
     | EBox Value
     | EIn Value

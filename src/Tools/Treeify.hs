@@ -41,7 +41,7 @@ instance Treeish Exp where
         InR e               -> Node "InR"       [ toTree e ]
         Norm e              -> Node "Norm"      [ toTree e ]
         Not e               -> Node "Not"       [ toTree e ]
-        Print e             -> Node "Print"     [ toTree e ]
+        FList e             -> Node "FList"     [ toTree e ]
         App e1 e2           -> Node "App"       [ toTree e1, toTree e2 ]
         LApp e1 e2          -> Node "LApp"      [ toTree e1, toTree e2 ]
         Pair e1 e2          -> Node "Pair"      [ toTree e1, toTree e2 ]
@@ -64,14 +64,17 @@ instance Treeish Exp where
                                                   toTree x1, toTree e1,
                                                   toTree x2, toTree e2 ]
 
+-- Checks whether Value is last in list, used for pretty printing
+isLast :: Value -> Bool
 isLast ( EIn ( EInR ( EPair v ( ENext ( EIn (EInL _) ) ) ) ) ) = True
 isLast _ = False
 
+-- Makes a pretty, readable string from an expression shaped like a list
+printList :: Value -> String
 printList l@(EIn ( EInR ( EPair v (ENext l2) ) ) ) = 
-    init (drawTree (toTree v)) 
+    init (drawTree (toTree v)) -- Init to discard the final endline
     ++ if isLast l then "" else ", " ++ printList l2
 printList (EIn ( EInL _ ) ) = ""
-printList o = trace (show o) ""
 
 instance Treeish Value where
     toTree val = case val of

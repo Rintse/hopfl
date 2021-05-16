@@ -44,7 +44,7 @@ Box.        Exp11   ::= "box" "{" Environment "}" "." Exp11 ;
 BoxI.       Exp11   ::= "boxI" Exp12 ;
 Unbox.      Exp11   ::= "unbox" Exp12 ;
 
-Print.      Exp11   ::= "print" Exp12 ;
+FList.      Exp11   ::= "forceList" Exp12 ;
 
 -- Recursion
 In.         Exp11   ::= "in" Exp12 ;

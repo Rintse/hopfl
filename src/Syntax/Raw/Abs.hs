@@ -3,44 +3,13 @@
 
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
+-- | The abstract syntax of language Raw.
+
 module Syntax.Raw.Abs where
 
-import Prelude (Char, Double, Integer, String)
+import Prelude (Double, Integer, String)
 import qualified Prelude as C (Eq, Ord, Show, Read)
 import qualified Data.String
-
-newtype Ident = Ident String
-  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
-
-newtype Lam = Lam String
-  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
-
-newtype Conj = Conj String
-  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
-
-newtype Disj = Disj String
-  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
-
-newtype TNot = TNot String
-  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
-
-newtype TLeq = TLeq String
-  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
-
-newtype TGeq = TGeq String
-  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
-
-newtype TLApp = TLApp String
-  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
-
-newtype TSub = TSub String
-  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
-
-newtype TMatch = TMatch String
-  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
-
-newtype TSingle = TSingle String
-  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 
 data BConst = BTrue | BFalse
   deriving (C.Eq, C.Ord, C.Show, C.Read)
@@ -60,7 +29,7 @@ data Exp
     | Box Environment Exp
     | BoxI Exp
     | Unbox Exp
-    | Print Exp
+    | FList Exp
     | In Exp
     | Out Exp
     | Fst Exp
@@ -107,4 +76,37 @@ data Environment = Env [Assignment]
 
 data Assignment = Assign Ident TSub Exp
   deriving (C.Eq, C.Ord, C.Show, C.Read)
+
+newtype Ident = Ident String
+  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
+
+newtype Lam = Lam String
+  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
+
+newtype Conj = Conj String
+  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
+
+newtype Disj = Disj String
+  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
+
+newtype TNot = TNot String
+  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
+
+newtype TLeq = TLeq String
+  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
+
+newtype TGeq = TGeq String
+  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
+
+newtype TLApp = TLApp String
+  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
+
+newtype TSub = TSub String
+  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
+
+newtype TMatch = TMatch String
+  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
+
+newtype TSingle = TSingle String
+  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 

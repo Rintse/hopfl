@@ -26,7 +26,7 @@ data Exp
     | Norm  Exp
     | Not   Exp
     | Min   Exp
-    | Print Exp
+    | FList Exp
     | App   Exp Exp
     | LApp  Exp Exp
     | Pow   Exp Exp

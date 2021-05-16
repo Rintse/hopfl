@@ -84,5 +84,5 @@ let
         ) ) ) 0 init_s )
     ) ;
 
-in: print ( idx_c iteration opt_stream )
+in: forceList ( idx_c iteration opt_stream )
 

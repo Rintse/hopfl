@@ -96,7 +96,7 @@ transform exp = case exp of
     Raw.BoxI e          -> transform $ Raw.Box (freeList e) e
     Raw.PrevI e         -> transform $ Raw.Prev (freeList e) e
     Raw.Unbox e         -> fmap   Unbox (transform e)
-    Raw.Print e         -> fmap   Print (transform e)
+    Raw.FList e         -> fmap   FList (transform e)
     Raw.Norm e          -> fmap   Norm  (transform e)
     Raw.Next e          -> fmap   Next  (transform e)
     Raw.Out e           -> fmap   Out   (transform e)

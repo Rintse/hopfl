@@ -5,10 +5,13 @@
 {-# OPTIONS_GHC -w #-}
 module Syntax.Raw.Lex where
 
+import Prelude
+
 import qualified Data.Bits
 import Data.Word (Word8)
 import Data.Char (ord)
 }
+
 
 $c = [A-Z\192-\221] # [\215]  -- capital isolatin1 letter (215 = \times) FIXME
 $s = [a-z\222-\255] # [\247]  -- small   isolatin1 letter (247 = \div  ) FIXME
@@ -16,8 +19,10 @@ $l = [$c $s]         -- letter
 $d = [0-9]           -- digit
 $i = [$l $d _ ']     -- identifier character
 $u = [. \n]          -- universal: any character
+
 @rsyms =    -- symbols and non-identifier-like reserved words
    \( | \, | \) | \{ | \} | \. | \- | \^ | \* | \/ | \+ | \= | \< | \> | \; | \[ | \] | "in" \:
+
 :-
 
 -- Line comments
@@ -25,44 +30,41 @@ $u = [. \n]          -- universal: any character
 
 $white+ ;
 @rsyms
-    { tok (\p s -> PT p (eitherResIdent (TV . share) s)) }
+    { tok (\p s -> PT p (eitherResIdent TV s)) }
 [\\ λ]
-    { tok (\p s -> PT p (eitherResIdent (T_Lam . share) s)) }
+    { tok (\p s -> PT p (eitherResIdent T_Lam s)) }
 \∧ | a n d
-    { tok (\p s -> PT p (eitherResIdent (T_Conj . share) s)) }
+    { tok (\p s -> PT p (eitherResIdent T_Conj s)) }
 \∨ | o r
-    { tok (\p s -> PT p (eitherResIdent (T_Disj . share) s)) }
+    { tok (\p s -> PT p (eitherResIdent T_Disj s)) }
 [\! \¬]
-    { tok (\p s -> PT p (eitherResIdent (T_TNot . share) s)) }
+    { tok (\p s -> PT p (eitherResIdent T_TNot s)) }
 \≤ | \< \=
-    { tok (\p s -> PT p (eitherResIdent (T_TLeq . share) s)) }
+    { tok (\p s -> PT p (eitherResIdent T_TLeq s)) }
 \≥ | \> \=
-    { tok (\p s -> PT p (eitherResIdent (T_TGeq . share) s)) }
+    { tok (\p s -> PT p (eitherResIdent T_TGeq s)) }
 \⊙ | \( \* \)
-    { tok (\p s -> PT p (eitherResIdent (T_TLApp . share) s)) }
+    { tok (\p s -> PT p (eitherResIdent T_TLApp s)) }
 \← | \< \-
-    { tok (\p s -> PT p (eitherResIdent (T_TSub . share) s)) }
+    { tok (\p s -> PT p (eitherResIdent T_TSub s)) }
 \→ | \- \>
-    { tok (\p s -> PT p (eitherResIdent (T_TMatch . share) s)) }
+    { tok (\p s -> PT p (eitherResIdent T_TMatch s)) }
 𝟙 | \{ \* \}
-    { tok (\p s -> PT p (eitherResIdent (T_TSingle . share) s)) }
+    { tok (\p s -> PT p (eitherResIdent T_TSingle s)) }
 
 $l $i*
-    { tok (\p s -> PT p (eitherResIdent (TV . share) s)) }
+    { tok (\p s -> PT p (eitherResIdent TV s)) }
 
 
 $d+
-    { tok (\p s -> PT p (TI $ share s))    }
+    { tok (\p s -> PT p (TI s))    }
 $d+ \. $d+ (e (\-)? $d+)?
-    { tok (\p s -> PT p (TD $ share s)) }
+    { tok (\p s -> PT p (TD s)) }
 
 {
 
 tok :: (Posn -> String -> Token) -> (Posn -> String -> Token)
 tok f p s = f p s
-
-share :: String -> String
-share = id
 
 data Tok =
    TS !String !Int    -- reserved words and symbols
@@ -143,7 +145,7 @@ eitherResIdent tv s = treeFind resWords
                               | s == a = t
 
 resWords :: BTree
-resWords = b "fst" 21 (b "=" 11 (b "-" 6 (b "*" 3 (b ")" 2 (b "(" 1 N N) N) (b "," 5 (b "+" 4 N N) N)) (b ";" 9 (b "/" 8 (b "." 7 N N) N) (b "<" 10 N N))) (b "box" 16 (b "]" 14 (b "[" 13 (b ">" 12 N N) N) (b "^" 15 N N)) (b "false" 19 (b "else" 18 (b "boxI" 17 N N) N) (b "fix" 20 N N)))) (b "out" 31 (b "inR" 26 (b "in:" 24 (b "in" 23 (b "if" 22 N N) N) (b "inL" 25 N N)) (b "next" 29 (b "match" 28 (b "let" 27 N N) N) (b "normal" 30 N N))) (b "then" 36 (b "print" 34 (b "prevI" 33 (b "prev" 32 N N) N) (b "snd" 35 N N)) (b "{" 39 (b "unbox" 38 (b "true" 37 N N) N) (b "}" 40 N N))))
+resWords = b "forceList" 21 (b "=" 11 (b "-" 6 (b "*" 3 (b ")" 2 (b "(" 1 N N) N) (b "," 5 (b "+" 4 N N) N)) (b ";" 9 (b "/" 8 (b "." 7 N N) N) (b "<" 10 N N))) (b "box" 16 (b "]" 14 (b "[" 13 (b ">" 12 N N) N) (b "^" 15 N N)) (b "false" 19 (b "else" 18 (b "boxI" 17 N N) N) (b "fix" 20 N N)))) (b "normal" 31 (b "inL" 26 (b "in" 24 (b "if" 23 (b "fst" 22 N N) N) (b "in:" 25 N N)) (b "match" 29 (b "let" 28 (b "inR" 27 N N) N) (b "next" 30 N N))) (b "then" 36 (b "prevI" 34 (b "prev" 33 (b "out" 32 N N) N) (b "snd" 35 N N)) (b "{" 39 (b "unbox" 38 (b "true" 37 N N) N) (b "}" 40 N N))))
    where b s n = let bs = s
                  in  B bs (TS bs n)
 

@@ -1,8 +1,10 @@
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE LambdaCase #-}
 #if __GLASGOW_HASKELL__ <= 708
 {-# LANGUAGE OverlappingInstances #-}
 #endif
-{-# LANGUAGE FlexibleInstances #-}
+
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 
 -- | Pretty-printer for Syntax.
@@ -10,8 +12,16 @@
 
 module Syntax.Raw.Print where
 
+import Prelude
+  ( ($), (.)
+  , Bool(..), (==), (<)
+  , Int, Integer, Double, (+), (-), (*)
+  , String, (++)
+  , ShowS, showChar, showString
+  , all, dropWhile, elem, foldr, id, map, null, replicate, shows, span
+  )
+import Data.Char ( Char, isSpace )
 import qualified Syntax.Raw.Abs
-import Data.Char
 
 -- | The top-level printing method.
 
@@ -25,7 +35,7 @@ doc = (:)
 
 render :: Doc -> String
 render d = rend 0 (map ($ "") $ d []) "" where
-  rend i ss = case ss of
+  rend i = \case
     "["      :ts -> showChar '[' . rend i ts
     "("      :ts -> showChar '(' . rend i ts
     "{"      :ts -> showChar '{' . new (i+1) . rend (i+1) ts
@@ -77,16 +87,16 @@ instance {-# OVERLAPPABLE #-} Print a => Print [a] where
   prt = prtList
 
 instance Print Char where
-  prt _ s = doc (showChar '\'' . mkEsc '\'' s . showChar '\'')
+  prt     _ s = doc (showChar '\'' . mkEsc '\'' s . showChar '\'')
   prtList _ s = doc (showChar '"' . concatS (map (mkEsc '"') s) . showChar '"')
 
 mkEsc :: Char -> Char -> ShowS
-mkEsc q s = case s of
-  _ | s == q -> showChar '\\' . showChar s
-  '\\'-> showString "\\\\"
+mkEsc q = \case
+  s | s == q -> showChar '\\' . showChar s
+  '\\' -> showString "\\\\"
   '\n' -> showString "\\n"
   '\t' -> showString "\\t"
-  _ -> showChar s
+  s -> showChar s
 
 prPrec :: Int -> Int -> Doc -> Doc
 prPrec i j = if j < i then parenth else id
@@ -98,47 +108,47 @@ instance Print Double where
   prt _ x = doc (shows x)
 
 instance Print Syntax.Raw.Abs.Ident where
-  prt _ (Syntax.Raw.Abs.Ident i) = doc $ showString $ i
+  prt _ (Syntax.Raw.Abs.Ident i) = doc $ showString i
 
 instance Print Syntax.Raw.Abs.Lam where
-  prt _ (Syntax.Raw.Abs.Lam i) = doc $ showString $ i
+  prt _ (Syntax.Raw.Abs.Lam i) = doc $ showString i
 
 instance Print Syntax.Raw.Abs.Conj where
-  prt _ (Syntax.Raw.Abs.Conj i) = doc $ showString $ i
+  prt _ (Syntax.Raw.Abs.Conj i) = doc $ showString i
 
 instance Print Syntax.Raw.Abs.Disj where
-  prt _ (Syntax.Raw.Abs.Disj i) = doc $ showString $ i
+  prt _ (Syntax.Raw.Abs.Disj i) = doc $ showString i
 
 instance Print Syntax.Raw.Abs.TNot where
-  prt _ (Syntax.Raw.Abs.TNot i) = doc $ showString $ i
+  prt _ (Syntax.Raw.Abs.TNot i) = doc $ showString i
 
 instance Print Syntax.Raw.Abs.TLeq where
-  prt _ (Syntax.Raw.Abs.TLeq i) = doc $ showString $ i
+  prt _ (Syntax.Raw.Abs.TLeq i) = doc $ showString i
 
 instance Print Syntax.Raw.Abs.TGeq where
-  prt _ (Syntax.Raw.Abs.TGeq i) = doc $ showString $ i
+  prt _ (Syntax.Raw.Abs.TGeq i) = doc $ showString i
 
 instance Print Syntax.Raw.Abs.TLApp where
-  prt _ (Syntax.Raw.Abs.TLApp i) = doc $ showString $ i
+  prt _ (Syntax.Raw.Abs.TLApp i) = doc $ showString i
 
 instance Print Syntax.Raw.Abs.TSub where
-  prt _ (Syntax.Raw.Abs.TSub i) = doc $ showString $ i
+  prt _ (Syntax.Raw.Abs.TSub i) = doc $ showString i
 
 instance Print Syntax.Raw.Abs.TMatch where
-  prt _ (Syntax.Raw.Abs.TMatch i) = doc $ showString $ i
+  prt _ (Syntax.Raw.Abs.TMatch i) = doc $ showString i
 
 instance Print Syntax.Raw.Abs.TSingle where
-  prt _ (Syntax.Raw.Abs.TSingle i) = doc $ showString $ i
+  prt _ (Syntax.Raw.Abs.TSingle i) = doc $ showString i
 
 instance Print Syntax.Raw.Abs.BConst where
-  prt i e = case e of
+  prt i = \case
     Syntax.Raw.Abs.BTrue -> prPrec i 0 (concatD [doc (showString "true")])
     Syntax.Raw.Abs.BFalse -> prPrec i 0 (concatD [doc (showString "false")])
 
 instance Print Syntax.Raw.Abs.Exp where
-  prt i e = case e of
+  prt i = \case
     Syntax.Raw.Abs.Single tsingle -> prPrec i 13 (concatD [prt 0 tsingle])
-    Syntax.Raw.Abs.Var id -> prPrec i 13 (concatD [prt 0 id])
+    Syntax.Raw.Abs.Var id_ -> prPrec i 13 (concatD [prt 0 id_])
     Syntax.Raw.Abs.DVal d -> prPrec i 13 (concatD [prt 0 d])
     Syntax.Raw.Abs.IVal n -> prPrec i 13 (concatD [prt 0 n])
     Syntax.Raw.Abs.BVal bconst -> prPrec i 13 (concatD [prt 0 bconst])
@@ -151,7 +161,7 @@ instance Print Syntax.Raw.Abs.Exp where
     Syntax.Raw.Abs.Box environment exp -> prPrec i 11 (concatD [doc (showString "box"), doc (showString "{"), prt 0 environment, doc (showString "}"), doc (showString "."), prt 11 exp])
     Syntax.Raw.Abs.BoxI exp -> prPrec i 11 (concatD [doc (showString "boxI"), prt 12 exp])
     Syntax.Raw.Abs.Unbox exp -> prPrec i 11 (concatD [doc (showString "unbox"), prt 12 exp])
-    Syntax.Raw.Abs.Print exp -> prPrec i 11 (concatD [doc (showString "print"), prt 12 exp])
+    Syntax.Raw.Abs.FList exp -> prPrec i 11 (concatD [doc (showString "forceList"), prt 12 exp])
     Syntax.Raw.Abs.In exp -> prPrec i 11 (concatD [doc (showString "in"), prt 12 exp])
     Syntax.Raw.Abs.Out exp -> prPrec i 11 (concatD [doc (showString "out"), prt 12 exp])
     Syntax.Raw.Abs.Fst exp -> prPrec i 11 (concatD [doc (showString "fst"), prt 12 exp])
@@ -176,20 +186,20 @@ instance Print Syntax.Raw.Abs.Exp where
     Syntax.Raw.Abs.Or exp1 disj exp2 -> prPrec i 4 (concatD [prt 4 exp1, prt 0 disj, prt 5 exp2])
     Syntax.Raw.Abs.Norm exp -> prPrec i 3 (concatD [doc (showString "normal"), prt 3 exp])
     Syntax.Raw.Abs.Ite exp1 exp2 exp3 -> prPrec i 2 (concatD [doc (showString "if"), prt 13 exp1, doc (showString "then"), prt 3 exp2, doc (showString "else"), prt 3 exp3])
-    Syntax.Raw.Abs.Match exp1 id1 tmatch1 exp2 id2 tmatch2 exp3 -> prPrec i 1 (concatD [doc (showString "match"), prt 13 exp1, doc (showString "{"), doc (showString "inL"), prt 0 id1, prt 0 tmatch1, prt 2 exp2, doc (showString ";"), doc (showString "inR"), prt 0 id2, prt 0 tmatch2, prt 2 exp3, doc (showString "}")])
-    Syntax.Raw.Abs.Abstr lam id exp -> prPrec i 0 (concatD [prt 0 lam, prt 0 id, doc (showString "."), prt 0 exp])
-    Syntax.Raw.Abs.Rec id exp -> prPrec i 0 (concatD [doc (showString "fix"), prt 0 id, doc (showString "."), prt 0 exp])
+    Syntax.Raw.Abs.Match exp1 id_1 tmatch1 exp2 id_2 tmatch2 exp3 -> prPrec i 1 (concatD [doc (showString "match"), prt 13 exp1, doc (showString "{"), doc (showString "inL"), prt 0 id_1, prt 0 tmatch1, prt 2 exp2, doc (showString ";"), doc (showString "inR"), prt 0 id_2, prt 0 tmatch2, prt 2 exp3, doc (showString "}")])
+    Syntax.Raw.Abs.Abstr lam id_ exp -> prPrec i 0 (concatD [prt 0 lam, prt 0 id_, doc (showString "."), prt 0 exp])
+    Syntax.Raw.Abs.Rec id_ exp -> prPrec i 0 (concatD [doc (showString "fix"), prt 0 id_, doc (showString "."), prt 0 exp])
 
 instance Print Syntax.Raw.Abs.Lst where
-  prt i e = case e of
+  prt i = \case
     Syntax.Raw.Abs.List els -> prPrec i 0 (concatD [doc (showString "["), prt 0 els, doc (showString "]")])
 
 instance Print Syntax.Raw.Abs.Els where
-  prt i e = case e of
+  prt i = \case
     Syntax.Raw.Abs.Elems els -> prPrec i 0 (concatD [prt 0 els])
 
 instance Print Syntax.Raw.Abs.El where
-  prt i e = case e of
+  prt i = \case
     Syntax.Raw.Abs.Elem exp -> prPrec i 0 (concatD [prt 0 exp])
   prtList _ [] = concatD []
   prtList _ [x] = concatD [prt 0 x]
@@ -199,17 +209,17 @@ instance Print [Syntax.Raw.Abs.El] where
   prt = prtList
 
 instance Print Syntax.Raw.Abs.Prg where
-  prt i e = case e of
+  prt i = \case
     Syntax.Raw.Abs.DefProg environment exp -> prPrec i 0 (concatD [doc (showString "let"), prt 0 environment, doc (showString "in:"), prt 0 exp])
     Syntax.Raw.Abs.Prog exp -> prPrec i 0 (concatD [prt 0 exp])
 
 instance Print Syntax.Raw.Abs.Environment where
-  prt i e = case e of
+  prt i = \case
     Syntax.Raw.Abs.Env assignments -> prPrec i 0 (concatD [prt 0 assignments])
 
 instance Print Syntax.Raw.Abs.Assignment where
-  prt i e = case e of
-    Syntax.Raw.Abs.Assign id tsub exp -> prPrec i 0 (concatD [prt 0 id, prt 0 tsub, prt 0 exp])
+  prt i = \case
+    Syntax.Raw.Abs.Assign id_ tsub exp -> prPrec i 0 (concatD [prt 0 id_, prt 0 tsub, prt 0 exp])
   prtList _ [] = concatD []
   prtList _ [x] = concatD [prt 0 x]
   prtList _ (x:xs) = concatD [prt 0 x, doc (showString ";"), prt 0 xs]
