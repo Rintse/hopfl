@@ -1,0 +1,8 @@
+cradle:
+    stack:
+        - path: "./app/Main.hs"
+          component: "ghopfl:ghopfl-exe"
+        - path: "./mk_builtins/Main.hs"
+          component: "ghopfl:builtin-exe"
+        - path: "./src"
+          component: "ghopfl:lib"

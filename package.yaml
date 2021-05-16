@@ -1,6 +1,6 @@
-name:                hopfl
+name:                ghopfl
 version:             0.1.0.0
-github:              "rintse/hopfl"
+github:              "rintse/ghopfl"
 license:             BSD3
 author:              "Rintse van de Vlasakker"
 
@@ -37,7 +37,7 @@ library:
   source-dirs: src
 
 executables:
-  hopfl-exe:
+  ghopfl-exe:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
@@ -45,7 +45,7 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - hopfl
+    - ghopfl
   
   builtin-exe:
     main:                Main.hs
@@ -55,4 +55,4 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - hopfl
+    - ghopfl
