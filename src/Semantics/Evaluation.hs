@@ -56,7 +56,7 @@ eval :: Exp -> EvalMonad Value
 
 -- Variables
 eval exp@(Var (Ident v _ _)) = asks (HM.lookup v . fst) >>= \case
-    Just (Val v) -> return $ VVal v
+    Just v -> eval v
     Nothing -> throwError $ "Undefined free variable: " ++ show v
 
 -- Values (reals)

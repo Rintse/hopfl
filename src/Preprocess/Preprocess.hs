@@ -7,8 +7,8 @@ import Syntax.Raw.Abs as Raw
 import qualified Syntax.Expression as Exp
 
 -- Run all the preprocess steps
-preprocess :: Raw.Prg -> IO Exp.Exp
-preprocess e = do
-    withDefinitions <- handleDefs e
-    withLists       <- desugarLists withDefinitions
+preprocess :: Raw.Prg -> Raw.Environment -> IO Exp.Exp
+preprocess e env = do
+    withDefinitions <- handleDefs   e
+    let withLists   =  desugarLists withDefinitions
     return          $  annotateVars withLists

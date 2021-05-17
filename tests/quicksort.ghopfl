@@ -1,0 +1,17 @@
+# An implementation of quicksort. Only allows for lists of unique items.
+# Free variables to pass through the environment:
+#   list:  The list to sort
+# Example run:
+#   stack run ghopfl-exe -- -E -e "list<-[4,1,6,9,2,5]" -d "0.4;0.1;0.8" -i tests/quicksort.ghopfl
+
+let
+    # Non-deterministic quicksort
+    quicksort ← ( fix f . λ l .
+        if ( ( length l ) < 2 ) then l else
+            ( λ pivot .
+                append      ( prevI ( f ⊙ next ( filter ( λ x . x < pivot ) l ) ) ) ( 
+                cons pivot  ( prevI ( f ⊙ next ( filter ( λ x . x > pivot ) l ) ) ) )
+            ) ( index ( rand_idx ( length l ) ) l )
+    ) ;
+
+in: forceList ( quicksort list )

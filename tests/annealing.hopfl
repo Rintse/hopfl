@@ -36,17 +36,6 @@ let
     # The evaluation function should be lower for better solutions
     eval ← ( λ s . 1.0 / ( cut_count s ) ) ;
 
-    # Random number (NOT UNIFORM) in [0.0, 1.0]
-    rand ← ( ( λ draw . max 0.0 ( min 1.0 draw ) ) ( normal (0.5, 0.25) ) ) ;
-
-    # Function that generates a (NOT UNIFORM) random idx between 0 and n
-    rand_idx ← ( ( fix f . λ r . λ n .
-        if ( r ≤ n * ( 1 / n_vertices ) )
-            then n - 1 # This iteration is 1 too far
-            else prevI ( f ⊙ next r ⊙ next (n+1) )
-        ) rand 0
-    ) ;
-
     # Flip bit in s at given idx
     flip_bit ← ( λ idx . λ s . 
         append ( take idx s ) ( cons 

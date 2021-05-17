@@ -1,0 +1,14 @@
+# Defines some common random functions
+let
+    # Random number (NOT UNIFORM) in [0.0, 1.0]
+    rand ← ( ( λ draw . max 0.0 ( min 1.0 draw ) ) ( normal (0.5, 0.25) ) ) ;
+
+    # Function that generates a (NOT UNIFORM) random idx between 0 and n
+    rand_idx ← ( ( fix f . λ r . λ n . λ size .
+        if ( r ≤ n * ( 1 / size ) )
+            then n - 1 # This iteration is 1 too far
+            else prevI ( f ⊙ next r ⊙ next (n+1) ⊙ next size )
+        ) rand 0
+    ) ;
+
+in: builtins

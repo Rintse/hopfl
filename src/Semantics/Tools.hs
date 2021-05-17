@@ -8,6 +8,7 @@ module Semantics.Tools where
 
 import Syntax.Expression
 import Preprocess.AnnotateVars
+import Preprocess.Lists
 import Syntax.Number
 import qualified Syntax.Raw.Abs as Raw
 import Syntax.Raw.ErrM
@@ -38,13 +39,12 @@ type Env = HashMap String Exp
 -- Transform the environment AST into a hashmap
 mkEnv :: Raw.Environment -> Env
 mkEnv (Raw.Env e) = fromList $ fmap mkAssign e
-    where mkAssign (Raw.Assign (Raw.Ident x) _ exp) = (x, annotateVars exp)
+    where mkAssign (Raw.Assign (Raw.Ident x) _ exp) = 
+            (x, annotateVars (desugarLists exp))
 
 printEnv :: Env -> String
 printEnv m = show $ Prelude.map 
-    (\x -> fst x ++ "=" ++ case snd x of 
-        Val v -> show v
-    ) (toList m)
+    (\x -> fst x ++ "=" ++ show (snd x)) (toList m)
 
 -- Evaluates 2 arguments and pairs them to allow for easy pattern matching
 match2 :: (Exp -> EvalMonad Value) -> Exp -> Exp -> EvalMonad (Value, Value)
