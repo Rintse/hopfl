@@ -15,6 +15,7 @@ import Syntax.Number
 import Syntax.Expression
 
 import qualified Data.Set as Set
+import Data.Bifunctor
 import Data.Functor.Foldable.TH
 import Data.Functor.Foldable
 import Control.Monad.Reader
@@ -42,15 +43,14 @@ pushVar (Raw.Ident x) c = HM.insertWith (++) x [c]
 -- Pushes all variables in a substitution list
 pushVars :: [Raw.Assignment] -> Int -> IdMap -> IdMap
 pushVars l c m = do
-    let idxd = Prelude.map (\(i,a) -> (i+c,a)) (indexed l)
+    let idxd = Prelude.map (first (+c)) (indexed l)
     let push1 = \m1 (id, Raw.Assign x _ t) -> pushVar x id m1
     Prelude.foldl push1 m idxd
 
 -- Rename an individual substitution
 varAssign :: Raw.Assignment -> IdMonad Assignment
 varAssign (Raw.Assign x _ t) = do
-    cur <- modify (+1) >> get
-    -- x is not bound in t
+    cur <- modify (+1) >> get -- x is not bound in t
     asks (Assign . (getSub x . pushVar x cur)) <*> transform t
 
 -- Gets the latest substitute for x from m[x] (returns x if none are found)
@@ -71,30 +71,31 @@ getFrees = cata $ \case
     (BoxF (Env l) e)        -> Set.union e $ getFreesL l
     fFree                   -> foldr Set.union Set.empty fFree
 
--- Transforms an identifier into an identity substitution
--- for that identifier
-idAssign :: Ident -> Raw.Assignment
-idAssign (Ident x _ _) = Raw.Assign
+-- Transforms an identifier into an identity substitution for that identifier
+idSubst :: Ident -> Raw.Assignment
+idSubst (Ident x _ _) = Raw.Assign
     (Raw.Ident x) (Raw.TSub "") (Raw.Var $ Raw.Ident x)
 
 -- Returns the identity substitution list for all free variables
 -- in term e. Used in boxF and prevF
 freeList :: Raw.Exp -> Raw.Environment
-freeList e = Raw.Env $ Prelude.map idAssign $ Set.toList $ getFrees (annotateVars e)
+freeList e = Raw.Env $ Prelude.map idSubst $ Set.toList $ getFrees (annotateVars e)
 
 -- TODO check for faulty programs?
 -- Transforms the raw syntax tree into a version where the 
 -- idenfiers are made unique with an id and recursion depth tag.
 transform :: Raw.Exp -> IdMonad Exp
 transform exp = case exp of
-    Raw.Single t        -> return Single
+    -- Annotate variables with a unique ID
+    Raw.Var v           -> asks (Var . getSub v)
+    
+    -- Integers and doubles into one overarching number type
     Raw.DVal v          -> return $ Val $ Fract v
     Raw.IVal v          -> return $ Val $ Whole v
+    
+    -- Simple 1-to-1 correspondence.
+    Raw.Single t        -> return Single
     Raw.BVal v          -> return $ BVal v
-    Raw.Var v           -> asks (Var . getSub v)
-    Raw.PrevE e         -> transform $ Raw.Prev (Raw.Env []) e
-    Raw.BoxI e          -> transform $ Raw.Box (freeList e) e
-    Raw.PrevI e         -> transform $ Raw.Prev (freeList e) e
     Raw.Unbox e         -> fmap   Unbox (transform e)
     Raw.FList e         -> fmap   FList (transform e)
     Raw.Norm e          -> fmap   Norm  (transform e)
@@ -124,6 +125,12 @@ transform exp = case exp of
     Raw.Gt e1 e2        -> liftA2 Gt    (transform e1) (transform e2)
     Raw.Ite b e1 e2     -> liftA3 Ite   (transform b)
                                         (transform e1) (transform e2)
+
+    -- Syntactic sugar
+    Raw.PrevE e         -> transform $ Raw.Prev (Raw.Env []) e
+    Raw.BoxI e          -> transform $ Raw.Box (freeList e) e
+    Raw.PrevI e         -> transform $ Raw.Prev (freeList e) e
+
     -- WARNING: Here be binders
     Raw.Box (Raw.Env l) e -> do
         cur <- gets (+1)

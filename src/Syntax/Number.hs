@@ -6,13 +6,8 @@
 
 module Syntax.Number where
 
-import Data.Functor.Foldable.TH
-import Data.Functor.Foldable
-
 data Number = Whole Integer | Fract Double
     deriving (Show, Read)
-
-makeBaseFunctor ''Number
 
 instance Num Number where
     fromInteger i = Whole i

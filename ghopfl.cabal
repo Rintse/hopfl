@@ -27,6 +27,7 @@ library
       Preprocess.AnnotateVars
       Preprocess.Definitions
       Preprocess.Lists
+      Preprocess.Preprocess
       Semantics.Builtins
       Semantics.Evaluation
       Semantics.Substitution
