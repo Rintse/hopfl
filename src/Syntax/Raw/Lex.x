@@ -21,7 +21,7 @@ $i = [$l $d _ ']     -- identifier character
 $u = [. \n]          -- universal: any character
 
 @rsyms =    -- symbols and non-identifier-like reserved words
-   \( | \, | \) | \{ | \} | \. | \- | \^ | \* | \/ | \+ | \= | \< | \> | \; | \[ | \] | "in" \:
+   \( | \, | \) | \{ | \} | \. | \- | \^ | \* | \/ | \% | \+ | \= | \< | \> | \; | \[ | \] | "in" \:
 
 :-
 
@@ -145,7 +145,7 @@ eitherResIdent tv s = treeFind resWords
                               | s == a = t
 
 resWords :: BTree
-resWords = b "forceList" 21 (b "=" 11 (b "-" 6 (b "*" 3 (b ")" 2 (b "(" 1 N N) N) (b "," 5 (b "+" 4 N N) N)) (b ";" 9 (b "/" 8 (b "." 7 N N) N) (b "<" 10 N N))) (b "box" 16 (b "]" 14 (b "[" 13 (b ">" 12 N N) N) (b "^" 15 N N)) (b "false" 19 (b "else" 18 (b "boxI" 17 N N) N) (b "fix" 20 N N)))) (b "normal" 31 (b "inL" 26 (b "in" 24 (b "if" 23 (b "fst" 22 N N) N) (b "in:" 25 N N)) (b "match" 29 (b "let" 28 (b "inR" 27 N N) N) (b "next" 30 N N))) (b "then" 36 (b "prevI" 34 (b "prev" 33 (b "out" 32 N N) N) (b "snd" 35 N N)) (b "{" 39 (b "unbox" 38 (b "true" 37 N N) N) (b "}" 40 N N))))
+resWords = b "fix" 21 (b "<" 11 (b "," 6 (b ")" 3 (b "(" 2 (b "%" 1 N N) N) (b "+" 5 (b "*" 4 N N) N)) (b "/" 9 (b "." 8 (b "-" 7 N N) N) (b ";" 10 N N))) (b "^" 16 (b "[" 14 (b ">" 13 (b "=" 12 N N) N) (b "]" 15 N N)) (b "else" 19 (b "boxI" 18 (b "box" 17 N N) N) (b "false" 20 N N)))) (b "normal" 32 (b "inL" 27 (b "if" 24 (b "fst" 23 (b "forceList" 22 N N) N) (b "in:" 26 (b "in" 25 N N) N)) (b "match" 30 (b "let" 29 (b "inR" 28 N N) N) (b "next" 31 N N))) (b "then" 37 (b "prevI" 35 (b "prev" 34 (b "out" 33 N N) N) (b "snd" 36 N N)) (b "{" 40 (b "unbox" 39 (b "true" 38 N N) N) (b "}" 41 N N))))
    where b s n = let bs = s
                  in  B bs (TS bs n)
 

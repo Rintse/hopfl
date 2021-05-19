@@ -1,0 +1,33 @@
+# Coinductive stream of the square numbers.
+# Free variables to pass through the environment:
+#   n:  The index in the stream (result should be n²)
+# Example run:
+#   stack run ghopfl-exe -- -i tests/features/coinductive_streams.ghopfl -E -e "idx<-183"
+
+let
+    # Recursively tests whether an integer is a prime
+    is_prime ← ( ( fix f . λ c . λ n . 
+        if ( c > sqrt n ) then true else ( # No factors larger than this 
+            if ( n % c = 0 ) then false else ( # Found a divisor
+                prevI ( f ⊙ next ( c + 1 ) ⊙ next n ) # If not, check for c+1
+    ) ) ) 2 ) ;
+
+    # Gets the next prime after c ( only check odd numbers )
+    next_prime ← ( fix f . λ c .
+        if ( is_prime ( c + 2 ) ) 
+            then c + 2
+            else prevI ( f ⊙ next ( c + 2 ) )
+    ) ;
+
+    # Prepends the value 2 to the stream for efficiency
+    prepend2 ← ( λ s . in ( 2, next s) ) ;
+
+    # Stream of the primes (2 hardcoded in for efficiency)
+    stream ← ( boxI ( prepend2 ( ( fix f . λ x . 
+        in ( 
+            ( λ next_p . ( next_p, f ⊙ next ( next_p ) ) ) 
+            ( next_prime x ) 
+        )
+    ) 1 ) ) ) ;
+
+in: idx_c idx stream

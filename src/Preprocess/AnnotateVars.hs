@@ -116,6 +116,7 @@ transform exp = case exp of
     Raw.Add e1 e2       -> liftA2 Add   (transform e1) (transform e2)
     Raw.Sub e1 e2       -> liftA2 Sub   (transform e1) (transform e2)
     Raw.Mul e1 e2       -> liftA2 Mul   (transform e1) (transform e2)
+    Raw.Mod e1 e2       -> liftA2 Mod   (transform e1) (transform e2)
     Raw.Pow e1 e2       -> liftA2 Pow   (transform e1) (transform e2)
     Raw.Div e1 e2       -> liftA2 Div   (transform e1) (transform e2)
     Raw.And e1 o e2     -> liftA2 And   (transform e1) (transform e2)

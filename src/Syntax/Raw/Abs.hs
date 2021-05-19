@@ -42,6 +42,7 @@ data Exp
     | Pow Exp Exp
     | Mul Exp Exp
     | Div Exp Exp
+    | Mod Exp Exp
     | Add Exp Exp
     | Sub Exp Exp
     | Eq Exp Exp

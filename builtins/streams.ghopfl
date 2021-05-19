@@ -1,0 +1,24 @@
+# Defines some builtin functions around guarded/coinductive streams
+let
+
+# Guarded streams
+head_g  ← ( λ s . fst ( out s ) ) ;
+tail_g  ← ( λ s . snd ( out s ) ) ;
+
+idx_g   ← ( fix f . λ idx . λ s .
+    if (idx = 0)
+        then head_g s
+        else f ⊙ next (idx - 1) ⊙ ( tail_g s )
+) ;
+
+# Coinductive streams
+head_c  ← ( λ s . head_g ( unbox s ) ) ;
+tail_c  ← ( λ s . boxI ( prevI ( tail_g ( unbox s ) ) ) ) ;
+
+idx_c   ← ( fix f . λ idx . λ s .
+    if (idx = 0)
+        then head_c s
+        else prevI ( f ⊙ next (idx - 1) ⊙ next (tail_c s) )
+) ;
+
+in: builtin

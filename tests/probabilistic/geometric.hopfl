@@ -1,0 +1,14 @@
+# Samples the geometric series
+# Free variables to pass through the environment:
+#   p:  The coinflip threshold
+
+let
+   # Performs a flip until a value below p is reached
+    geometric ← ( fix f . λ p . λ n . 
+        if ( ( normal [0.5, 0.25] ) < p )
+            then in 0
+            else in ( f ⊙ next ( n + 1 ) )
+    )
+
+# Result will be inside of next guards
+in: extract (geometric p)

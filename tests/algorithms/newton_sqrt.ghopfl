@@ -2,24 +2,19 @@
 # in an infitie approximation stream.
 # Free variables to pass through the environment:
 #   x:      The number to take the square root of
-#   idx:    The iteration to take from the stream
+#   it:     The iteration to take from the stream
+# Example run:
+#   stack run ghopfl-exe -- -i tests/algorithms/newton_sqrt.ghopfl -E -e "x<-9;it<-6"
 
 let
     # Newtons method to update a guess
     update ← ( λ guess . 0.5 * ( guess + ( x / guess ) ) ) ;
     
     # A stream of closer and closer approximations
-    approx_stream ← ( 
+    approx_stream ← ( boxI ( 
         ( fix f . λ guess . 
-            in ( [ guess, f ⊙ next ( update guess ) ] )
+            in ( guess, f ⊙ next ( update guess ) )
         ) x # Simply take x to be the initial guess
-    ) ;
+    ) ) ;
 
-    # Get the requested idx
-    getIdx ← (
-        fix f . λ idx . λ rw . if ( idx = 0 ) 
-            then fst ( out rw )
-            else prevI ( f ⊙ next ( idx - 1 ) ⊙ ( snd ( out rw ) ) )
-    )
-
-in: print ( (getIdx idx) approx_stream )
+in: idx_c it approx_stream

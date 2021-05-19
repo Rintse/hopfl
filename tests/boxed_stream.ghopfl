@@ -1,3 +1,0 @@
-let
-    RW ← ( ( fix f . λ x . in ( ( x , f ⊙ next ( normal (x , s) ) ) ) ) );
-in: ( idx_g idx ) ( boxI ( RW x0 ))

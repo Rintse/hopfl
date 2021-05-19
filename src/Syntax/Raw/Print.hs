@@ -174,6 +174,7 @@ instance Print Syntax.Raw.Abs.Exp where
     Syntax.Raw.Abs.Pow exp1 exp2 -> prPrec i 9 (concatD [prt 9 exp1, doc (showString "^"), prt 10 exp2])
     Syntax.Raw.Abs.Mul exp1 exp2 -> prPrec i 8 (concatD [prt 8 exp1, doc (showString "*"), prt 9 exp2])
     Syntax.Raw.Abs.Div exp1 exp2 -> prPrec i 8 (concatD [prt 8 exp1, doc (showString "/"), prt 9 exp2])
+    Syntax.Raw.Abs.Mod exp1 exp2 -> prPrec i 8 (concatD [prt 8 exp1, doc (showString "%"), prt 9 exp2])
     Syntax.Raw.Abs.Add exp1 exp2 -> prPrec i 7 (concatD [prt 7 exp1, doc (showString "+"), prt 8 exp2])
     Syntax.Raw.Abs.Sub exp1 exp2 -> prPrec i 7 (concatD [prt 7 exp1, doc (showString "-"), prt 8 exp2])
     Syntax.Raw.Abs.Eq exp1 exp2 -> prPrec i 6 (concatD [prt 6 exp1, doc (showString "="), prt 7 exp2])

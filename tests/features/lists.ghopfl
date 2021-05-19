@@ -1,0 +1,24 @@
+# Showcases lists and functions on them
+# Free variables to pass through the environment:
+#   start:  The first element of the output list
+# Example run:
+#   stack run ghopfl-exe -- -i tests/features/lists.ghopfl -E -e "start<-0"
+
+forceList ( cons start
+    ( append 
+        ( tail [ 0, 1 ] ) # 1
+        ( append
+            ( drop 2 [ 0, 1, 2 ] ) # 2
+            ( append
+                ( [ foldl add 0 [0, 1, 2] ] ) # 3
+                ( append
+                    (   
+                        map ( λ x . if x then 4 else 0 ) 
+                        [ elem 2 [ 0, 1, 2, 3 ] ] 
+                    ) # 4
+                    ( take 1 ( reverse [ 1, 2, 3, 4, 5] ) ) # 5
+                )
+            )
+        )
+    )
+)

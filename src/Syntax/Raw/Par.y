@@ -23,46 +23,47 @@ import Syntax.Raw.Lex
 %monad { Err } { (>>=) } { return }
 %tokentype {Token}
 %token
-  '(' { PT _ (TS _ 1) }
-  ')' { PT _ (TS _ 2) }
-  '*' { PT _ (TS _ 3) }
-  '+' { PT _ (TS _ 4) }
-  ',' { PT _ (TS _ 5) }
-  '-' { PT _ (TS _ 6) }
-  '.' { PT _ (TS _ 7) }
-  '/' { PT _ (TS _ 8) }
-  ';' { PT _ (TS _ 9) }
-  '<' { PT _ (TS _ 10) }
-  '=' { PT _ (TS _ 11) }
-  '>' { PT _ (TS _ 12) }
-  '[' { PT _ (TS _ 13) }
-  ']' { PT _ (TS _ 14) }
-  '^' { PT _ (TS _ 15) }
-  'box' { PT _ (TS _ 16) }
-  'boxI' { PT _ (TS _ 17) }
-  'else' { PT _ (TS _ 18) }
-  'false' { PT _ (TS _ 19) }
-  'fix' { PT _ (TS _ 20) }
-  'forceList' { PT _ (TS _ 21) }
-  'fst' { PT _ (TS _ 22) }
-  'if' { PT _ (TS _ 23) }
-  'in' { PT _ (TS _ 24) }
-  'in:' { PT _ (TS _ 25) }
-  'inL' { PT _ (TS _ 26) }
-  'inR' { PT _ (TS _ 27) }
-  'let' { PT _ (TS _ 28) }
-  'match' { PT _ (TS _ 29) }
-  'next' { PT _ (TS _ 30) }
-  'normal' { PT _ (TS _ 31) }
-  'out' { PT _ (TS _ 32) }
-  'prev' { PT _ (TS _ 33) }
-  'prevI' { PT _ (TS _ 34) }
-  'snd' { PT _ (TS _ 35) }
-  'then' { PT _ (TS _ 36) }
-  'true' { PT _ (TS _ 37) }
-  'unbox' { PT _ (TS _ 38) }
-  '{' { PT _ (TS _ 39) }
-  '}' { PT _ (TS _ 40) }
+  '%' { PT _ (TS _ 1) }
+  '(' { PT _ (TS _ 2) }
+  ')' { PT _ (TS _ 3) }
+  '*' { PT _ (TS _ 4) }
+  '+' { PT _ (TS _ 5) }
+  ',' { PT _ (TS _ 6) }
+  '-' { PT _ (TS _ 7) }
+  '.' { PT _ (TS _ 8) }
+  '/' { PT _ (TS _ 9) }
+  ';' { PT _ (TS _ 10) }
+  '<' { PT _ (TS _ 11) }
+  '=' { PT _ (TS _ 12) }
+  '>' { PT _ (TS _ 13) }
+  '[' { PT _ (TS _ 14) }
+  ']' { PT _ (TS _ 15) }
+  '^' { PT _ (TS _ 16) }
+  'box' { PT _ (TS _ 17) }
+  'boxI' { PT _ (TS _ 18) }
+  'else' { PT _ (TS _ 19) }
+  'false' { PT _ (TS _ 20) }
+  'fix' { PT _ (TS _ 21) }
+  'forceList' { PT _ (TS _ 22) }
+  'fst' { PT _ (TS _ 23) }
+  'if' { PT _ (TS _ 24) }
+  'in' { PT _ (TS _ 25) }
+  'in:' { PT _ (TS _ 26) }
+  'inL' { PT _ (TS _ 27) }
+  'inR' { PT _ (TS _ 28) }
+  'let' { PT _ (TS _ 29) }
+  'match' { PT _ (TS _ 30) }
+  'next' { PT _ (TS _ 31) }
+  'normal' { PT _ (TS _ 32) }
+  'out' { PT _ (TS _ 33) }
+  'prev' { PT _ (TS _ 34) }
+  'prevI' { PT _ (TS _ 35) }
+  'snd' { PT _ (TS _ 36) }
+  'then' { PT _ (TS _ 37) }
+  'true' { PT _ (TS _ 38) }
+  'unbox' { PT _ (TS _ 39) }
+  '{' { PT _ (TS _ 40) }
+  '}' { PT _ (TS _ 41) }
   L_Ident  { PT _ (TV $$) }
   L_doubl  { PT _ (TD $$) }
   L_integ  { PT _ (TI $$) }
@@ -165,6 +166,7 @@ Exp9 : '-' Exp10 { Syntax.Raw.Abs.Min $2 }
 Exp8 :: { Syntax.Raw.Abs.Exp }
 Exp8 : Exp8 '*' Exp9 { Syntax.Raw.Abs.Mul $1 $3 }
      | Exp8 '/' Exp9 { Syntax.Raw.Abs.Div $1 $3 }
+     | Exp8 '%' Exp9 { Syntax.Raw.Abs.Mod $1 $3 }
      | Exp9 { $1 }
 
 Exp7 :: { Syntax.Raw.Abs.Exp }

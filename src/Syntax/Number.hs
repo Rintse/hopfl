@@ -6,8 +6,14 @@
 
 module Syntax.Number where
 
+import Data.Fixed
+
 data Number = Whole Integer | Fract Double
-    deriving (Show, Read)
+    deriving (Read)
+
+instance Show Number where
+    show (Whole i) = show i
+    show (Fract d) = show d
 
 instance Num Number where
     fromInteger i = Whole i
@@ -63,3 +69,11 @@ numPow e1 e2 = case (e1,e2) of
     (Fract d1, Whole i2) -> Fract (d1 ** fromIntegral i2)
     (Whole i1, Fract d2) -> Fract (fromIntegral i1 ** d2)
     (Whole i1, Whole i2) -> Whole (i1 ^ i2)
+
+numMod :: Number -> Number -> Number
+numMod e1 e2 = case (e1,e2) of
+    (Fract d1, Fract d2) -> Fract (d1 `mod'` d2)
+    (Fract d1, Whole i2) -> Fract (d1 `mod'` fromIntegral i2)
+    (Whole i1, Fract d2) -> Fract (fromIntegral i1 `mod'` d2)
+    (Whole i1, Whole i2) -> Whole (i1 `mod` i2)
+

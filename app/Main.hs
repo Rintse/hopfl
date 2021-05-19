@@ -4,14 +4,11 @@ import Args
 import Syntax.Parse
 import Preprocess.Preprocess
 import Semantics.Evaluation
-import Syntax.Raw.Abs as Raw
-import Tools.VerbPrint
 import Tools.Treeify
 
 import Control.Monad.Reader
 import System.Environment ( getArgs )
 import System.Console.GetOpt
-import Control.Monad (when)
 import System.Exit
 
 -- Parses the arguments, input and performs the requested actions
