@@ -2,18 +2,14 @@
 # Free variables to pass through the environment:
 #   x0:     The initial position of the walk
 #   idx:    The index of the number to get from the stream
+#   s:      The variance of the normal distribution
+# Example run:
+#   stack run ghopfl-exe -- -i tests/probabilistic/random_walk.ghopfl -E -n 3 -e "s<-1.0;x0<-0.0;idx<-3" -d "1.0;2.0;3.0"
 
 let
     # The random walk stream
-    RW ← (
-        fix f . λ x . in ( [ x , f ⊙ next ( normal [x , s] ) ] )
+    RW ← ( fix f . λ x . 
+        in ( x , f ⊙ next ( normal (x , s) ) )
     ) ;
 
-    # The the requested idx
-    getIdx ← (
-        fix f . λ idx . λ rw . if ( idx <= 0.0 ) 
-            then fst ( out rw )
-            else f ⊙ next ( idx - 1.0 ) ⊙ ( snd ( out rw ) )
-    )
-
-in: (getIdx idx) (RW x0)
+in: (idx_g idx) (RW x0)

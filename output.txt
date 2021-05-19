@@ -1,3 +1,0 @@
-let
-    lel ← ( prev { x ← y * 1.0 ; z ← t } . ( x b z a ) )
-in: test

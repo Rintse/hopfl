@@ -1,14 +1,15 @@
 # Samples the geometric series
 # Free variables to pass through the environment:
 #   p:  The coinflip threshold
+# Example run:
+#   stack run ghopfl-exe -- -i tests/probabilistic/geometric.hopfl -E -n 3 -e "p<-0.5" -d "0.6;0.5;0.8;0.3"
 
 let
    # Performs a flip until a value below p is reached
-    geometric ← ( fix f . λ p . λ n . 
-        if ( ( normal [0.5, 0.25] ) < p )
-            then in 0
-            else in ( f ⊙ next ( n + 1 ) )
-    )
+    geometric ← ( ( fix f . λ n . λ p . 
+        if ( ( normal (0.5, 0.25) ) < p )
+            then n
+            else f ⊙ next ( n + 1 ) ⊙ next p
+    ) 0 )
 
-# Result will be inside of next guards
-in: extract (geometric p)
+in: geometric p
