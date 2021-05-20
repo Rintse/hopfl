@@ -110,7 +110,7 @@ options =
     , Option "E" ["evaluate"] (NoArg readEval) 
         "Evaluate program using big step semantics"
 
-    , Option "e" ["environment"] (ReqArg readEnv "\"x=1.0;y=2.0..\"")
+    , Option "e" ["environment"] (ReqArg readEnv "\"x<-1.0;y<-2.0..\"")
         "Environment to evaluate within"
 
     , Option "n" ["nexts"] (ReqArg readDepth "INT")

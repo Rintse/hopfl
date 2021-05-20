@@ -186,4 +186,18 @@ packages:
       sha256: 947001836ab99dfcaf08be8dce49e2dd1d894d580dffcdef5c561aedb6de9f73
   original:
     hackage: monadic-recursion-schemes-0.1.12.0@sha256:8f17fb93dc6b140e8da297ec96cfa50284bbf072c030c381835c9a7478e9e3af,1769
+- completed:
+    hackage: alex-3.2.6@sha256:7e15b8ba44f4e858d7e302ae234c05ca10a120c401f0db5ea5bc6135347debca,4156
+    pantry-tree:
+      size: 5732
+      sha256: f11298f6d54429981bbef30e17d215c227b0aab607bdf8ea786781a574188260
+  original:
+    hackage: alex-3.2.6@sha256:7e15b8ba44f4e858d7e302ae234c05ca10a120c401f0db5ea5bc6135347debca,4156
+- completed:
+    hackage: happy-1.20.0@sha256:f99e612b29d68d784d7e193943a13466f0923de69452a2585081491efed0436b,5709
+    pantry-tree:
+      size: 8749
+      sha256: a90122967031e2feb99adbbacf57ddf8627a7c0444720402513d3f11ec7f990a
+  original:
+    hackage: happy-1.20.0@sha256:f99e612b29d68d784d7e193943a13466f0923de69452a2585081491efed0436b,5709
 snapshots: []
