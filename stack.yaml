@@ -68,6 +68,8 @@ extra-deps: [
     "contravariant-1.5.3@sha256:e59a7742e725f94fc6578e3593cd3f6d4e3d46a9510c3a782e5fe5e5f238e3ce,3013",
     "StateVar-1.2.1@sha256:b8bea664120dc78f5c15d9b8c0947d51dbc58a0b63ee49971fa7caac9f3e0845,1642",
     "monadic-recursion-schemes-0.1.12.0@sha256:8f17fb93dc6b140e8da297ec96cfa50284bbf072c030c381835c9a7478e9e3af,1769",
+    "alex-3.2.6@sha256:7e15b8ba44f4e858d7e302ae234c05ca10a120c401f0db5ea5bc6135347debca,4156",
+    "happy-1.20.0@sha256:f99e612b29d68d784d7e193943a13466f0923de69452a2585081491efed0436b,5709"
     ]
 
 # Override default flag values for local packages and extra-deps
