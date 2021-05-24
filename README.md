@@ -9,4 +9,6 @@ stack run ghopfl-exe -- [args]
 Use the `-h` flag to get started.
 
 ## Tests
-There are tests available in `tests/`. Each tests has comments explaining its workings and an example run is provided.
+There are tests available in `tests/`. 
+Each test has comments explaining its workings. 
+Example runs are provided at the top of these test files.
