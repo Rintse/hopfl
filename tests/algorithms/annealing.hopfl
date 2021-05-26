@@ -5,7 +5,7 @@
 #   iteration:  The optimization iteration to get the result from
 #
 # Example run:
-#   stack run hopfl-exe -- -v -E -e "iteration<-3" -d "0.6;0.3;0.4;0.1;0.9" -i test/tests/annealing2.hopfl
+#   stack run hopfl-exe -- -v -E -e "iteration<-3" -d "0.6;0.3;0.4;0.1;0.9" -i tests/algorithms/annealing.hopfl
 # Should give the optimal, after first accepting a worse solution
 
 let
@@ -45,7 +45,7 @@ let
     ) ;
 
     # Mutation function, randomly flips one bit in the solution vector
-    mutate ← ( flip_bit rand_idx ) ;
+    mutate ← ( flip_bit ( rand_idx n_vertices ) ) ;
 
     # The chance of accepting a neigbour if it is worse
     p_accept_new ← ( λ old . λ new . λ temp . 

@@ -11,7 +11,6 @@ import System.Environment ( getArgs )
 import System.Console.GetOpt
 import System.Exit
 
--- Parses the arguments, input and performs the requested actions
 main :: IO ()
 main = do
     args <- getArgs -- Get and parse options
@@ -19,7 +18,7 @@ main = do
 
     -- Errors parsing arguments
     unless (null errs) ( do
-        putStrLn "Errors parsing arguments:"
+        putStrLn "The were errors parsing the arguments:"
         mapM_ putStr errs >> exitFailure )
 
     opts <- foldl (>>=) (return defaultOpts) optArgs

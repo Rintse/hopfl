@@ -13,6 +13,7 @@ import Syntax.Number
 import qualified Syntax.Raw.Abs as Raw
 import Syntax.Raw.ErrM
 import Semantics.Values
+import Control.Exception.Base
 
 import Data.Functor.Foldable.TH
 import Data.Functor.Foldable
@@ -72,6 +73,7 @@ performDraw m v = gets snd >>= \case
                 modify (\(w, _) -> (w * d, rest))
                 return $ VVal $ Fract c
     _ -> throwError "Draws list too small"
+
 
 -- Helper functions to evaluate boolean and aritmetic expresions
 -- Evaluates a binary arithmetic operation

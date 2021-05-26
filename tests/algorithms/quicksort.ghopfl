@@ -2,7 +2,7 @@
 # Free variables to pass through the environment:
 #   list:  The list to sort
 # Example run:
-#   stack run ghopfl-exe -- -E -e "list<-[4,1,6,9,2,5]" -d "0.4;0.1;0.8" -i tests/quicksort.ghopfl
+#   stack run ghopfl-exe -- -E -e "list<-[4,1,6,9,2,5]" -d "0.4;0.1;0.8" -i tests/algorithms/quicksort.ghopfl
 
 let
     # Non-deterministic quicksort
