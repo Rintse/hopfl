@@ -1,0 +1,6 @@
+# Defines the conatural numbers of type
+    μ A . 1 + > A
+let
+    co_zero ← ( in ( inL 𝟙 ) ) ;
+    co_succ ← ( λ n . in ( inR ( next n ) ) ) ;
+    co_inf  ← ( fix f . in ( inR f ) ) ;
