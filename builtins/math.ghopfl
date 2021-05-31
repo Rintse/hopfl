@@ -17,6 +17,7 @@ power       ← ( λ x . λ y . x ^ y ) ;
 
 # Logic
 xor         ← ( λ p . λ q . ( p ∨ q ) ∧ ¬ ( p ∧ q ) ) ;
-implies     ← ( λ p . λ q . ¬ p ∨ q )
+implies     ← ( λ p . λ q . ¬ p ∨ q ) ;
+not         ← ( λ p . ¬ p )
 
 in: builtin

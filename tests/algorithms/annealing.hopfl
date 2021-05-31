@@ -37,12 +37,7 @@ let
     eval ← ( λ s . 1.0 / ( cut_count s ) ) ;
 
     # Flip bit in s at given idx
-    flip_bit ← ( λ idx . λ s . 
-        append ( take idx s ) ( cons 
-            ( ¬ ( index idx s ) ) 
-            ( drop ( idx + 1 ) s )
-        )
-    ) ;
+    flip_bit ← ( λ idx . edit idx not ) ;
 
     # Mutation function, randomly flips one bit in the solution vector
     mutate ← ( flip_bit ( rand_idx n_vertices ) ) ;

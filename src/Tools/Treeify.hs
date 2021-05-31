@@ -76,6 +76,7 @@ printList l@(EIn ( EInR ( EPair v (ENext l2) ) ) ) =
     init (drawTree (toTree v)) -- Init to discard the final endline
     ++ if isLast l then "" else ", " ++ printList l2
 printList (EIn ( EInL _ ) ) = ""
+printList other = show other
 
 instance Treeish Value where
     toTree val = case val of
@@ -96,7 +97,9 @@ instance Treeish Value where
         EBox v      -> Node "Box"   [ toTree v ]
         EInL v      -> Node "InL"   [ toTree v ]
         EInR v      -> Node "InR"   [ toTree v ]
+        ENext v     -> Node "Next"   [ toTree v ]
         EList (EBox l) -> Node ("[" ++ printList l ++ "]") []
+        other -> Node (show other) []
 
 treeValue :: Value -> String
 treeValue v = drawTree $ toTree v
