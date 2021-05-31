@@ -7,7 +7,7 @@
 let
    # Performs a flip until a value below p is reached
     geometric ← ( ( fix f . λ n . λ p . 
-        if ( ( normal (0.5, 0.25) ) < p )
+        if ( rand < p )
             then n
             else f ⊙ next ( n + 1 ) ⊙ next p
     ) 0 )

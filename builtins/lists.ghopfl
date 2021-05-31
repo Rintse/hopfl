@@ -6,14 +6,34 @@ l_empty ← ( boxI ( in ( inL 𝟙 ) ) );
 cons ← ( λ e . λ l . boxI ( in ( inR ( e, next ( unbox l ) ) ) ) ) ;
 
 # Basic functions
-head    ← ( λ l . match ( out ( unbox l ) ) { inL x → x ; inR y → fst y } ) ;
-tail    ← ( λ l . match ( out ( unbox l ) ) { inL x → x ; inR y → boxI ( prevI ( snd y ) ) } ) ;
-null    ← ( λ l . match ( out ( unbox l ) ) { inL x → true ; inR y → false } ) ;
+head    ← ( λ l . match ( out ( unbox l ) ) { 
+    inL x → x ; 
+    inR y → fst y 
+} ) ;
 
+tail    ← ( λ l . match ( out ( unbox l ) ) { 
+    inL x → x ; 
+    inR y → boxI ( prevI ( snd y ) ) 
+} ) ;
+
+null    ← ( λ l . match ( out ( unbox l ) ) { 
+    inL x → true ; 
+    inR y → false 
+} ) ;
+
+# Not well typed!
 length  ← ( fix f . λ l .
     match ( out ( unbox l ) ) {
         inL x → 0 ;
         inR y → 1 + prevI ( f ⊙ next ( tail l ) )
+    }
+) ;
+
+# Well typed.
+co_length ← ( fix f . λ l .
+    match ( out ( unbox l ) ) {
+        inL x → in ( inL 𝟙 ) ;
+        inR y → in ( inR ( f ⊙ ( next ( tail l ) ) ) )
     }
 ) ;
     
@@ -26,16 +46,6 @@ append  ← ( fix f . λ l1 . λ l2 .
     } )
 ) ;
 
-elem ← ( fix f . λ e . λ l .
-    match ( out ( unbox l ) ) {
-        inL x → false ;
-        inR lst → if ( ( head l ) = e )
-            then true
-            else ( prevI ( f ⊙ next e ⊙ next ( tail l ) ) )
-    }
-) ;
-
-
 # Access
 index ← ( fix f . λ idx . λ list .
     if ( idx = 0 )
@@ -43,77 +53,75 @@ index ← ( fix f . λ idx . λ list .
         else prevI ( f ⊙ next (idx - 1) ⊙ next (tail list) )
 ) ;
 
+co_index ← ( fix f . λ idx . λ list .
+    match (out idx) {
+        inL x → head list ;
+        inR y → prevI ( f ⊙ next ( l ) )
+    }
+) ;
 
 # Sublists
-take    ← ( fix f . λ n . λ l . 
-    match ( out ( unbox l ) ) {
-        inL end → l ;
+take    ← ( fix f . λ n . λ list . 
+    match ( out ( unbox list ) ) {
+        inL end → list ;
         inR lst → if (n = 0)
             then l_empty
-            else cons ( head l )
-                ( prevI ( f ⊙ next ( n - 1 ) ⊙ next ( tail l ) ) )
+            else cons ( head list ) ( 
+                prevI ( f ⊙ next ( n - 1 ) ⊙ next ( tail list ) ) 
+            )
     }
 ) ;
 
-drop    ← ( fix f . λ n . λ l .
-    match ( out ( unbox l ) ) {
-        inL end → l ;
-        inR lst → 
-            ( if ( n = 0 ) 
-                then ( cons ( head l ) )
-                else (λ x . x) 
-            ) ( prevI ( 
-                f ⊙ next ( if ( n = 0 ) then 0 else n - 1 )
-                  ⊙ next ( tail l )
-            ) )
+drop ← (fix f . λ n . λ list . 
+    match ( out ( unbox list ) ) { 
+        inL end → list ;
+        inR lst → if ( n = 0 ) 
+
+            then list
+            else prevI ( f ⊙ next ( n - 1 ) ⊙ next ( tail list ) )
     }
 ) ;
 
-filter  ← ( fix f . λ pred . λ l .
-    match ( out ( unbox l ) ) {
-        inL end → l ;
+
+filter  ← ( fix f . λ pred . λ list .
+    match ( out ( unbox list ) ) {
+        inL end → list ;
         inR lst → 
-            ( if ( pred ( head l ) )
-                then ( cons ( head l ) ) 
+            ( if ( pred ( head list ) )
+                then ( cons ( head list ) ) 
                 else (λ x . x) 
             ) ( prevI ( 
-                f ⊙ next pred ⊙ next ( tail l ) 
+                f ⊙ next pred ⊙ next ( tail list ) 
             ) )
     }
 ) ;
 
 
 # Tranformations
-map     ← ( fix f . λ func . λ l .
-    match ( out ( unbox l ) ) {
-        inL end → l ;
-        inR lst → cons ( func ( head l ) )
-            ( prevI ( f ⊙ next func ⊙ next ( tail l ) ) )
+# func and val must have a constant type!
+map     ← ( fix f . λ func . λ list .
+    match ( out ( unbox list ) ) {
+        inL end → list ;
+        inR lst → cons ( func ( head list ) )
+            ( prevI ( f ⊙ next func ⊙ next ( tail list ) ) )
     }
 ) ;
     
-reverse ← ( fix f . λ l .
-    match ( out ( unbox l ) ) {
-        inL x → l ;
-        inR lst → append ( prevI ( f ⊙ next ( tail l ) ) ) [ head l ]
-    }
-) ;
-
-
 # Folds
-foldl   ← ( fix f . λ func . λ val . λ l .
-    match ( out ( unbox l ) ) {
+# func and val must have a constant type!
+foldl   ← ( fix f . λ func . λ val . λ list .
+    match ( out ( unbox list ) ) {
         inL end → val ;
         inR lst → prevI ( 
             f ⊙ next func 
-              ⊙ next ( func ( head l ) val )
-              ⊙ next ( tail l )
+              ⊙ next ( func ( head list ) val )
+              ⊙ next ( tail list )
         )
     }
 ) ;
 
-foldr   ← ( fix f . λ func . λ val . λ l .
-    match ( l ) {
+foldr   ← ( fix f . λ func . λ val . λ list .
+    match ( out ( unbox list ) ) {
         inL end → val ;
         inR lst → func ( prevI ( 
             f ⊙ next func 

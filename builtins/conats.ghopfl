@@ -1,6 +1,20 @@
 # Defines the conatural numbers of type
-    μ A . 1 + > A
+#   μ A . 1 + > A
 let
     co_zero ← ( in ( inL 𝟙 ) ) ;
     co_succ ← ( λ n . in ( inR ( next n ) ) ) ;
     co_inf  ← ( fix f . in ( inR f ) ) ;
+    co_int  ← ( fix f . λ n .
+        if ( n = 0 ) then co_zero
+        else in ( inR ( f ⊙ next ( n - 1 ) ) )
+    ) ;
+
+    # Only for testing, not well typed!
+    to_int ← ( fix f . λ c . 
+        match ( out c ) {
+            inL x → 0 ;
+            inR y → 1 + prevI ( f ⊙ y )
+        }
+    ) ;
+
+in: builtin
