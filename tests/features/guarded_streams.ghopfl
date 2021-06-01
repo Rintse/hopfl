@@ -9,4 +9,4 @@ let
         in ( x ^ 2, f ⊙ next ( x + 1 ) )
     ) 0 ) ;
 
-in: idx_g idx stream
+in: s_idx_g idx stream

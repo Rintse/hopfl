@@ -5,13 +5,10 @@
 {-# OPTIONS_GHC -w #-}
 module Syntax.Raw.Lex where
 
-import Prelude
-
 import qualified Data.Bits
 import Data.Word (Word8)
 import Data.Char (ord)
 }
-
 
 $c = [A-Z\192-\221] # [\215]  -- capital isolatin1 letter (215 = \times) FIXME
 $s = [a-z\222-\255] # [\247]  -- small   isolatin1 letter (247 = \div  ) FIXME
@@ -19,10 +16,8 @@ $l = [$c $s]         -- letter
 $d = [0-9]           -- digit
 $i = [$l $d _ ']     -- identifier character
 $u = [. \n]          -- universal: any character
-
 @rsyms =    -- symbols and non-identifier-like reserved words
    \( | \, | \) | \{ | \} | \. | \- | \^ | \* | \/ | \% | \+ | \= | \< | \> | \; | \[ | \] | "in" \:
-
 :-
 
 -- Line comments
@@ -30,41 +25,44 @@ $u = [. \n]          -- universal: any character
 
 $white+ ;
 @rsyms
-    { tok (\p s -> PT p (eitherResIdent TV s)) }
+    { tok (\p s -> PT p (eitherResIdent (TV . share) s)) }
 [\\ λ]
-    { tok (\p s -> PT p (eitherResIdent T_Lam s)) }
+    { tok (\p s -> PT p (eitherResIdent (T_Lam . share) s)) }
 \∧ | a n d
-    { tok (\p s -> PT p (eitherResIdent T_Conj s)) }
+    { tok (\p s -> PT p (eitherResIdent (T_Conj . share) s)) }
 \∨ | o r
-    { tok (\p s -> PT p (eitherResIdent T_Disj s)) }
+    { tok (\p s -> PT p (eitherResIdent (T_Disj . share) s)) }
 [\! \¬]
-    { tok (\p s -> PT p (eitherResIdent T_TNot s)) }
+    { tok (\p s -> PT p (eitherResIdent (T_TNot . share) s)) }
 \≤ | \< \=
-    { tok (\p s -> PT p (eitherResIdent T_TLeq s)) }
+    { tok (\p s -> PT p (eitherResIdent (T_TLeq . share) s)) }
 \≥ | \> \=
-    { tok (\p s -> PT p (eitherResIdent T_TGeq s)) }
+    { tok (\p s -> PT p (eitherResIdent (T_TGeq . share) s)) }
 \⊙ | \( \* \)
-    { tok (\p s -> PT p (eitherResIdent T_TLApp s)) }
+    { tok (\p s -> PT p (eitherResIdent (T_TLApp . share) s)) }
 \← | \< \-
-    { tok (\p s -> PT p (eitherResIdent T_TSub s)) }
+    { tok (\p s -> PT p (eitherResIdent (T_TSub . share) s)) }
 \→ | \- \>
-    { tok (\p s -> PT p (eitherResIdent T_TMatch s)) }
+    { tok (\p s -> PT p (eitherResIdent (T_TMatch . share) s)) }
 𝟙 | \{ \* \}
-    { tok (\p s -> PT p (eitherResIdent T_TSingle s)) }
+    { tok (\p s -> PT p (eitherResIdent (T_TSingle . share) s)) }
 
 $l $i*
-    { tok (\p s -> PT p (eitherResIdent TV s)) }
+    { tok (\p s -> PT p (eitherResIdent (TV . share) s)) }
 
 
 $d+
-    { tok (\p s -> PT p (TI s))    }
+    { tok (\p s -> PT p (TI $ share s))    }
 $d+ \. $d+ (e (\-)? $d+)?
-    { tok (\p s -> PT p (TD s)) }
+    { tok (\p s -> PT p (TD $ share s)) }
 
 {
 
 tok :: (Posn -> String -> Token) -> (Posn -> String -> Token)
 tok f p s = f p s
+
+share :: String -> String
+share = id
 
 data Tok =
    TS !String !Int    -- reserved words and symbols
@@ -145,7 +143,7 @@ eitherResIdent tv s = treeFind resWords
                               | s == a = t
 
 resWords :: BTree
-resWords = b "fix" 21 (b "<" 11 (b "," 6 (b ")" 3 (b "(" 2 (b "%" 1 N N) N) (b "+" 5 (b "*" 4 N N) N)) (b "/" 9 (b "." 8 (b "-" 7 N N) N) (b ";" 10 N N))) (b "^" 16 (b "[" 14 (b ">" 13 (b "=" 12 N N) N) (b "]" 15 N N)) (b "else" 19 (b "boxI" 18 (b "box" 17 N N) N) (b "false" 20 N N)))) (b "normal" 32 (b "inL" 27 (b "if" 24 (b "fst" 23 (b "forceList" 22 N N) N) (b "in:" 26 (b "in" 25 N N) N)) (b "match" 30 (b "let" 29 (b "inR" 28 N N) N) (b "next" 31 N N))) (b "then" 37 (b "prevI" 35 (b "prev" 34 (b "out" 33 N N) N) (b "snd" 36 N N)) (b "{" 40 (b "unbox" 39 (b "true" 38 N N) N) (b "}" 41 N N))))
+resWords = b "force" 22 (b "<" 11 (b "," 6 (b ")" 3 (b "(" 2 (b "%" 1 N N) N) (b "+" 5 (b "*" 4 N N) N)) (b "/" 9 (b "." 8 (b "-" 7 N N) N) (b ";" 10 N N))) (b "box" 17 (b "[" 14 (b ">" 13 (b "=" 12 N N) N) (b "^" 16 (b "]" 15 N N) N)) (b "false" 20 (b "else" 19 (b "boxI" 18 N N) N) (b "fix" 21 N N)))) (b "normal" 33 (b "inL" 28 (b "if" 25 (b "fst" 24 (b "forceColist" 23 N N) N) (b "in:" 27 (b "in" 26 N N) N)) (b "match" 31 (b "let" 30 (b "inR" 29 N N) N) (b "next" 32 N N))) (b "then" 38 (b "prevI" 36 (b "prev" 35 (b "out" 34 N N) N) (b "snd" 37 N N)) (b "{" 41 (b "unbox" 40 (b "true" 39 N N) N) (b "}" 42 N N))))
    where b s n = let bs = s
                  in  B bs (TS bs n)
 

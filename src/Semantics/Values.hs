@@ -35,7 +35,7 @@ data Value
     | ENext Value
     | EInL Value
     | EInR Value
-    | EList Value
+    | ECoList Value
     deriving (Eq, Ord, Show, Read)
 
 makeBaseFunctor ''Value

@@ -2,10 +2,11 @@
 # Free variables to pass through the environment:
 #   n:  The index in the stream (result should be n²)
 # Example run:
-#   stack run ghopfl-exe -- -i tests/features/coinductive_streams.ghopfl -E -e "idx<-183"
+#   stack run ghopfl-exe -- -i tests/features/coinductive_streams.ghopfl -E -e "idx<-17" -n 17
 
 let
     # Recursively tests whether an integer is a prime
+    # TODO: ill typed
     is_prime ← ( ( fix f . λ c . λ n . 
         if ( c > sqrt n ) then true else ( # No factors larger than this 
             if ( n % c = 0 ) then false else ( # Found a divisor
@@ -13,6 +14,7 @@ let
     ) ) ) 2 ) ;
 
     # Gets the next prime after c ( only check odd numbers )
+    # TODO: ill typed
     next_prime ← ( fix f . λ c .
         if ( is_prime ( c + 2 ) ) 
             then c + 2
@@ -30,4 +32,4 @@ let
         )
     ) 1 ) ) ) ;
 
-in: idx_c idx stream
+in: s_idx_c idx stream

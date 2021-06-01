@@ -26,7 +26,8 @@ data Exp
     | Norm  Exp
     | Not   Exp
     | Min   Exp
-    | FList Exp
+    | Force Exp
+    | FColist Exp
     | App   Exp Exp
     | LApp  Exp Exp
     | Pow   Exp Exp

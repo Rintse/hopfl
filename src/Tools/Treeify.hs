@@ -41,7 +41,8 @@ instance Treeish Exp where
         InR e               -> Node "InR"       [ toTree e ]
         Norm e              -> Node "Norm"      [ toTree e ]
         Not e               -> Node "Not"       [ toTree e ]
-        FList e             -> Node "FList"     [ toTree e ]
+        Force e             -> Node "Force"     [ toTree e ]
+        FColist e           -> Node "FList"     [ toTree e ]
         App e1 e2           -> Node "App"       [ toTree e1, toTree e2 ]
         LApp e1 e2          -> Node "LApp"      [ toTree e1, toTree e2 ]
         Pair e1 e2          -> Node "Pair"      [ toTree e1, toTree e2 ]
@@ -98,7 +99,7 @@ instance Treeish Value where
         EInL v      -> Node "InL"   [ toTree v ]
         EInR v      -> Node "InR"   [ toTree v ]
         ENext v     -> Node "Next"   [ toTree v ]
-        EList (EBox l) -> Node ("[" ++ printList l ++ "]") []
+        ECoList (EBox l) -> Node ("[" ++ printList l ++ "]") []
         other -> Node (show other) []
 
 treeValue :: Value -> String

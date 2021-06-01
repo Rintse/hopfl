@@ -21,6 +21,6 @@ desugarList l = BoxI $ foldr lCons lEmpty l
 -- Desugar lists
 desugarLists :: Exp -> Exp
 desugarLists = ana $ \case
-    EList (List (Elems l)) -> project $ desugarList l
+    ECoList (CoList (Elems l)) -> project $ desugarList l
     other -> project other
 

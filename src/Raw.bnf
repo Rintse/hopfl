@@ -29,7 +29,7 @@ IVal.       Exp13   ::= Integer ;
 BVal.       Exp13   ::= BConst ;
 
 -- Single objects (super high precedence)
-EList.      Exp12    ::= Lst ;
+ECoList.    Exp12    ::= CoLst ;
 Pair.       Exp12    ::= "(" Exp "," Exp1 ")" ;
 
 -- Later modality (with applicative function LApp)
@@ -44,7 +44,8 @@ Box.        Exp11   ::= "box" "{" Environment "}" "." Exp11 ;
 BoxI.       Exp11   ::= "boxI" Exp12 ;
 Unbox.      Exp11   ::= "unbox" Exp12 ;
 
-FList.      Exp11   ::= "forceList" Exp12 ;
+FColist.    Exp11   ::= "forceColist" Exp12 ;
+Force.      Exp11   ::= "force" Exp12 ;
 
 -- Recursion
 In.         Exp11   ::= "in" Exp12 ;
@@ -92,7 +93,7 @@ Rec.        Exp     ::= "fix" Ident "." Exp ;
 coercions Exp 13 ;
 
 -- List syntactic sugar
-List.       Lst     ::= "[" Els "]" ;
+CoList.     CoLst   ::= "[" Els "]" ;
 Elems.      Els     ::= [ El ] ;
 Elem.       El      ::= Exp ;
 separator   El      "," ;

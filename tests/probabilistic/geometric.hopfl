@@ -5,11 +5,12 @@
 #   stack run ghopfl-exe -- -i tests/probabilistic/geometric.hopfl -E -n 3 -e "p<-0.5" -d "0.6;0.5;0.8;0.3"
 
 let
-   # Performs a flip until a value below p is reached
+    # Performs a flip until a value below p is reached
+    # The result is a conatural number
     geometric ← ( ( fix f . λ n . λ p . 
         if ( rand < p )
-            then n
-            else f ⊙ next ( n + 1 ) ⊙ next p
+            then in ( inL 𝟙 )
+            else in ( inR ( f ⊙ next ( n + 1 ) ⊙ next p ) )
     ) 0 )
 
-in: geometric p
+in: force ( geometric p ) 

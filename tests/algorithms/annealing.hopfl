@@ -1,11 +1,12 @@
-# Simulated annealing on the max-cut problem
+# Simulated annealing on the max-cut problem.
 # Solutions are represented as bitstrings where the boolean values
 # indicate in which partition a given vertex is contained
-# Free variables to pass through the environment:
-#   iteration:  The optimization iteration to get the result from
+#
+# Takes the third value from the stream (hard coded as indexation
+# wihtout nexts is impossible )
 #
 # Example run:
-#   stack run hopfl-exe -- -v -E -e "iteration<-3" -d "0.6;0.3;0.4;0.1;0.9" -i tests/algorithms/annealing.hopfl
+#   stack run hopfl-exe -- -v -E -d "0.6;0.3;0.4;0.1;0.9" -i tests/algorithms/annealing.hopfl
 # Should give the optimal, after first accepting a worse solution
 
 let
@@ -14,10 +15,10 @@ let
     # | \ |     such that the two partitions are {0, 3}
     # 3 - 2     and {1, 2} (4 cuts), as adjacency list:
     graph ← [ (0,1), (0,2), (0,3), (1,2), (2,3) ] ;
+    n_vertices ← 4 ;
     
     # Initial solution
     init_s ← [ true, true, false, false ] ;
-    n_vertices ← length init_s ;
     
     # Initial temperature
     init_temp ← 1.0 ; 
@@ -25,13 +26,14 @@ let
     # Returns 1.0 if s cuts edge, 0.0 otherwise
     # An edge is cut if its verteces are in different partitions
     cuts ← ( λ s . λ edge .
-        if ( xor ( index ( fst edge ) s ) ( index ( snd edge ) s ) ) 
-            then 1 
-            else 0
+        if ( xor 
+            ( index_cheat ( fst edge ) s ) 
+            ( index_cheat ( snd edge ) s ) 
+        ) then 1 else 0
     ) ;
 
     # The amount of cuts a solution makes
-    cut_count ← ( λ s . foldl add 0 ( map ( cuts s ) graph ) ) ;
+    cut_count ← ( λ s . foldl_4 add 0 ( map ( cuts s ) graph ) ) ;
     
     # The evaluation function should be lower for better solutions
     eval ← ( λ s . 1.0 / ( cut_count s ) ) ;
@@ -68,5 +70,5 @@ let
         ) ) ) 0 init_s )
     ) ;
 
-in: forceList ( idx_c iteration opt_stream )
+in: forceList ( s_3rd_c opt_stream )
 

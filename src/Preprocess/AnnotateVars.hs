@@ -97,7 +97,8 @@ transform exp = case exp of
     Raw.Single t        -> return Single
     Raw.BVal v          -> return $ BVal v
     Raw.Unbox e         -> fmap   Unbox (transform e)
-    Raw.FList e         -> fmap   FList (transform e)
+    Raw.Force e         -> fmap   Force (transform e)
+    Raw.FColist e       -> fmap   FColist (transform e)
     Raw.Norm e          -> fmap   Norm  (transform e)
     Raw.Next e          -> fmap   Next  (transform e)
     Raw.Out e           -> fmap   Out   (transform e)

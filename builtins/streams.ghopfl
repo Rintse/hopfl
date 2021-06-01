@@ -2,23 +2,26 @@
 let
 
 # Guarded streams
-head_g  ← ( λ s . fst ( out s ) ) ;
-tail_g  ← ( λ s . snd ( out s ) ) ;
+s_head_g  ← ( λ s . fst ( out s ) ) ;
+s_tail_g  ← ( λ s . snd ( out s ) ) ;
 
-idx_g   ← ( fix f . λ idx . λ s .
+s_idx_g   ← ( fix f . λ idx . λ s .
     if (idx = 0)
-        then head_g s
-        else f ⊙ next (idx - 1) ⊙ ( tail_g s )
+        then s_head_g s
+        else f ⊙ next ( idx - 1 ) ⊙ ( s_tail_g s )
 ) ;
 
 # Coinductive streams
-head_c  ← ( λ s . head_g ( unbox s ) ) ;
-tail_c  ← ( λ s . boxI ( prevI ( tail_g ( unbox s ) ) ) ) ;
+s_head_c    ← ( λ s . s_head_g ( unbox s ) ) ;
+s_tail_c    ← ( λ s . boxI ( prevI ( s_tail_g ( unbox s ) ) ) ) ;
 
-idx_c   ← ( fix f . λ idx . λ s .
+s_2nd_c     ← ( λ s . s_head_c ( s_tail_c ) ) ;
+s_3rd_c     ← ( λ s . s_head_c ( s_tail_c ( s_tail_c s ) ) ) ;
+
+s_idx_c     ← ( fix f . λ idx . λ s .
     if (idx = 0)
-        then head_c s
-        else prevI ( f ⊙ next (idx - 1) ⊙ next (tail_c s) )
+        then s_head_c s
+        else f ⊙ next ( idx - 1 ) ⊙ next ( s_tail_c s )
 ) ;
 
 in: builtin

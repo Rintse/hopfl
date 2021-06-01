@@ -31,10 +31,10 @@ defSub = anaM $ \case
         a <- ask
         let rl = Env $ map (\(Assign x o t) -> Assign x o $ runDef t a) l
         return $ BoxF rl e
-    EList (List (Elems l)) -> do
+    ECoList (CoList (Elems l)) -> do
         a <- ask
         let rl = Elems $ map (\(Elem e) -> Elem $ runDef e a) l
-        return $ EListF $ List rl
+        return $ ECoListF $ CoList rl
     other -> return $ project other
 
 -- Runs definition substitution inside a reader monad

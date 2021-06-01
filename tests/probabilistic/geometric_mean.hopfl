@@ -8,22 +8,22 @@
 
 let
    # Performs a flip until a value below p is reached
+   # TODO: ill typed
     geometric ← ( ( fix f . λ n . λ p . 
         if ( rand < p )
             then n
-            else prevI ( f ⊙ next ( n + 1 ) ⊙ next p )
+            else f ⊙ next ( n + 1 ) ⊙ next p
     ) 0 ) ;
    
-    sample_list ← ( fix f . λ p . λ sample_count .
-        if ( sample_count = 0 )
-            then []
-            else cons ( geometric p ) prevI ( 
-                f ⊙ next p ⊙ next ( sample_count - 1 ) 
-            )
+    # A colist is used as the foldl_4 function is defined there
+    # this could just as well be a stream
+    sample_colist ← ( λ p . fix f . λ x .
+        in ( inR ( geometric p, f ⊙  ) ) 
     ) ;
+        
 
     list_avg ← ( λ l . 
-        ( foldl add 0 l ) / length l
+        ( foldl_4 add 0 l ) / 4
     ) ;
 
-in: list_avg ( sample_list p count )
+in: list_avg ( sample_colist p )

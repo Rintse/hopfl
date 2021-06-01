@@ -4,17 +4,15 @@
 #   x:      The number to take the square root of
 #   it:     The iteration to take from the stream
 # Example run:
-#   stack run ghopfl-exe -- -i tests/algorithms/newton_sqrt.ghopfl -E -e "x<-9;it<-6"
+#   stack run ghopfl-exe -- -i tests/algorithms/newton_sqrt.ghopfl -E -e "x<-9;it<-6" -n 6
 
 let
     # Newtons method to update a guess
     update ← ( λ guess . 0.5 * ( guess + ( x / guess ) ) ) ;
     
     # A stream of closer and closer approximations
-    approx_stream ← ( boxI ( 
-        ( fix f . λ guess . 
-            in ( guess, f ⊙ next ( update guess ) )
-        ) x # Simply take x to be the initial guess
-    ) ) ;
+    approx_stream ← ( ( fix f . λ guess . 
+        in ( guess, f ⊙ next ( update guess ) )
+    ) x ) ; # Simply take x to be the initial guess
 
-in: idx_c it approx_stream
+in: s_idx_g it approx_stream

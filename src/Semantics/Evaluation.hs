@@ -106,7 +106,8 @@ eval exp@(Norm e) = eval e >>= \case
     _ -> throwError $ "Normal argument not a pair: \n" ++ treeTerm exp
 
 -- Evaluate into values
-eval exp@(FList e) = EList <$> ( eval e >>= forceEval eval )
+eval exp@(FColist e) = ECoList <$> ( eval e >>= forceEval eval )
+eval exp@(Force e) = eval e >>= forceEval eval
 
 -- If then else
 eval exp@(Ite b e1 e2) = eval b >>= \case

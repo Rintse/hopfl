@@ -15,7 +15,7 @@ builtins :: [Assignment]
 builtins =
 """
 
-os.system("stack build hopfl:builtin-exe")
+os.system("stack build ghopfl:builtin-exe")
 os.system("rm " + DST)
 builtins = glob.glob(DIR + "*.ghopfl")
 

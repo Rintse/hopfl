@@ -3,80 +3,11 @@
 
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
--- | The abstract syntax of language Raw.
-
 module Syntax.Raw.Abs where
 
-import Prelude (Double, Integer, String)
+import Prelude (Char, Double, Integer, String)
 import qualified Prelude as C (Eq, Ord, Show, Read)
 import qualified Data.String
-
-data BConst = BTrue | BFalse
-  deriving (C.Eq, C.Ord, C.Show, C.Read)
-
-data Exp
-    = Single TSingle
-    | Var Ident
-    | DVal Double
-    | IVal Integer
-    | BVal BConst
-    | EList Lst
-    | Pair Exp Exp
-    | Next Exp
-    | Prev Environment Exp
-    | PrevE Exp
-    | PrevI Exp
-    | Box Environment Exp
-    | BoxI Exp
-    | Unbox Exp
-    | FList Exp
-    | In Exp
-    | Out Exp
-    | Fst Exp
-    | Snd Exp
-    | InL Exp
-    | InR Exp
-    | App Exp Exp
-    | LApp Exp TLApp Exp
-    | Min Exp
-    | Pow Exp Exp
-    | Mul Exp Exp
-    | Div Exp Exp
-    | Mod Exp Exp
-    | Add Exp Exp
-    | Sub Exp Exp
-    | Eq Exp Exp
-    | Lt Exp Exp
-    | Gt Exp Exp
-    | Leq Exp TLeq Exp
-    | Geq Exp TGeq Exp
-    | Not TNot Exp
-    | And Exp Conj Exp
-    | Or Exp Disj Exp
-    | Norm Exp
-    | Ite Exp Exp Exp
-    | Match Exp Ident TMatch Exp Ident TMatch Exp
-    | Abstr Lam Ident Exp
-    | Rec Ident Exp
-  deriving (C.Eq, C.Ord, C.Show, C.Read)
-
-data Lst = List Els
-  deriving (C.Eq, C.Ord, C.Show, C.Read)
-
-data Els = Elems [El]
-  deriving (C.Eq, C.Ord, C.Show, C.Read)
-
-data El = Elem Exp
-  deriving (C.Eq, C.Ord, C.Show, C.Read)
-
-data Prg = DefProg Environment Exp | Prog Exp
-  deriving (C.Eq, C.Ord, C.Show, C.Read)
-
-data Environment = Env [Assignment]
-  deriving (C.Eq, C.Ord, C.Show, C.Read)
-
-data Assignment = Assign Ident TSub Exp
-  deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 newtype Ident = Ident String
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
@@ -110,4 +41,72 @@ newtype TMatch = TMatch String
 
 newtype TSingle = TSingle String
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
+
+data BConst = BTrue | BFalse
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
+data Exp
+    = Single TSingle
+    | Var Ident
+    | DVal Double
+    | IVal Integer
+    | BVal BConst
+    | ECoList CoLst
+    | Pair Exp Exp
+    | Next Exp
+    | Prev Environment Exp
+    | PrevE Exp
+    | PrevI Exp
+    | Box Environment Exp
+    | BoxI Exp
+    | Unbox Exp
+    | FColist Exp
+    | Force Exp
+    | In Exp
+    | Out Exp
+    | Fst Exp
+    | Snd Exp
+    | InL Exp
+    | InR Exp
+    | App Exp Exp
+    | LApp Exp TLApp Exp
+    | Min Exp
+    | Pow Exp Exp
+    | Mul Exp Exp
+    | Div Exp Exp
+    | Mod Exp Exp
+    | Add Exp Exp
+    | Sub Exp Exp
+    | Eq Exp Exp
+    | Lt Exp Exp
+    | Gt Exp Exp
+    | Leq Exp TLeq Exp
+    | Geq Exp TGeq Exp
+    | Not TNot Exp
+    | And Exp Conj Exp
+    | Or Exp Disj Exp
+    | Norm Exp
+    | Ite Exp Exp Exp
+    | Match Exp Ident TMatch Exp Ident TMatch Exp
+    | Abstr Lam Ident Exp
+    | Rec Ident Exp
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
+data CoLst = CoList Els
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
+data Els = Elems [El]
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
+data El = Elem Exp
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
+data Prg = DefProg Environment Exp | Prog Exp
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
+data Environment = Env [Assignment]
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
+data Assignment = Assign Ident TSub Exp
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
 
