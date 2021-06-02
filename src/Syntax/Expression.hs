@@ -27,7 +27,6 @@ data Exp
     | Not   Exp
     | Min   Exp
     | Force Exp
-    | FColist Exp
     | App   Exp Exp
     | LApp  Exp Exp
     | Pow   Exp Exp
@@ -50,6 +49,23 @@ data Exp
     | Box   Environment Exp
     | Prev  Environment Exp
     | Match Exp Ident Exp Ident Exp
+    
+    -- Lists
+    | List      [ Exp ]
+    | LCons     Exp Exp
+    | LAppend   Exp Exp
+    | LIndex    Exp Exp
+    | LHead     Exp
+    | LTail     Exp
+    | LNull     Exp
+    | LLength   Exp
+    
+    | LFold     Exp Exp Exp
+    | LMap      Exp Exp
+    | LElem     Exp Exp
+    | LTake     Exp Exp
+    | LDrop     Exp Exp
+
     deriving (Eq, Ord, Show, Read)
 
 data Ident = Ident String Int Int

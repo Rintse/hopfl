@@ -106,7 +106,6 @@ eval exp@(Norm e) = eval e >>= \case
     _ -> throwError $ "Normal argument not a pair: \n" ++ treeTerm exp
 
 -- Evaluate into values
-eval exp@(FColist e) = ECoList <$> ( eval e >>= forceEval eval )
 eval exp@(Force e) = eval e >>= forceEval eval
 
 -- If then else
@@ -145,8 +144,62 @@ eval exp@(Unbox e) = eval e >>= \case
     VBox (Env l) e1 -> eval $ substList e1 l
     _ -> throwError $ "Unbox on non-box:\n" ++ treeTerm exp
 
+-- List operations
+eval exp@(LCons e1 e2) = match2 eval e1 e2 >>= \case
+    (r, VList l) -> return $ VList $ toExp r : l
+    _ -> throwError $ "Cons on non-list:\n" ++ treeTerm exp
+
+eval exp@(LAppend e1 e2) = match2 eval e1 e2 >>= \case
+    (VList l1, VList l2) -> return $ VList ( l1 ++ l2 )
+    _ -> throwError $ "Append on non-list:\n" ++ treeTerm exp
+
+eval exp@(LIndex e1 e2) = match2 eval e1 e2 >>= \case
+    (VList l, VVal ( Whole n ) ) -> eval ( l !! fromIntegral n )
+    _ -> throwError $ "Index on non-list:\n" ++ treeTerm exp
+
+eval exp@(LHead e) = eval e >>= \case
+    VList []    -> throwError $ "Head on empty list"
+    VList l     -> eval $ head l
+    _ -> throwError $ "Head on non-list:\n" ++ treeTerm exp
+
+eval exp@(LTail e) = eval e >>= \case
+    VList []    -> throwError $ "Tail on empty list"
+    VList l     -> return $ VList $ tail l
+    _ -> throwError $ "Tail on non-list:\n" ++ treeTerm exp
+
+eval exp@(LNull e) = eval e >>= \case
+    VList l     -> return $ VBVal $ Prelude.null l
+    _ -> throwError $ "Null on non-list:\n" ++ treeTerm exp
+
+eval exp@(LLength e) = eval e >>= \case
+    VList l     -> return $ VVal $ Whole $ fromIntegral $ length l
+    _ -> throwError $ "Length on non-list:\n" ++ treeTerm exp
+
+--TODO
+eval exp@(LFold e1 e2 e3) = match3 eval e1 e2 e3 >>= \case
+    (VThunk f, val, VList l) -> return $ VVal $ Whole $ fromIntegral $ length l
+    _ -> throwError $ "Invalid arguments to fold:\n" ++ treeTerm exp
+
+--TODO: netter
+eval exp@(LMap e1 e2) = match2 eval e1 e2 >>= \case
+    (VThunk f, VList l) -> VList <$> mapM ( fmap toExp . eval . App f ) l
+    _ -> throwError $ "Invalid arguments to map:\n" ++ treeTerm exp
+
+eval exp@(LElem e1 e2) = match2 eval e1 e2 >>= \case
+    (el, VList l) -> return $ VBVal $ elem (toExp el) l
+    _ -> throwError $ "Invalid arguments to elem:\n" ++ treeTerm exp
+
+eval exp@(LTake e1 e2) = match2 eval e1 e2 >>= \case
+    (VVal (Whole n), VList l) -> return $ VList $ take (fromIntegral n) l
+    _ -> throwError $ "Invalid arguments to take:\n" ++ treeTerm exp
+
+eval exp@(LDrop e1 e2) = match2 eval e1 e2 >>= \case
+    (VVal (Whole n), VList l) -> return $ VList $ drop (fromIntegral n) l
+    _ -> throwError $ "Invalid arguments to drop:\n" ++ treeTerm exp
+
 -- Boolean and arithmetic expressions
 eval exp = case exp of
+    List l      -> return $ VList l
     Val v       -> return $ VVal v
     BVal v      -> return $ VBVal $ toBool v
 

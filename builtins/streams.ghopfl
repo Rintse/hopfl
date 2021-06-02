@@ -2,23 +2,23 @@
 let
 
 # Guarded streams
-s_head_g  ← ( λ s . fst ( out s ) ) ;
-s_tail_g  ← ( λ s . snd ( out s ) ) ;
+s_head_g    ← ( λ s . fst ( out s ) ) ;
+s_tail_g    ← ( λ s . snd ( out s ) ) ;
 
-s_2nd_g     ← ( λ s . next s_head_g ⊙ ( s_tail_g s ) ) ;
-s_3rd_g     ← ( λ s . next s_2nd_g ⊙ ( s_tail_g s ) ) ;
-s_4th_g     ← ( λ s . next s_3rd_g ⊙ ( s_tail_g s ) ) ;
-s_5th_g     ← ( λ s . next s_4th_g ⊙ ( s_tail_g s ) ) ;
-s_6th_g     ← ( λ s . next s_5th_g ⊙ ( s_tail_g s ) ) ;
-s_7th_g     ← ( λ s . next s_6th_g ⊙ ( s_tail_g s ) ) ;
+s_idx_g     ← ( fix f . λ n . λ s .
+    if ( n = 0 )
+        then in ( inL ( s_head_g s ) )
+        else in ( inR ( f ⊙ next ( n - 1 ) ⊙ ( s_tail_g s ) ) )
+) ;
 
 # Coinductive streams
 s_head_c    ← ( λ s . s_head_g ( unbox s ) ) ;
 s_tail_c    ← ( λ s . boxI ( prevI ( s_tail_g ( unbox s ) ) ) ) ;
 
-s_2nd_c     ← ( λ s . s_head_c ( s_tail_c ) ) ;
-s_3rd_c     ← ( λ s . s_head_c ( s_tail_c ( s_tail_c s ) ) ) ;
-s_4th_c     ← ( λ s . s_head_c ( s_tail_c ( s_tail_c ( s_tail_c s ) ) ) ) ;
-s_5th_c     ← ( λ s . s_head_c ( s_tail_c ( s_tail_c ( s_tail_c ( s_tail_c s ) ) ) ) ) ;
+limit   ← ( λ func . λ x . 
+    boxI ( ( unbox func ) ( unbox x ) )
+) ;
+
+s_idx_c     ← ( λ n . limit ( boxI ( s_idx_g n ) ) ) ;
 
 in: builtin

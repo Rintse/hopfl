@@ -18,43 +18,54 @@ import Syntax.Raw.Lex
   ')' { PT _ (TS _ 3) }
   '*' { PT _ (TS _ 4) }
   '+' { PT _ (TS _ 5) }
-  ',' { PT _ (TS _ 6) }
-  '-' { PT _ (TS _ 7) }
-  '.' { PT _ (TS _ 8) }
-  '/' { PT _ (TS _ 9) }
-  ';' { PT _ (TS _ 10) }
-  '<' { PT _ (TS _ 11) }
-  '=' { PT _ (TS _ 12) }
-  '>' { PT _ (TS _ 13) }
-  '[' { PT _ (TS _ 14) }
-  ']' { PT _ (TS _ 15) }
-  '^' { PT _ (TS _ 16) }
-  'box' { PT _ (TS _ 17) }
-  'boxI' { PT _ (TS _ 18) }
-  'else' { PT _ (TS _ 19) }
-  'false' { PT _ (TS _ 20) }
-  'fix' { PT _ (TS _ 21) }
-  'force' { PT _ (TS _ 22) }
-  'forceColist' { PT _ (TS _ 23) }
-  'fst' { PT _ (TS _ 24) }
-  'if' { PT _ (TS _ 25) }
-  'in' { PT _ (TS _ 26) }
-  'in:' { PT _ (TS _ 27) }
-  'inL' { PT _ (TS _ 28) }
-  'inR' { PT _ (TS _ 29) }
-  'let' { PT _ (TS _ 30) }
-  'match' { PT _ (TS _ 31) }
-  'next' { PT _ (TS _ 32) }
-  'normal' { PT _ (TS _ 33) }
-  'out' { PT _ (TS _ 34) }
-  'prev' { PT _ (TS _ 35) }
-  'prevI' { PT _ (TS _ 36) }
-  'snd' { PT _ (TS _ 37) }
-  'then' { PT _ (TS _ 38) }
-  'true' { PT _ (TS _ 39) }
-  'unbox' { PT _ (TS _ 40) }
-  '{' { PT _ (TS _ 41) }
-  '}' { PT _ (TS _ 42) }
+  '++' { PT _ (TS _ 6) }
+  ',' { PT _ (TS _ 7) }
+  '-' { PT _ (TS _ 8) }
+  '.' { PT _ (TS _ 9) }
+  '/' { PT _ (TS _ 10) }
+  ':' { PT _ (TS _ 11) }
+  ';' { PT _ (TS _ 12) }
+  '<' { PT _ (TS _ 13) }
+  '=' { PT _ (TS _ 14) }
+  '>' { PT _ (TS _ 15) }
+  '[' { PT _ (TS _ 16) }
+  ']' { PT _ (TS _ 17) }
+  '^' { PT _ (TS _ 18) }
+  'box' { PT _ (TS _ 19) }
+  'boxI' { PT _ (TS _ 20) }
+  'drop' { PT _ (TS _ 21) }
+  'elem' { PT _ (TS _ 22) }
+  'else' { PT _ (TS _ 23) }
+  'false' { PT _ (TS _ 24) }
+  'fix' { PT _ (TS _ 25) }
+  'foldl' { PT _ (TS _ 26) }
+  'force' { PT _ (TS _ 27) }
+  'fst' { PT _ (TS _ 28) }
+  'head' { PT _ (TS _ 29) }
+  'if' { PT _ (TS _ 30) }
+  'in' { PT _ (TS _ 31) }
+  'in:' { PT _ (TS _ 32) }
+  'inL' { PT _ (TS _ 33) }
+  'inR' { PT _ (TS _ 34) }
+  'length' { PT _ (TS _ 35) }
+  'let' { PT _ (TS _ 36) }
+  'map' { PT _ (TS _ 37) }
+  'match' { PT _ (TS _ 38) }
+  'next' { PT _ (TS _ 39) }
+  'normal' { PT _ (TS _ 40) }
+  'null' { PT _ (TS _ 41) }
+  'out' { PT _ (TS _ 42) }
+  'prev' { PT _ (TS _ 43) }
+  'prevI' { PT _ (TS _ 44) }
+  'snd' { PT _ (TS _ 45) }
+  'tail' { PT _ (TS _ 46) }
+  'take' { PT _ (TS _ 47) }
+  'then' { PT _ (TS _ 48) }
+  'true' { PT _ (TS _ 49) }
+  'unbox' { PT _ (TS _ 50) }
+  '{' { PT _ (TS _ 51) }
+  '|' { PT _ (TS _ 52) }
+  '}' { PT _ (TS _ 53) }
   L_Ident  { PT _ (TV $$) }
   L_doubl  { PT _ (TD $$) }
   L_integ  { PT _ (TI $$) }
@@ -123,7 +134,7 @@ Exp13 : TSingle { Syntax.Raw.Abs.Single $1 }
       | '(' Exp ')' { $2 }
 
 Exp12 :: { Syntax.Raw.Abs.Exp }
-Exp12 : CoLst { Syntax.Raw.Abs.ECoList $1 }
+Exp12 : Lst { Syntax.Raw.Abs.EList $1 }
       | '(' Exp ',' Exp1 ')' { Syntax.Raw.Abs.Pair $2 $4 }
       | Exp13 { $1 }
 
@@ -135,7 +146,6 @@ Exp11 : 'next' Exp12 { Syntax.Raw.Abs.Next $2 }
       | 'box' '{' Environment '}' '.' Exp11 { Syntax.Raw.Abs.Box $3 $6 }
       | 'boxI' Exp12 { Syntax.Raw.Abs.BoxI $2 }
       | 'unbox' Exp12 { Syntax.Raw.Abs.Unbox $2 }
-      | 'forceColist' Exp12 { Syntax.Raw.Abs.FColist $2 }
       | 'force' Exp12 { Syntax.Raw.Abs.Force $2 }
       | 'in' Exp12 { Syntax.Raw.Abs.In $2 }
       | 'out' Exp12 { Syntax.Raw.Abs.Out $2 }
@@ -143,11 +153,23 @@ Exp11 : 'next' Exp12 { Syntax.Raw.Abs.Next $2 }
       | 'snd' Exp12 { Syntax.Raw.Abs.Snd $2 }
       | 'inL' Exp12 { Syntax.Raw.Abs.InL $2 }
       | 'inR' Exp12 { Syntax.Raw.Abs.InR $2 }
+      | 'head' Exp12 { Syntax.Raw.Abs.ListHead $2 }
+      | 'tail' Exp12 { Syntax.Raw.Abs.ListTail $2 }
+      | 'null' Exp12 { Syntax.Raw.Abs.ListNull $2 }
+      | 'length' Exp12 { Syntax.Raw.Abs.ListLength $2 }
+      | 'foldl' Exp12 Exp12 Exp12 { Syntax.Raw.Abs.ListFold $2 $3 $4 }
+      | 'map' Exp12 Exp12 { Syntax.Raw.Abs.ListMap $2 $3 }
+      | 'elem' Exp12 Exp12 { Syntax.Raw.Abs.ListElem $2 $3 }
+      | 'take' Exp12 Exp12 { Syntax.Raw.Abs.ListTake $2 $3 }
+      | 'drop' Exp12 Exp12 { Syntax.Raw.Abs.ListDrop $2 $3 }
       | Exp12 { $1 }
 
 Exp10 :: { Syntax.Raw.Abs.Exp }
 Exp10 : Exp10 Exp11 { Syntax.Raw.Abs.App $1 $2 }
       | Exp10 TLApp Exp11 { Syntax.Raw.Abs.LApp $1 $2 $3 }
+      | Exp10 '|' Exp11 '|' { Syntax.Raw.Abs.ListIndex $1 $3 }
+      | Exp10 ':' Exp11 { Syntax.Raw.Abs.ListCons $1 $3 }
+      | Exp10 '++' Exp11 { Syntax.Raw.Abs.ListAppend $1 $3 }
       | Exp11 { $1 }
 
 Exp9 :: { Syntax.Raw.Abs.Exp }
@@ -198,19 +220,13 @@ Exp : Lam Ident '.' Exp { Syntax.Raw.Abs.Abstr $1 $2 $4 }
     | 'fix' Ident '.' Exp { Syntax.Raw.Abs.Rec $2 $4 }
     | Exp1 { $1 }
 
-CoLst :: { Syntax.Raw.Abs.CoLst }
-CoLst : '[' Els ']' { Syntax.Raw.Abs.CoList $2 }
+Lst :: { Syntax.Raw.Abs.Lst }
+Lst : '[' ListExp ']' { Syntax.Raw.Abs.List $2 }
 
-Els :: { Syntax.Raw.Abs.Els }
-Els : ListEl { Syntax.Raw.Abs.Elems $1 }
-
-El :: { Syntax.Raw.Abs.El }
-El : Exp { Syntax.Raw.Abs.Elem $1 }
-
-ListEl :: { [Syntax.Raw.Abs.El] }
-ListEl : {- empty -} { [] }
-       | El { (:[]) $1 }
-       | El ',' ListEl { (:) $1 $3 }
+ListExp :: { [Syntax.Raw.Abs.Exp] }
+ListExp : {- empty -} { [] }
+        | Exp { (:[]) $1 }
+        | Exp ',' ListExp { (:) $1 $3 }
 
 Prg :: { Syntax.Raw.Abs.Prg }
 Prg : 'let' Environment 'in:' Exp { Syntax.Raw.Abs.DefProg $2 $4 }

@@ -20,6 +20,7 @@ data Value
     | VVal Number
     | VBVal Bool
     | VPair Exp Exp
+    | VList [Exp]
     | VIn Exp
     | VInL Exp
     | VInR Exp
@@ -32,10 +33,8 @@ data Value
     | EPair Value Value 
     | EBox Value
     | EIn Value
-    | ENext Value
     | EInL Value
     | EInR Value
-    | ECoList Value
     deriving (Eq, Ord, Show, Read)
 
 makeBaseFunctor ''Value

@@ -98,7 +98,6 @@ transform exp = case exp of
     Raw.BVal v          -> return $ BVal v
     Raw.Unbox e         -> fmap   Unbox (transform e)
     Raw.Force e         -> fmap   Force (transform e)
-    Raw.FColist e       -> fmap   FColist (transform e)
     Raw.Norm e          -> fmap   Norm  (transform e)
     Raw.Next e          -> fmap   Next  (transform e)
     Raw.Out e           -> fmap   Out   (transform e)
@@ -163,6 +162,23 @@ transform exp = case exp of
         r1 <- asks (getSub f . pushVar f cur)
         r2 <- local (pushVar f cur) $ transform e
         return $ Rec r1 r2
+    
+    -- Lists
+    Raw.EList (Raw.List l) -> List <$> mapM transform l
+    Raw.ListCons   e1 e2 -> liftA2 LCons    (transform e1) (transform e2)
+    Raw.ListAppend e1 e2 -> liftA2 LAppend  (transform e1) (transform e2)
+    Raw.ListIndex  e1 e2 -> liftA2 LIndex   (transform e1) (transform e2)
+    
+    Raw.ListHead   e -> fmap LHead      (transform e)
+    Raw.ListTail   e -> fmap LTail      (transform e)
+    Raw.ListNull   e -> fmap LNull      (transform e)
+    Raw.ListLength e -> fmap LLength    (transform e)
+
+    Raw.ListMap e1 e2   -> liftA2 LMap    (transform e1) (transform e2)
+    Raw.ListElem e1 e2  -> liftA2 LElem   (transform e1) (transform e2)
+    Raw.ListTake e1 e2  -> liftA2 LTake   (transform e1) (transform e2)
+    Raw.ListDrop e1 e2  -> liftA2 LDrop   (transform e1) (transform e2)
+    Raw.ListFold e1 e2 e3 -> liftA3 LFold (transform e1) (transform e2) (transform e3)
 
 -- Translate a raw tree into the id tree with annotated identifiers
 annotateVars :: Raw.Exp -> Exp

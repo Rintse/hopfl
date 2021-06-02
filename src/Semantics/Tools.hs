@@ -8,7 +8,6 @@ module Semantics.Tools where
 
 import Syntax.Expression
 import Preprocess.AnnotateVars
-import Preprocess.Lists
 import Syntax.Number
 import qualified Syntax.Raw.Abs as Raw
 import Syntax.Raw.ErrM
@@ -41,7 +40,7 @@ type Env = HashMap String Exp
 mkEnv :: Raw.Environment -> Env
 mkEnv (Raw.Env e) = fromList $ fmap mkAssign e
     where mkAssign (Raw.Assign (Raw.Ident x) _ exp) = 
-            (x, annotateVars (desugarLists exp))
+            (x, annotateVars exp)
 
 printEnv :: Env -> String
 printEnv m = show $ Prelude.map 
@@ -50,6 +49,9 @@ printEnv m = show $ Prelude.map
 -- Evaluates 2 arguments and pairs them to allow for easy pattern matching
 match2 :: (Exp -> EvalMonad Value) -> Exp -> Exp -> EvalMonad (Value, Value)
 match2 f e1 e2 = (,) <$> f e1 <*> f e2
+
+match3 :: (Exp -> EvalMonad Value) -> Exp -> Exp -> Exp -> EvalMonad (Value, Value, Value)
+match3 f e1 e2 e3 = (,,) <$> f e1 <*> f e2 <*> f e3
 
 -- Probability density function of the gaussian distribution
 pdfNorm :: (Double, Double) -> Double -> Double
@@ -114,7 +116,6 @@ forceEval :: (Exp -> EvalMonad Value ) -> Value -> EvalMonad Value
 forceEval f = anaM $ \case
     VPair e1 e2 -> EPairF   <$> f e1 <*> f e2
     VIn e       -> EInF     <$> f e
-    VNext e     -> ENextF   <$> f e
     VInL e      -> EInLF    <$> f e
     VInR e      -> EInRF    <$> f e
     VBox l e    -> EBoxF    <$> f (Unbox (toExp (VBox l e)))

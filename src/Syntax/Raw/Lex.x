@@ -17,7 +17,7 @@ $d = [0-9]           -- digit
 $i = [$l $d _ ']     -- identifier character
 $u = [. \n]          -- universal: any character
 @rsyms =    -- symbols and non-identifier-like reserved words
-   \( | \, | \) | \{ | \} | \. | \- | \^ | \* | \/ | \% | \+ | \= | \< | \> | \; | \[ | \] | "in" \:
+   \( | \, | \) | \{ | \} | \. | \| | \: | \+ \+ | \- | \^ | \* | \/ | \% | \+ | \= | \< | \> | \; | \[ | \] | "in" \:
 :-
 
 -- Line comments
@@ -143,7 +143,7 @@ eitherResIdent tv s = treeFind resWords
                               | s == a = t
 
 resWords :: BTree
-resWords = b "force" 22 (b "<" 11 (b "," 6 (b ")" 3 (b "(" 2 (b "%" 1 N N) N) (b "+" 5 (b "*" 4 N N) N)) (b "/" 9 (b "." 8 (b "-" 7 N N) N) (b ";" 10 N N))) (b "box" 17 (b "[" 14 (b ">" 13 (b "=" 12 N N) N) (b "^" 16 (b "]" 15 N N) N)) (b "false" 20 (b "else" 19 (b "boxI" 18 N N) N) (b "fix" 21 N N)))) (b "normal" 33 (b "inL" 28 (b "if" 25 (b "fst" 24 (b "forceColist" 23 N N) N) (b "in:" 27 (b "in" 26 N N) N)) (b "match" 31 (b "let" 30 (b "inR" 29 N N) N) (b "next" 32 N N))) (b "then" 38 (b "prevI" 36 (b "prev" 35 (b "out" 34 N N) N) (b "snd" 37 N N)) (b "{" 41 (b "unbox" 40 (b "true" 39 N N) N) (b "}" 42 N N))))
+resWords = b "force" 27 (b "=" 14 (b "," 7 (b "*" 4 (b "(" 2 (b "%" 1 N N) (b ")" 3 N N)) (b "++" 6 (b "+" 5 N N) N)) (b ":" 11 (b "." 9 (b "-" 8 N N) (b "/" 10 N N)) (b "<" 13 (b ";" 12 N N) N))) (b "drop" 21 (b "^" 18 (b "[" 16 (b ">" 15 N N) (b "]" 17 N N)) (b "boxI" 20 (b "box" 19 N N) N)) (b "false" 24 (b "else" 23 (b "elem" 22 N N) N) (b "foldl" 26 (b "fix" 25 N N) N)))) (b "null" 41 (b "inR" 34 (b "in" 31 (b "head" 29 (b "fst" 28 N N) (b "if" 30 N N)) (b "inL" 33 (b "in:" 32 N N) N)) (b "match" 38 (b "let" 36 (b "length" 35 N N) (b "map" 37 N N)) (b "normal" 40 (b "next" 39 N N) N))) (b "then" 48 (b "snd" 45 (b "prev" 43 (b "out" 42 N N) (b "prevI" 44 N N)) (b "take" 47 (b "tail" 46 N N) N)) (b "{" 51 (b "unbox" 50 (b "true" 49 N N) N) (b "}" 53 (b "|" 52 N N) N))))
    where b s n = let bs = s
                  in  B bs (TS bs n)
 

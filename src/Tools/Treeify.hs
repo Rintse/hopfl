@@ -24,7 +24,24 @@ instance Treeish Assignment where
 
 instance Treeish Exp where
     toTree exp = case exp of
-        Single              -> Node "" []
+        -- Lists
+        List l              -> Node ( "List: " ++ show (map show l) ) []
+        LCons e1 e2      -> Node "List Cons"     [ toTree e1, toTree e2]
+        LAppend e1 e2    -> Node "List Append"   [ toTree e1, toTree e2]
+        LIndex e1 e2     -> Node "List Index"    [ toTree e1, toTree e2]
+        LHead e          -> Node "List Head"     [ toTree e ]
+        LTail e          -> Node "List Tail"     [ toTree e ]
+        LNull e          -> Node "List Null"     [ toTree e ]
+        LLength e        -> Node "List Length"   [ toTree e ]
+        
+        LFold e1 e2 e3   -> Node "List Fold"     [ toTree e1, toTree e2, toTree e3 ]
+        LMap e1 e2       -> Node "List Map"      [ toTree e1, toTree e2 ]
+        LElem e1 e2      -> Node "List Elem"     [ toTree e1, toTree e2 ]
+        LTake e1 e2      -> Node "List Take"     [ toTree e1, toTree e2 ]
+        LDrop e1 e2      -> Node "List Drop"     [ toTree e1, toTree e2 ]
+
+        -- Regular expressions
+        Single              -> Node "()" []
         Var x               -> toTree x
         Val v               -> Node (show v)    []
         BVal b              -> Node (show b)    []
@@ -42,7 +59,6 @@ instance Treeish Exp where
         Norm e              -> Node "Norm"      [ toTree e ]
         Not e               -> Node "Not"       [ toTree e ]
         Force e             -> Node "Force"     [ toTree e ]
-        FColist e           -> Node "FList"     [ toTree e ]
         App e1 e2           -> Node "App"       [ toTree e1, toTree e2 ]
         LApp e1 e2          -> Node "LApp"      [ toTree e1, toTree e2 ]
         Pair e1 e2          -> Node "Pair"      [ toTree e1, toTree e2 ]
@@ -66,19 +82,6 @@ instance Treeish Exp where
                                                   toTree x1, toTree e1,
                                                   toTree x2, toTree e2 ]
 
--- Checks whether Value is last in list, used for pretty printing
-isLast :: Value -> Bool
-isLast ( EIn ( EInR ( EPair v ( ENext ( EIn (EInL _) ) ) ) ) ) = True
-isLast _ = False
-
--- Makes a pretty, readable string from an expression shaped like a list
-printList :: Value -> String
-printList l@(EIn ( EInR ( EPair v (ENext l2) ) ) ) = 
-    init (drawTree (toTree v)) -- Init to discard the final endline
-    ++ if isLast l then "" else ", " ++ printList l2
-printList (EIn ( EInL _ ) ) = ""
-printList other = show other
-
 instance Treeish Value where
     toTree val = case val of
         VSingle     -> Node "" []
@@ -98,8 +101,6 @@ instance Treeish Value where
         EBox v      -> Node "Box"   [ toTree v ]
         EInL v      -> Node "InL"   [ toTree v ]
         EInR v      -> Node "InR"   [ toTree v ]
-        ENext v     -> Node "Next"   [ toTree v ]
-        ECoList (EBox l) -> Node ("[" ++ printList l ++ "]") []
         other -> Node (show other) []
 
 treeValue :: Value -> String

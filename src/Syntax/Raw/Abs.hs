@@ -51,7 +51,7 @@ data Exp
     | DVal Double
     | IVal Integer
     | BVal BConst
-    | ECoList CoLst
+    | EList Lst
     | Pair Exp Exp
     | Next Exp
     | Prev Environment Exp
@@ -60,7 +60,6 @@ data Exp
     | Box Environment Exp
     | BoxI Exp
     | Unbox Exp
-    | FColist Exp
     | Force Exp
     | In Exp
     | Out Exp
@@ -68,8 +67,20 @@ data Exp
     | Snd Exp
     | InL Exp
     | InR Exp
+    | ListHead Exp
+    | ListTail Exp
+    | ListNull Exp
+    | ListLength Exp
+    | ListFold Exp Exp Exp
+    | ListMap Exp Exp
+    | ListElem Exp Exp
+    | ListTake Exp Exp
+    | ListDrop Exp Exp
     | App Exp Exp
     | LApp Exp TLApp Exp
+    | ListIndex Exp Exp
+    | ListCons Exp Exp
+    | ListAppend Exp Exp
     | Min Exp
     | Pow Exp Exp
     | Mul Exp Exp
@@ -92,13 +103,7 @@ data Exp
     | Rec Ident Exp
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data CoLst = CoList Els
-  deriving (C.Eq, C.Ord, C.Show, C.Read)
-
-data Els = Elems [El]
-  deriving (C.Eq, C.Ord, C.Show, C.Read)
-
-data El = Elem Exp
+data Lst = List [Exp]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Prg = DefProg Environment Exp | Prog Exp

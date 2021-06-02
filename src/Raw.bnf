@@ -29,7 +29,7 @@ IVal.       Exp13   ::= Integer ;
 BVal.       Exp13   ::= BConst ;
 
 -- Single objects (super high precedence)
-ECoList.    Exp12    ::= CoLst ;
+EList.      Exp12    ::= Lst ;
 Pair.       Exp12    ::= "(" Exp "," Exp1 ")" ;
 
 -- Later modality (with applicative function LApp)
@@ -44,7 +44,6 @@ Box.        Exp11   ::= "box" "{" Environment "}" "." Exp11 ;
 BoxI.       Exp11   ::= "boxI" Exp12 ;
 Unbox.      Exp11   ::= "unbox" Exp12 ;
 
-FColist.    Exp11   ::= "forceColist" Exp12 ;
 Force.      Exp11   ::= "force" Exp12 ;
 
 -- Recursion
@@ -59,9 +58,26 @@ Snd.        Exp11   ::= "snd" Exp12 ;
 InL.        Exp11   ::= "inL" Exp12 ;
 InR.        Exp11   ::= "inR" Exp12 ;
 
+-- List operations
+
+ListHead.   Exp11   ::= "head"      Exp12 ;
+ListTail.   Exp11   ::= "tail"      Exp12 ;
+ListNull.   Exp11   ::= "null"      Exp12 ;
+ListLength. Exp11   ::= "length"    Exp12 ;
+
+ListFold.   Exp11   ::= "foldl"     Exp12 Exp12 Exp12 ;
+ListMap.    Exp11   ::= "map"       Exp12 Exp12 ;
+ListElem.   Exp11   ::= "elem"      Exp12 Exp12 ;
+ListTake.   Exp11   ::= "take"      Exp12 Exp12 ;
+ListDrop.   Exp11   ::= "drop"      Exp12 Exp12 ;
+
 -- (Delayed) application
-App.        Exp10    ::= Exp10 Exp11 ;
-LApp.       Exp10    ::= Exp10 TLApp Exp11;
+App.        Exp10   ::= Exp10 Exp11 ;
+LApp.       Exp10   ::= Exp10 TLApp Exp11;
+
+ListIndex.  Exp10   ::= Exp10 "|" Exp11 "|" ;
+ListCons.   Exp10   ::= Exp10 ":" Exp11 ;
+ListAppend. Exp10   ::= Exp10 "++" Exp11 ;
 
 -- Arithmetic
 Min.        Exp9    ::= "-" Exp10 ;
@@ -93,10 +109,8 @@ Rec.        Exp     ::= "fix" Ident "." Exp ;
 coercions Exp 13 ;
 
 -- List syntactic sugar
-CoList.     CoLst   ::= "[" Els "]" ;
-Elems.      Els     ::= [ El ] ;
-Elem.       El      ::= Exp ;
-separator   El      "," ;
+List.       Lst     ::= "[" [ Exp ] "]" ;
+separator   Exp     "," ;
 
 -- Program with definitions
 DefProg.    Prg     ::= "let" Environment "in:" Exp ;
