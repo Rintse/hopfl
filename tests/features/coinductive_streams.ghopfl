@@ -2,7 +2,7 @@
 # Free variables to pass through the environment:
 #   n:  The index in the stream (result should be n²)
 # Example run:
-#   stack run ghopfl-exe -- -i tests/features/coinductive_streams.ghopfl -E -e "idx<-17" -n 17
+#   stack run ghopfl-exe -- -i tests/features/coinductive_streams.ghopfl -E -n 5
 
 let
     # Recursively tests whether an integer is a prime
@@ -32,4 +32,4 @@ let
         )
     ) 1 ) ) ) ;
 
-in: s_idx_c idx stream
+in: s_5th_c stream

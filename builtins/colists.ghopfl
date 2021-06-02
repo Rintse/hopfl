@@ -11,7 +11,7 @@ cons_gl ← ( λ e . λ l . in ( inR ( e, l ) ) ) ;
 
 # head_gl : glist A -> A
 head_gl  ← ( λ l . match ( out l ) { 
-    inL x → x ; 
+    inL x → x ; # ERROR
     inR y → fst y 
 } ) ;
 
@@ -82,6 +82,7 @@ l_empty ← ( boxI ( in ( inL 𝟙 ) ) ) ;
 cons ← ( λ e . λ l . boxI ( in ( inR ( e, next ( unbox l ) ) ) ) ) ;
 
 # Basic functions
+# not typable???
 # head : colist A -> A
 head    ← ( λ l . match ( out ( unbox l ) ) { 
     inL x → x ; 

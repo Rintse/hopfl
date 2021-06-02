@@ -1,10 +1,9 @@
 # Takes the idx'th number out of a random walk stream
 # Free variables to pass through the environment:
 #   x0:     The initial position of the walk
-#   idx:    The index of the number to get from the stream
 #   s:      The variance of the normal distribution
 # Example run:
-#   stack run ghopfl-exe -- -i tests/probabilistic/random_walk.ghopfl -E -n 3 -e "s<-1.0;x0<-0.0;idx<-3" -d "1.0;2.0;3.0"
+#   stack run ghopfl-exe -- -i tests/probabilistic/random_walk.ghopfl -E -n 3 -e "s<-1.0;x0<-0.0;" -d "1.0;2.0;3.0"
 
 let
     # The random walk stream
@@ -12,4 +11,4 @@ let
         in ( x , f ⊙ next ( normal (x , s) ) )
     ) ;
 
-in: (idx_g idx) (RW x0)
+in: s_4th_g ( RW x0 )
