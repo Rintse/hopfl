@@ -15,10 +15,10 @@ s_idx_g     ← ( fix f . λ n . λ s .
 s_head_c    ← ( λ s . s_head_g ( unbox s ) ) ;
 s_tail_c    ← ( λ s . boxI ( prevI ( s_tail_g ( unbox s ) ) ) ) ;
 
-limit   ← ( λ func . λ x . 
-    boxI ( ( unbox func ) ( unbox x ) )
+s_idx_c     ← ( fix f . λ n . λ s .
+    if ( n = 0 )
+        then in ( inL ( s_head_c s ) )
+        else in ( inR ( f ⊙ next ( n - 1 ) ⊙ next ( s_tail_c s ) ) )
 ) ;
-
-s_idx_c     ← ( λ n . limit ( boxI ( s_idx_g n ) ) ) ;
 
 in: builtin

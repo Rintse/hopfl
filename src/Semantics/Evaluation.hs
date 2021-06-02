@@ -106,10 +106,11 @@ eval exp@(Norm e) = eval e >>= \case
         err -> throwError $ "Normal pair does not contain reals: " ++ show err
     _ -> throwError $ "Normal argument not a pair of reals: \n" ++ treeTerm exp
 
+-- Random uniform distrubition sampling
 eval Rand = performDraw randDist []
 
 -- Evaluate into values
-eval exp@(Force e) = eval e >>= forceEval eval
+eval exp@(Force e) = eval e >>= forceEval
 
 -- If then else
 eval exp@(Ite b e1 e2) = eval b >>= \case
@@ -150,15 +151,16 @@ eval exp@(Unbox e) = eval e >>= \case
 -- List operations
 eval exp@(LCons e1 e2) = match2 eval e1 e2 >>= \case
     (r, VList l) -> return $ VList $ toExp r : l
-    _ -> throwError $ "Cons on non-list:\n" ++ treeTerm exp
+    _ -> throwError $ "Invalid arguments to list cons:\n" ++ treeTerm exp
 
 eval exp@(LAppend e1 e2) = match2 eval e1 e2 >>= \case
     (VList l1, VList l2) -> return $ VList ( l1 ++ l2 )
-    _ -> throwError $ "Append on non-list:\n" ++ treeTerm exp
+    _ -> throwError $ "Invalid arguments to list append:\n" ++ treeTerm exp
 
 eval exp@(LIndex e1 e2) = match2 eval e1 e2 >>= \case
     (VList l, VVal ( Whole n ) ) -> eval ( l !! fromIntegral n )
-    _ -> throwError $ "Index on non-list:\n" ++ treeTerm exp
+    (a1, a2) -> throwError $ "Invalid arguments to list index:\nArgument1:" 
+        ++ treeValue a1 ++ "\nArgument2:\n" ++ treeValue a2
 
 eval exp@(LHead e) = eval e >>= \case
     VList []    -> throwError "Head on empty list"
@@ -226,4 +228,17 @@ eval exp = case exp of
     Leq e1 e2   -> evalRelop eval e1 (<=) e2
     Geq e1 e2   -> evalRelop eval e1 (>=) e2
     Single      -> return VSingle
+
+-- Evluates everything underneath certain values to make it readable
+forceEval :: Value -> EvalMonad Value
+forceEval = anaM $ \case
+    VPair e1 e2 -> EPairF   <$> eval e1 <*> eval e2
+    VIn e       -> EInF     <$> eval e
+    VNext e     -> do 
+        r <- local (second $ subtract 1) ( eval ( e ) )
+        return $ ENextF r
+    VInL e      -> EInLF    <$> eval e
+    VInR e      -> EInRF    <$> eval e
+    VBox l e    -> EBoxF    <$> eval (Unbox (toExp (VBox l e)))
+    other -> return $ project other
 

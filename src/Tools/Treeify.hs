@@ -99,8 +99,11 @@ instance Treeish Value where
         VBox l t    -> Node "Box"   [ toTree t ]
 
         -- Evaluated results
+        UNext v     -> Node "Unevaluated Next"  [ toTree v ]
+        ENext v     -> Node "Next"  [ toTree v ]
         EPair v1 v2 -> Node "Pair"  [ toTree v1, toTree v2 ]
         EBox v      -> Node "Box"   [ toTree v ]
+        EIn v       -> Node "In"    [ toTree v ]
         EInL v      -> Node "InL"   [ toTree v ]
         EInR v      -> Node "InR"   [ toTree v ]
         other -> Node ("Unhandled case:\n" ++ show other) []

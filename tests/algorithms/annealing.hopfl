@@ -26,7 +26,7 @@ let
     # Returns 1.0 if s cuts edge, 0.0 otherwise
     # An edge is cut if its verteces are in different partitions
     cuts ← ( λ s . λ edge .
-        if ( xor s|fst edge| s|snd edge| ) then 1 else 0
+        if ( xor s|(fst edge)| s|(snd edge)| ) then 1 else 0
     ) ;
 
     # The amount of cuts a solution makes
@@ -36,7 +36,7 @@ let
     eval ← ( λ s . 1.0 / ( cut_count s ) ) ;
 
     # Flip bit in s at given idx
-    flip_bit ← ( λ idx . λ s . ( take idx s ) ++ [ ¬ s|idx| ] ++ ( drop idx s ) ) ;
+    flip_bit ← ( λ idx . λ s . ( take idx s ) ++ [ ¬ s|idx| ] ++ ( drop ( idx + 1 ) s ) ) ;
 
     # Mutation function, randomly flips one bit in the solution vector
     mutate ← ( flip_bit ( rand_idx n_vertices ) ) ;
@@ -67,6 +67,6 @@ let
         ) ) ) 0 init_s )
     ) ;
 
-in: cuts init_s (graph|0|)
-#in: s_head_c (s_tail_c( opt_stream) )
+# in: drop 2 [true, false, true, false]
+in: force ( s_idx_c iteration opt_stream )
 

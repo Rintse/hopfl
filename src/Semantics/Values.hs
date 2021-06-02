@@ -28,10 +28,12 @@ data Value
     | VBox Environment Exp
     | VOut Exp
     | VThunk Exp
-
+    -- Unevaluated nexts
+    | UNext Exp
     -- Evaluated results
     | EPair Value Value 
     | EBox Value
+    | ENext Value
     | EIn Value
     | EInL Value
     | EInR Value

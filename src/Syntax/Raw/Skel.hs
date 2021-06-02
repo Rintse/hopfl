@@ -65,6 +65,7 @@ transExp x = case x of
   Syntax.Raw.Abs.Unbox exp -> failure x
   Syntax.Raw.Abs.Force exp -> failure x
   Syntax.Raw.Abs.Rand -> failure x
+  Syntax.Raw.Abs.ListIndex exp1 exp2 -> failure x
   Syntax.Raw.Abs.In exp -> failure x
   Syntax.Raw.Abs.Out exp -> failure x
   Syntax.Raw.Abs.Fst exp -> failure x
@@ -82,7 +83,6 @@ transExp x = case x of
   Syntax.Raw.Abs.ListDrop exp1 exp2 -> failure x
   Syntax.Raw.Abs.App exp1 exp2 -> failure x
   Syntax.Raw.Abs.LApp exp1 tlapp exp2 -> failure x
-  Syntax.Raw.Abs.ListIndex exp1 exp2 -> failure x
   Syntax.Raw.Abs.ListCons exp1 exp2 -> failure x
   Syntax.Raw.Abs.ListAppend exp1 exp2 -> failure x
   Syntax.Raw.Abs.Min exp -> failure x

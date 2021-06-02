@@ -29,24 +29,25 @@ IVal.       Exp13   ::= Integer ;
 BVal.       Exp13   ::= BConst ;
 
 -- Single objects (super high precedence)
-EList.      Exp12    ::= Lst ;
-Pair.       Exp12    ::= "(" Exp "," Exp1 ")" ;
+EList.      Exp13    ::= Lst ;
+Pair.       Exp13    ::= "(" Exp "," Exp1 ")" ;
 
 -- Later modality (with applicative function LApp)
-Next.       Exp11   ::= "next" Exp12 ;
-Prev.       Exp11   ::= "prev" "{" Environment "}" "." Exp12 ;
+Next.       Exp12   ::= "next" Exp13 ;
+Prev.       Exp12   ::= "prev" "{" Environment "}" "." Exp13 ;
 -- Syntactic sugar for empty sublist
-PrevE.      Exp11   ::= "prev" Exp12;
+PrevE.      Exp12   ::= "prev" Exp13;
 -- Syntactic sugar for prev{\x ← \x}.t with \x being all free vars in t
-PrevI.      Exp11   ::= "prevI" Exp12;
+PrevI.      Exp12   ::= "prevI" Exp13;
 
-Box.        Exp11   ::= "box" "{" Environment "}" "." Exp11 ;
-BoxI.       Exp11   ::= "boxI" Exp12 ;
-Unbox.      Exp11   ::= "unbox" Exp12 ;
+Box.        Exp12   ::= "box" "{" Environment "}" "." Exp12 ;
+BoxI.       Exp12   ::= "boxI" Exp13 ;
+Unbox.      Exp12   ::= "unbox" Exp13 ;
 
-Force.      Exp11   ::= "force" Exp12 ;
+Force.      Exp12   ::= "force" Exp12 ;
+Rand.       Exp12    ::= "rand" ;
 
-Rand.       Exp11    ::= "rand" ;
+ListIndex.  Exp11   ::= Exp11 "|" Exp12 "|" ;
 
 -- Recursion
 In.         Exp11   ::= "in" Exp12 ;
@@ -59,6 +60,7 @@ Snd.        Exp11   ::= "snd" Exp12 ;
 -- Injections
 InL.        Exp11   ::= "inL" Exp12 ;
 InR.        Exp11   ::= "inR" Exp12 ;
+
 
 -- List operations
 
@@ -77,7 +79,6 @@ ListDrop.   Exp11   ::= "drop"      Exp12 Exp12 ;
 App.        Exp10   ::= Exp10 Exp11 ;
 LApp.       Exp10   ::= Exp10 TLApp Exp11;
 
-ListIndex.  Exp10   ::= Exp10 "|" Exp11 "|" ;
 ListCons.   Exp10   ::= Exp10 ":" Exp11 ;
 ListAppend. Exp10   ::= Exp10 "++" Exp11 ;
 

@@ -62,6 +62,7 @@ data Exp
     | Unbox Exp
     | Force Exp
     | Rand
+    | ListIndex Exp Exp
     | In Exp
     | Out Exp
     | Fst Exp
@@ -79,7 +80,6 @@ data Exp
     | ListDrop Exp Exp
     | App Exp Exp
     | LApp Exp TLApp Exp
-    | ListIndex Exp Exp
     | ListCons Exp Exp
     | ListAppend Exp Exp
     | Min Exp

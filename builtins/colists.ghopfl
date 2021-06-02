@@ -79,24 +79,24 @@ limit   ← ( λ func . λ x .
 
 # Coinductive list construction
 l_empty ← ( boxI ( in ( inL 𝟙 ) ) ) ;
-cons ← ( λ e . λ l . boxI ( in ( inR ( e, next ( unbox l ) ) ) ) ) ;
+cons_cl ← ( λ e . λ l . boxI ( in ( inR ( e, next ( unbox l ) ) ) ) ) ;
 
 # Basic functions
 # not typable???
 # head : colist A -> A
-head    ← ( λ l . match ( out ( unbox l ) ) { 
+head_cl ← ( λ l . match ( out ( unbox l ) ) { 
     inL x → x ; 
     inR y → fst y 
 } ) ;
 
 # tail : colist A -> colist A
-tail    ← ( λ l . match ( out ( unbox l ) ) { 
+tail_cl ← ( λ l . match ( out ( unbox l ) ) { 
     inL x → x ; 
     inR y → boxI ( prevI ( snd y ) ) 
 } ) ;
 
 # null : colist A -> bool
-null    ← ( λ l . match ( out ( unbox l ) ) { 
+null_cl ← ( λ l . match ( out ( unbox l ) ) { 
     inL x → true ; 
     inR y → false 
 } ) ;
@@ -125,16 +125,16 @@ co_index ← ( fix f . λ idx . λ list .
 ) ;
 
 # Lifted glist functions:
-append ← ( λ l1 . λ l2 .
+append_cl ← ( λ l1 . λ l2 .
    limit ( boxI ( append_gl ( unbox l2 ) ) ) l1
 ) ;
-take ← ( λ n .
+take_cl ← ( λ n .
     limit ( boxI ( take_gl n ) )
 ) ;
-edit ← ( λ n . λ func . 
+edit_cl ← ( λ n . λ func . 
     limit ( boxI ( edit_gl n func ) )
 ) ;
-map ← ( λ func .
+map_cl ← ( λ func .
     limit ( boxI ( map_gl func ) )
 ) ;
 
@@ -166,7 +166,7 @@ index_cheat ← ( λ idx . λ list .
 # Beyond this point, things aren't well typed
 # =========================================================
 # What is the length of an infinite list ?
-length  ← ( fix f . λ l .
+length_cl ← ( fix f . λ l .
     match ( out ( unbox l ) ) {
         inL x → 0 ;
         inR y → 1 + prevI ( f ⊙ next ( tail l ) )
@@ -177,14 +177,14 @@ length  ← ( fix f . λ l .
 #   Each recursion step adds a next that cannot be prevd
 #   as it contains the recursion variable which must, by
 #   definition be of type: |>( A -> B )
-index ← ( fix f . λ idx . λ list .
+index_cl ← ( fix f . λ idx . λ list .
     if ( idx = 0 )
         then head list
         else prevI ( f ⊙ next (idx - 1) ⊙ next (tail list) )
 ) ;
 
 # What is the end result of a fold on an infinite list?
-foldl   ← ( fix f . λ func . λ val . λ list .
+foldl_cl ← ( fix f . λ func . λ val . λ list .
     match ( out ( unbox list ) ) {
         inL end → val ;
         inR lst → prevI ( 
@@ -195,7 +195,7 @@ foldl   ← ( fix f . λ func . λ val . λ list .
     }
 ) ;
 
-foldr   ← ( fix f . λ func . λ val . λ list .
+foldr_cl ← ( fix f . λ func . λ val . λ list .
     match ( out ( unbox list ) ) {
         inL end → val ;
         inR lst → func ( prevI ( 

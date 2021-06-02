@@ -132,23 +132,24 @@ Exp13 : TSingle { Syntax.Raw.Abs.Single $1 }
       | Double { Syntax.Raw.Abs.DVal $1 }
       | Integer { Syntax.Raw.Abs.IVal $1 }
       | BConst { Syntax.Raw.Abs.BVal $1 }
+      | Lst { Syntax.Raw.Abs.EList $1 }
+      | '(' Exp ',' Exp1 ')' { Syntax.Raw.Abs.Pair $2 $4 }
       | '(' Exp ')' { $2 }
 
 Exp12 :: { Syntax.Raw.Abs.Exp }
-Exp12 : Lst { Syntax.Raw.Abs.EList $1 }
-      | '(' Exp ',' Exp1 ')' { Syntax.Raw.Abs.Pair $2 $4 }
+Exp12 : 'next' Exp13 { Syntax.Raw.Abs.Next $2 }
+      | 'prev' '{' Environment '}' '.' Exp13 { Syntax.Raw.Abs.Prev $3 $6 }
+      | 'prev' Exp13 { Syntax.Raw.Abs.PrevE $2 }
+      | 'prevI' Exp13 { Syntax.Raw.Abs.PrevI $2 }
+      | 'box' '{' Environment '}' '.' Exp12 { Syntax.Raw.Abs.Box $3 $6 }
+      | 'boxI' Exp13 { Syntax.Raw.Abs.BoxI $2 }
+      | 'unbox' Exp13 { Syntax.Raw.Abs.Unbox $2 }
+      | 'force' Exp12 { Syntax.Raw.Abs.Force $2 }
+      | 'rand' { Syntax.Raw.Abs.Rand }
       | Exp13 { $1 }
 
 Exp11 :: { Syntax.Raw.Abs.Exp }
-Exp11 : 'next' Exp12 { Syntax.Raw.Abs.Next $2 }
-      | 'prev' '{' Environment '}' '.' Exp12 { Syntax.Raw.Abs.Prev $3 $6 }
-      | 'prev' Exp12 { Syntax.Raw.Abs.PrevE $2 }
-      | 'prevI' Exp12 { Syntax.Raw.Abs.PrevI $2 }
-      | 'box' '{' Environment '}' '.' Exp11 { Syntax.Raw.Abs.Box $3 $6 }
-      | 'boxI' Exp12 { Syntax.Raw.Abs.BoxI $2 }
-      | 'unbox' Exp12 { Syntax.Raw.Abs.Unbox $2 }
-      | 'force' Exp12 { Syntax.Raw.Abs.Force $2 }
-      | 'rand' { Syntax.Raw.Abs.Rand }
+Exp11 : Exp11 '|' Exp12 '|' { Syntax.Raw.Abs.ListIndex $1 $3 }
       | 'in' Exp12 { Syntax.Raw.Abs.In $2 }
       | 'out' Exp12 { Syntax.Raw.Abs.Out $2 }
       | 'fst' Exp12 { Syntax.Raw.Abs.Fst $2 }
@@ -169,7 +170,6 @@ Exp11 : 'next' Exp12 { Syntax.Raw.Abs.Next $2 }
 Exp10 :: { Syntax.Raw.Abs.Exp }
 Exp10 : Exp10 Exp11 { Syntax.Raw.Abs.App $1 $2 }
       | Exp10 TLApp Exp11 { Syntax.Raw.Abs.LApp $1 $2 $3 }
-      | Exp10 '|' Exp11 '|' { Syntax.Raw.Abs.ListIndex $1 $3 }
       | Exp10 ':' Exp11 { Syntax.Raw.Abs.ListCons $1 $3 }
       | Exp10 '++' Exp11 { Syntax.Raw.Abs.ListAppend $1 $3 }
       | Exp11 { $1 }
