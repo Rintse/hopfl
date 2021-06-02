@@ -14,6 +14,7 @@ import Syntax.Expression
 import qualified Syntax.Raw.Abs as Raw
 import Syntax.Number
 import Semantics.Values
+import Semantics.Sampling
 import Tools.Treeify
 import Tools.VerbPrint
 
@@ -101,9 +102,11 @@ eval exp@(Snd e) = eval e >>= \case
 -- Normal distribtion sampling
 eval exp@(Norm e) = eval e >>= \case
     VPair e1 e2 -> match2 eval e1 e2 >>= \case
-        (VVal (Fract m), VVal (Fract v)) -> performDraw m v
+        (VVal (Fract m), VVal (Fract v)) -> performDraw normalDist [m,v]
         err -> throwError $ "Normal pair does not contain reals: " ++ show err
-    _ -> throwError $ "Normal argument not a pair: \n" ++ treeTerm exp
+    _ -> throwError $ "Normal argument not a pair of reals: \n" ++ treeTerm exp
+
+eval Rand = performDraw randDist []
 
 -- Evaluate into values
 eval exp@(Force e) = eval e >>= forceEval eval
@@ -158,12 +161,12 @@ eval exp@(LIndex e1 e2) = match2 eval e1 e2 >>= \case
     _ -> throwError $ "Index on non-list:\n" ++ treeTerm exp
 
 eval exp@(LHead e) = eval e >>= \case
-    VList []    -> throwError $ "Head on empty list"
+    VList []    -> throwError "Head on empty list"
     VList l     -> eval $ head l
     _ -> throwError $ "Head on non-list:\n" ++ treeTerm exp
 
 eval exp@(LTail e) = eval e >>= \case
-    VList []    -> throwError $ "Tail on empty list"
+    VList []    -> throwError "Tail on empty list"
     VList l     -> return $ VList $ tail l
     _ -> throwError $ "Tail on non-list:\n" ++ treeTerm exp
 
@@ -175,12 +178,12 @@ eval exp@(LLength e) = eval e >>= \case
     VList l     -> return $ VVal $ Whole $ fromIntegral $ length l
     _ -> throwError $ "Length on non-list:\n" ++ treeTerm exp
 
---TODO
 eval exp@(LFold e1 e2 e3) = match3 eval e1 e2 e3 >>= \case
-    (VThunk f, val, VList l) -> return $ VVal $ Whole $ fromIntegral $ length l
+    (VThunk f, val, VList l) -> do
+        let test = Prelude.foldl (App . App f) (toExp val) l
+        eval test
     _ -> throwError $ "Invalid arguments to fold:\n" ++ treeTerm exp
 
---TODO: netter
 eval exp@(LMap e1 e2) = match2 eval e1 e2 >>= \case
     (VThunk f, VList l) -> VList <$> mapM ( fmap toExp . eval . App f ) l
     _ -> throwError $ "Invalid arguments to map:\n" ++ treeTerm exp
@@ -199,7 +202,9 @@ eval exp@(LDrop e1 e2) = match2 eval e1 e2 >>= \case
 
 -- Boolean and arithmetic expressions
 eval exp = case exp of
-    List l      -> return $ VList l
+    -- Evaluate into lists
+    List l      -> VList <$> mapM (fmap toExp . eval) l
+    -- Instant values
     Val v       -> return $ VVal v
     BVal v      -> return $ VBVal $ toBool v
 

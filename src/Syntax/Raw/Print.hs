@@ -152,6 +152,7 @@ instance Print Syntax.Raw.Abs.Exp where
     Syntax.Raw.Abs.BoxI exp -> prPrec i 11 (concatD [doc (showString "boxI"), prt 12 exp])
     Syntax.Raw.Abs.Unbox exp -> prPrec i 11 (concatD [doc (showString "unbox"), prt 12 exp])
     Syntax.Raw.Abs.Force exp -> prPrec i 11 (concatD [doc (showString "force"), prt 12 exp])
+    Syntax.Raw.Abs.Rand -> prPrec i 11 (concatD [doc (showString "rand")])
     Syntax.Raw.Abs.In exp -> prPrec i 11 (concatD [doc (showString "in"), prt 12 exp])
     Syntax.Raw.Abs.Out exp -> prPrec i 11 (concatD [doc (showString "out"), prt 12 exp])
     Syntax.Raw.Abs.Fst exp -> prPrec i 11 (concatD [doc (showString "fst"), prt 12 exp])

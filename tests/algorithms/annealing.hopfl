@@ -15,10 +15,10 @@ let
     # | \ |     such that the two partitions are {0, 3}
     # 3 - 2     and {1, 2} (4 cuts), as adjacency list:
     graph ← [ (0,1), (0,2), (0,3), (1,2), (2,3) ] ;
-    n_vertices ← 4 ;
     
     # Initial solution
     init_s ← [ true, true, false, false ] ;
+    n_vertices ← length init_s ;
     
     # Initial temperature
     init_temp ← 1.0 ; 
@@ -26,20 +26,17 @@ let
     # Returns 1.0 if s cuts edge, 0.0 otherwise
     # An edge is cut if its verteces are in different partitions
     cuts ← ( λ s . λ edge .
-        if ( xor 
-            ( index_cheat ( fst edge ) s ) 
-            ( index_cheat ( snd edge ) s ) 
-        ) then 1 else 0
+        if ( xor s|fst edge| s|snd edge| ) then 1 else 0
     ) ;
 
     # The amount of cuts a solution makes
-    cut_count ← ( λ s . foldl_4 add 0 ( map ( cuts s ) graph ) ) ;
+    cut_count ← ( λ s . foldl add 0 ( map ( cuts s ) graph ) ) ;
     
     # The evaluation function should be lower for better solutions
     eval ← ( λ s . 1.0 / ( cut_count s ) ) ;
 
     # Flip bit in s at given idx
-    flip_bit ← ( λ idx . edit idx not ) ;
+    flip_bit ← ( λ idx . λ s . ( take idx s ) ++ [ ¬ s|idx| ] ++ ( drop idx s ) ) ;
 
     # Mutation function, randomly flips one bit in the solution vector
     mutate ← ( flip_bit ( rand_idx n_vertices ) ) ;
@@ -70,5 +67,6 @@ let
         ) ) ) 0 init_s )
     ) ;
 
-in: forceList ( s_3rd_c opt_stream )
+in: cuts init_s (graph|0|)
+#in: s_head_c (s_tail_c( opt_stream) )
 

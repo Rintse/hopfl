@@ -23,6 +23,7 @@ data Exp
     | Snd   Exp
     | InL   Exp
     | InR   Exp
+    | Rand
     | Norm  Exp
     | Not   Exp
     | Min   Exp

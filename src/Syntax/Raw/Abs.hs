@@ -61,6 +61,7 @@ data Exp
     | BoxI Exp
     | Unbox Exp
     | Force Exp
+    | Rand
     | In Exp
     | Out Exp
     | Fst Exp

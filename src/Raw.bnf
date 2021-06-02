@@ -46,6 +46,8 @@ Unbox.      Exp11   ::= "unbox" Exp12 ;
 
 Force.      Exp11   ::= "force" Exp12 ;
 
+Rand.       Exp11    ::= "rand" ;
+
 -- Recursion
 In.         Exp11   ::= "in" Exp12 ;
 Out.        Exp11   ::= "out" Exp12 ;

@@ -57,15 +57,16 @@ import Syntax.Raw.Lex
   'out' { PT _ (TS _ 42) }
   'prev' { PT _ (TS _ 43) }
   'prevI' { PT _ (TS _ 44) }
-  'snd' { PT _ (TS _ 45) }
-  'tail' { PT _ (TS _ 46) }
-  'take' { PT _ (TS _ 47) }
-  'then' { PT _ (TS _ 48) }
-  'true' { PT _ (TS _ 49) }
-  'unbox' { PT _ (TS _ 50) }
-  '{' { PT _ (TS _ 51) }
-  '|' { PT _ (TS _ 52) }
-  '}' { PT _ (TS _ 53) }
+  'rand' { PT _ (TS _ 45) }
+  'snd' { PT _ (TS _ 46) }
+  'tail' { PT _ (TS _ 47) }
+  'take' { PT _ (TS _ 48) }
+  'then' { PT _ (TS _ 49) }
+  'true' { PT _ (TS _ 50) }
+  'unbox' { PT _ (TS _ 51) }
+  '{' { PT _ (TS _ 52) }
+  '|' { PT _ (TS _ 53) }
+  '}' { PT _ (TS _ 54) }
   L_Ident  { PT _ (TV $$) }
   L_doubl  { PT _ (TD $$) }
   L_integ  { PT _ (TI $$) }
@@ -147,6 +148,7 @@ Exp11 : 'next' Exp12 { Syntax.Raw.Abs.Next $2 }
       | 'boxI' Exp12 { Syntax.Raw.Abs.BoxI $2 }
       | 'unbox' Exp12 { Syntax.Raw.Abs.Unbox $2 }
       | 'force' Exp12 { Syntax.Raw.Abs.Force $2 }
+      | 'rand' { Syntax.Raw.Abs.Rand }
       | 'in' Exp12 { Syntax.Raw.Abs.In $2 }
       | 'out' Exp12 { Syntax.Raw.Abs.Out $2 }
       | 'fst' Exp12 { Syntax.Raw.Abs.Fst $2 }

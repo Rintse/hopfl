@@ -25,20 +25,20 @@ instance Treeish Assignment where
 instance Treeish Exp where
     toTree exp = case exp of
         -- Lists
-        List l              -> Node ( "List: " ++ show (map show l) ) []
-        LCons e1 e2      -> Node "List Cons"     [ toTree e1, toTree e2]
-        LAppend e1 e2    -> Node "List Append"   [ toTree e1, toTree e2]
-        LIndex e1 e2     -> Node "List Index"    [ toTree e1, toTree e2]
-        LHead e          -> Node "List Head"     [ toTree e ]
-        LTail e          -> Node "List Tail"     [ toTree e ]
-        LNull e          -> Node "List Null"     [ toTree e ]
-        LLength e        -> Node "List Length"   [ toTree e ]
+        List l          -> Node "List"          (map toTree l)
+        LCons e1 e2     -> Node "List Cons"     [ toTree e1, toTree e2]
+        LAppend e1 e2   -> Node "List Append"   [ toTree e1, toTree e2]
+        LIndex e1 e2    -> Node "List Index"    [ toTree e1, toTree e2]
+        LHead e         -> Node "List Head"     [ toTree e ]
+        LTail e         -> Node "List Tail"     [ toTree e ]
+        LNull e         -> Node "List Null"     [ toTree e ]
+        LLength e       -> Node "List Length"   [ toTree e ]
         
-        LFold e1 e2 e3   -> Node "List Fold"     [ toTree e1, toTree e2, toTree e3 ]
-        LMap e1 e2       -> Node "List Map"      [ toTree e1, toTree e2 ]
-        LElem e1 e2      -> Node "List Elem"     [ toTree e1, toTree e2 ]
-        LTake e1 e2      -> Node "List Take"     [ toTree e1, toTree e2 ]
-        LDrop e1 e2      -> Node "List Drop"     [ toTree e1, toTree e2 ]
+        LFold e1 e2 e3  -> Node "List Fold"     [ toTree e1, toTree e2, toTree e3 ]
+        LMap e1 e2      -> Node "List Map"      [ toTree e1, toTree e2 ]
+        LElem e1 e2     -> Node "List Elem"     [ toTree e1, toTree e2 ]
+        LTake e1 e2     -> Node "List Take"     [ toTree e1, toTree e2 ]
+        LDrop e1 e2     -> Node "List Drop"     [ toTree e1, toTree e2 ]
 
         -- Regular expressions
         Single              -> Node "()" []
@@ -81,6 +81,7 @@ instance Treeish Exp where
         Match e x1 e1 x2 e2 -> Node "Match"     [ toTree e,
                                                   toTree x1, toTree e1,
                                                   toTree x2, toTree e2 ]
+        other -> Node ("Unhandled case:\n" ++ show other) []
 
 instance Treeish Value where
     toTree val = case val of
@@ -88,6 +89,7 @@ instance Treeish Value where
         VVal v      -> Node (show v)[ ]
         VBVal b     -> Node (show b)[ ]
         VPair t1 t2 -> Node "VPair" [ toTree t1, toTree t2 ]
+        VList l     -> Node "VList" (map toTree l)
         VIn t       -> Node "In"    [ toTree t ]
         VInL t      -> Node "InL"   [ toTree t ]
         VInR t      -> Node "InR"   [ toTree t ]
@@ -101,7 +103,7 @@ instance Treeish Value where
         EBox v      -> Node "Box"   [ toTree v ]
         EInL v      -> Node "InL"   [ toTree v ]
         EInR v      -> Node "InR"   [ toTree v ]
-        other -> Node (show other) []
+        other -> Node ("Unhandled case:\n" ++ show other) []
 
 treeValue :: Value -> String
 treeValue v = drawTree $ toTree v

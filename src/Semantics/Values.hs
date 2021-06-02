@@ -54,6 +54,7 @@ toExp (VInL e) = InL e
 toExp (VInR e) = InR e
 toExp (VThunk e) = e
 toExp (VPair e1 e2) = Pair e1 e2
+toExp (VList l) = List l
 toExp (VNext e) = Next e
 toExp (VOut e) = Out e
 toExp (VBox l e) = Box l e
@@ -62,4 +63,4 @@ toExp (EPair e1 e2) = Pair (toExp e1) (toExp e2)
 toExp (EInL e) = InL $ toExp e
 toExp (EInR e) = InR $ toExp e
 
-toExp e = trace (show e) BVal Raw.BTrue
+toExp e = trace ("NO TOEXP:\n" ++ show e) BVal Raw.BTrue

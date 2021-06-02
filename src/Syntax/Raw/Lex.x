@@ -143,7 +143,7 @@ eitherResIdent tv s = treeFind resWords
                               | s == a = t
 
 resWords :: BTree
-resWords = b "force" 27 (b "=" 14 (b "," 7 (b "*" 4 (b "(" 2 (b "%" 1 N N) (b ")" 3 N N)) (b "++" 6 (b "+" 5 N N) N)) (b ":" 11 (b "." 9 (b "-" 8 N N) (b "/" 10 N N)) (b "<" 13 (b ";" 12 N N) N))) (b "drop" 21 (b "^" 18 (b "[" 16 (b ">" 15 N N) (b "]" 17 N N)) (b "boxI" 20 (b "box" 19 N N) N)) (b "false" 24 (b "else" 23 (b "elem" 22 N N) N) (b "foldl" 26 (b "fix" 25 N N) N)))) (b "null" 41 (b "inR" 34 (b "in" 31 (b "head" 29 (b "fst" 28 N N) (b "if" 30 N N)) (b "inL" 33 (b "in:" 32 N N) N)) (b "match" 38 (b "let" 36 (b "length" 35 N N) (b "map" 37 N N)) (b "normal" 40 (b "next" 39 N N) N))) (b "then" 48 (b "snd" 45 (b "prev" 43 (b "out" 42 N N) (b "prevI" 44 N N)) (b "take" 47 (b "tail" 46 N N) N)) (b "{" 51 (b "unbox" 50 (b "true" 49 N N) N) (b "}" 53 (b "|" 52 N N) N))))
+resWords = b "fst" 28 (b "=" 14 (b "," 7 (b "*" 4 (b "(" 2 (b "%" 1 N N) (b ")" 3 N N)) (b "++" 6 (b "+" 5 N N) N)) (b ":" 11 (b "." 9 (b "-" 8 N N) (b "/" 10 N N)) (b "<" 13 (b ";" 12 N N) N))) (b "drop" 21 (b "^" 18 (b "[" 16 (b ">" 15 N N) (b "]" 17 N N)) (b "boxI" 20 (b "box" 19 N N) N)) (b "fix" 25 (b "else" 23 (b "elem" 22 N N) (b "false" 24 N N)) (b "force" 27 (b "foldl" 26 N N) N)))) (b "out" 42 (b "length" 35 (b "in:" 32 (b "if" 30 (b "head" 29 N N) (b "in" 31 N N)) (b "inR" 34 (b "inL" 33 N N) N)) (b "next" 39 (b "map" 37 (b "let" 36 N N) (b "match" 38 N N)) (b "null" 41 (b "normal" 40 N N) N))) (b "then" 49 (b "snd" 46 (b "prevI" 44 (b "prev" 43 N N) (b "rand" 45 N N)) (b "take" 48 (b "tail" 47 N N) N)) (b "{" 52 (b "unbox" 51 (b "true" 50 N N) N) (b "}" 54 (b "|" 53 N N) N))))
    where b s n = let bs = s
                  in  B bs (TS bs n)
 

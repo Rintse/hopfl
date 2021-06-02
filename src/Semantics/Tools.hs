@@ -12,8 +12,9 @@ import Syntax.Number
 import qualified Syntax.Raw.Abs as Raw
 import Syntax.Raw.ErrM
 import Semantics.Values
-import Control.Exception.Base
+import Semantics.Sampling
 
+import Control.Exception.Base
 import Data.Functor.Foldable.TH
 import Data.Functor.Foldable
 import Data.Functor.Foldable.Monadic
@@ -53,28 +54,38 @@ match2 f e1 e2 = (,) <$> f e1 <*> f e2
 match3 :: (Exp -> EvalMonad Value) -> Exp -> Exp -> Exp -> EvalMonad (Value, Value, Value)
 match3 f e1 e2 e3 = (,,) <$> f e1 <*> f e2 <*> f e3
 
--- Probability density function of the gaussian distribution
-pdfNorm :: (Double, Double) -> Double -> Double
-pdfNorm (m,v) c = let sd = sqrt v in -- variance is σ^2
-    (1 / (sd * sqrt (2 * pi))) * exp (-0.5 * (((c - m) / sd) ^^ 2)) 
-
-printDist :: Double -> Double -> String
-printDist m v = "Normal (mean = " ++ show m ++ ", variance = " ++ show v ++ ")"
 
 -- Performs a random draw and updates the state monad
-performDraw :: Double -> Double -> EvalMonad Value
-performDraw m v = gets snd >>= \case
-    (c:rest) -> let d = pdfNorm (m,v) c in
+performDraw :: Distribution -> [Double] -> EvalMonad Value
+performDraw dist params = gets snd >>= \case
+    (c:rest) -> let d = pdf dist params c in
         if  | isNaN d -> throwError $
-                "PDF of " ++ printDist m v ++ " not defined for value " ++ show d
+                "PDF " ++ show (name dist) ++ " not defined for value " ++ show d
 
             | (==0) d -> throwError $ 
-                "Impossible draw for " ++ printDist m v ++ ": " ++ show d
+                "Impossible draw for " ++ show (name dist )
+                ++ " with parameters" ++ show params ++ ": " ++ show d
 
             | otherwise -> do
                 modify (\(w, _) -> (w * d, rest))
                 return $ VVal $ Fract c
     _ -> throwError "Draws list too small"
+    
+
+-- Performs a random draw and updates the state monad
+-- performDraw2 :: Double -> Double -> EvalMonad Value
+-- performDraw2 m v = gets snd >>= \case
+    -- (c:rest) -> let d = pdfNorm (m,v) c in
+        -- if  | isNaN d -> throwError $
+                -- "PDF of " ++ printDist m v ++ " not defined for value " ++ show d
+
+            --  (==0) d -> throwError $ 
+                -- "Impossible draw for " ++ printDist m v ++ ": " ++ show d
+
+            --  otherwise -> do
+                -- modify (\(w, _) -> (w * d, rest))
+                -- return $ VVal $ Fract c
+    -- _ -> throwError "Draws list too small"
 
 
 -- Helper functions to evaluate boolean and aritmetic expresions

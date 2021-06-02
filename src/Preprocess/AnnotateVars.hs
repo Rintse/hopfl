@@ -99,6 +99,7 @@ transform exp = case exp of
     Raw.Unbox e         -> fmap   Unbox (transform e)
     Raw.Force e         -> fmap   Force (transform e)
     Raw.Norm e          -> fmap   Norm  (transform e)
+    Raw.Rand            -> return Rand
     Raw.Next e          -> fmap   Next  (transform e)
     Raw.Out e           -> fmap   Out   (transform e)
     Raw.Fst e           -> fmap   Fst   (transform e)
