@@ -51,7 +51,7 @@ data Exp
     | Prev  Environment Exp
     | Match Exp Ident Exp Ident Exp
     
-    -- Lists
+    -- List basics
     | List      [ Exp ]
     | LCons     Exp Exp
     | LAppend   Exp Exp
@@ -61,12 +61,12 @@ data Exp
     | LNull     Exp
     | LLength   Exp
     
+    -- List functions
     | LFold     Exp Exp Exp
     | LMap      Exp Exp
     | LElem     Exp Exp
     | LTake     Exp Exp
     | LDrop     Exp Exp
-
     deriving (Eq, Ord, Show, Read)
 
 data Ident = Ident String Int Int

@@ -98,15 +98,16 @@ instance Treeish Value where
         VThunk t    -> Node "Thunk" [ toTree t ]
         VBox l t    -> Node "Box"   [ toTree t ]
 
+        -- Unevaluated next
+        VUNext e        -> Node "Unevaluated Next"  [ toTree e ]
+
         -- Evaluated results
-        UNext v     -> Node "Unevaluated Next"  [ toTree v ]
-        ENext v     -> Node "Next"  [ toTree v ]
-        EPair v1 v2 -> Node "Pair"  [ toTree v1, toTree v2 ]
-        EBox v      -> Node "Box"   [ toTree v ]
-        EIn v       -> Node "In"    [ toTree v ]
-        EInL v      -> Node "InL"   [ toTree v ]
-        EInR v      -> Node "InR"   [ toTree v ]
-        other -> Node ("Unhandled case:\n" ++ show other) []
+        VENext v        -> Node "Next"  [ toTree v ]
+        VEPair v1 v2    -> Node "Pair"  [ toTree v1, toTree v2 ]
+        VEBox v         -> Node "Box"   [ toTree v ]
+        VEIn v          -> Node "In"    [ toTree v ]
+        VEInL v         -> Node "InL"   [ toTree v ]
+        VEInR v         -> Node "InR"   [ toTree v ]
 
 treeValue :: Value -> String
 treeValue v = drawTree $ toTree v

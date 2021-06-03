@@ -46,9 +46,9 @@ evaluate v prog n s env = do
     case r3 of
         Left s -> putStrLn $ "Evaluation failed:\n" ++ s
         Right (s, (w,d)) ->
-            putStrLn $ "Result (density = " 
-                ++ show w ++ ", remainings draws = " 
-                ++ show d ++ "):\n" 
+            putStrLn $ "Result (density = "
+                ++ show w ++ ", remainings draws = "
+                ++ show d ++ "):\n"
                 ++ treeValue s
 
 -- Evaluation function: 
@@ -78,7 +78,7 @@ eval exp@(Out e) = eval e >>= \case
 
 -- Function application
 eval exp@(App e1 e2) = match2 eval e1 e2 >>= \case
-    (VThunk (Abstr x e), r2) -> eval $ substitute e x $ toExp r2 
+    (VThunk (Abstr x e), r2) -> eval $ substitute e x $ toExp r2
     _ -> throwError $ " Application on non-function:\n" ++ treeTerm exp
 
 -- Delayed function application
@@ -159,7 +159,7 @@ eval exp@(LAppend e1 e2) = match2 eval e1 e2 >>= \case
 
 eval exp@(LIndex e1 e2) = match2 eval e1 e2 >>= \case
     (VList l, VVal ( Whole n ) ) -> eval ( l !! fromIntegral n )
-    (a1, a2) -> throwError $ "Invalid arguments to list index:\nArgument1:" 
+    (a1, a2) -> throwError $ "Invalid arguments to list index:\nArgument1:"
         ++ treeValue a1 ++ "\nArgument2:\n" ++ treeValue a2
 
 eval exp@(LHead e) = eval e >>= \case
@@ -202,10 +202,10 @@ eval exp@(LDrop e1 e2) = match2 eval e1 e2 >>= \case
     (VVal (Whole n), VList l) -> return $ VList $ drop (fromIntegral n) l
     _ -> throwError $ "Invalid arguments to drop:\n" ++ treeTerm exp
 
--- Boolean and arithmetic expressions
 eval exp = case exp of
-    -- Evaluate into lists
+    -- Evaluate into these values
     List l      -> VList <$> mapM (fmap toExp . eval) l
+
     -- Instant values
     Val v       -> return $ VVal v
     BVal v      -> return $ VBVal $ toBool v
@@ -231,14 +231,16 @@ eval exp = case exp of
 
 -- Evluates everything underneath certain values to make it readable
 forceEval :: Value -> EvalMonad Value
-forceEval = anaM $ \case
-    VPair e1 e2 -> EPairF   <$> eval e1 <*> eval e2
-    VIn e       -> EInF     <$> eval e
-    VNext e     -> do 
-        r <- local (second $ subtract 1) ( eval ( e ) )
-        return $ ENextF r
-    VInL e      -> EInLF    <$> eval e
-    VInR e      -> EInRF    <$> eval e
-    VBox l e    -> EBoxF    <$> eval (Unbox (toExp (VBox l e)))
-    other -> return $ project other
+forceEval = \case
+    VNext e     -> asks snd >>= \x ->
+        if x == 0 then return $ VUNext e
+        else local (second $ subtract 1) (VENext <$> (eval e >>= forceEval))
+    
+    VPair e1 e2 -> VEPair   <$> (eval e1 >>= forceEval) 
+                            <*> (eval e2 >>= forceEval)
+    VIn e       -> VEIn     <$> (eval e >>= forceEval)
+    VInL e      -> VEInL    <$> (eval e >>= forceEval)
+    VInR e      -> VEInR    <$> (eval e >>= forceEval)
+    VBox l e    -> VEBox    <$> (eval e >>= forceEval)
+    other -> return other
 

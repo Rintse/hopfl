@@ -28,15 +28,16 @@ data Value
     | VBox Environment Exp
     | VOut Exp
     | VThunk Exp
-    -- Unevaluated nexts
-    | UNext Exp
+    
+    -- Unevaluated next
+    | VUNext Exp
     -- Evaluated results
-    | EPair Value Value 
-    | EBox Value
-    | ENext Value
-    | EIn Value
-    | EInL Value
-    | EInR Value
+    | VEPair Value Value 
+    | VEBox Value
+    | VENext Value
+    | VEIn Value
+    | VEInL Value
+    | VEInR Value
     deriving (Eq, Ord, Show, Read)
 
 makeBaseFunctor ''Value
@@ -61,8 +62,8 @@ toExp (VNext e) = Next e
 toExp (VOut e) = Out e
 toExp (VBox l e) = Box l e
 
-toExp (EPair e1 e2) = Pair (toExp e1) (toExp e2)
-toExp (EInL e) = InL $ toExp e
-toExp (EInR e) = InR $ toExp e
+toExp (VEPair e1 e2) = Pair (toExp e1) (toExp e2)
+toExp (VEInL e) = InL $ toExp e
+toExp (VEInR e) = InR $ toExp e
 
 toExp e = trace ("NO TOEXP:\n" ++ show e) BVal Raw.BTrue
