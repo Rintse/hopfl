@@ -2,11 +2,8 @@
 # Solutions are represented as bitstrings where the boolean values
 # indicate in which partition a given vertex is contained
 #
-# Takes the third value from the stream (hard coded as indexation
-# wihtout nexts is impossible )
-#
 # Example run:
-#   stack run hopfl-exe -- -v -E -d "0.6;0.3;0.4;0.1;0.9" -i tests/algorithms/annealing.hopfl
+#   stack run ghopfl-exe -- -v -E -e "iteration<-3" -d "0.6;0.3;0.4;0.1;0.9" -i tests/algorithms/annealing.hopfl -n 3
 # Should give the optimal, after first accepting a worse solution
 
 let
@@ -67,6 +64,5 @@ let
         ) ) ) 0 init_s )
     ) ;
 
-# in: drop 2 [true, false, true, false]
 in: force ( s_idx_c iteration opt_stream )
 

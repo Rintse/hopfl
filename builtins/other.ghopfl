@@ -1,0 +1,9 @@
+let 
+    # Flips args to a function
+    flip2   ← ( λ f . λ a1 . λ a2 . f a2 a1 ) ;
+
+    # Curry and uncurry
+    curry   ← ( λ f . λ pair . f ( fst pair ) ( snd pair ) ) ;
+    uncurry ← ( λ f . λ a1 . λ a2 . f ( a1, a2 ) ) ;
+
+in: builtin

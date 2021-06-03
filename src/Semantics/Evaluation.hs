@@ -110,7 +110,7 @@ eval exp@(Norm e) = eval e >>= \case
 eval Rand = performDraw randDist []
 
 -- Evaluate into values
-eval exp@(Force e) = eval e >>= forceEval
+eval exp@(Force e) = eval e >>= forceEval eval
 
 -- If then else
 eval exp@(Ite b e1 e2) = eval b >>= \case
@@ -228,19 +228,4 @@ eval exp = case exp of
     Leq e1 e2   -> evalRelop eval e1 (<=) e2
     Geq e1 e2   -> evalRelop eval e1 (>=) e2
     Single      -> return VSingle
-
--- Evluates everything underneath certain values to make it readable
-forceEval :: Value -> EvalMonad Value
-forceEval = \case
-    VNext e     -> asks snd >>= \x ->
-        if x == 0 then return $ VUNext e
-        else local (second $ subtract 1) (VENext <$> (eval e >>= forceEval))
-    
-    VPair e1 e2 -> VEPair   <$> (eval e1 >>= forceEval) 
-                            <*> (eval e2 >>= forceEval)
-    VIn e       -> VEIn     <$> (eval e >>= forceEval)
-    VInL e      -> VEInL    <$> (eval e >>= forceEval)
-    VInR e      -> VEInR    <$> (eval e >>= forceEval)
-    VBox l e    -> VEBox    <$> (eval e >>= forceEval)
-    other -> return other
 

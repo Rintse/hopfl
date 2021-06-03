@@ -6,10 +6,10 @@
 
 let
     # Performs a flip until a value below p is reached
-    # The result is a conatural number
+    # The result is isomorphic to the conatural numbers
     geometric ← ( ( fix f . λ n . λ p . 
         if ( rand < p )
-            then in ( inL 𝟙 )
+            then in ( inL n )
             else in ( inR ( f ⊙ next ( n + 1 ) ⊙ next p ) )
     ) 0 )
 

@@ -2,6 +2,8 @@
 let
 
 # Guarded streams
+s_cons_g    ← ( λ e . λ s . in ( e, next s ) ) ;
+s_cons_g_n ← ( λ e . λ s . in ( e, s ) ) ;
 s_head_g    ← ( λ s . fst ( out s ) ) ;
 s_tail_g    ← ( λ s . snd ( out s ) ) ;
 
@@ -9,6 +11,18 @@ s_idx_g     ← ( fix f . λ n . λ s .
     if ( n = 0 )
         then in ( inL ( s_head_g s ) )
         else in ( inR ( f ⊙ next ( n - 1 ) ⊙ ( s_tail_g s ) ) )
+) ;
+
+# Some hard coded indexes
+s_2nd_g     ← ( λ s . next s_head_g ⊙ ( s_tail_g s ) ) ;
+s_3rd_g     ← ( λ s . next s_2nd_g ⊙ ( s_tail_g s ) ) ;
+s_4th_g     ← ( λ s . next s_3rd_g ⊙ ( s_tail_g s ) ) ;
+# Etc..
+
+# map_gl : (A -> B) -> gStr A -> gStr B
+s_map_g  ← ( λ func . fix f . λ s .
+    s_cons_g_n ( func ( s_head_g s ) ) 
+               ( f ⊙ ( s_tail_g s ) )
 ) ;
 
 # Coinductive streams
@@ -20,5 +34,13 @@ s_idx_c     ← ( fix f . λ n . λ s .
         then in ( inL ( s_head_c s ) )
         else in ( inR ( f ⊙ next ( n - 1 ) ⊙ next ( s_tail_c s ) ) )
 ) ;
+
+# Lift guarded stream functions
+s_limit_c   ← ( λ func . λ x . 
+    boxI ( ( unbox func ) ( unbox x ) )
+) ;
+
+# map_gl : (A -> B) -> cStr A -> cStr B
+s_map_c     ← ( λ f . s_limit_c ( boxI ( s_map_g f ) ) ) ;
 
 in: builtin

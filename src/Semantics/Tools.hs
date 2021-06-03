@@ -107,3 +107,19 @@ evalRelop f e1 op e2 = match2 f e1 e2 >>= \case
     (VVal v1, VVal v2) -> return $ VBVal $ op v1 v2
     other -> throwError $ "Non-real args to relative operator:\n" ++ show other
 
+-- Evluates everything underneath certain values to make it readable
+forceEval :: (Exp -> EvalMonad Value) -> Value -> EvalMonad Value
+forceEval f = \case
+    -- Still refuse to go underneath nexts
+    VNext e     -> asks snd >>= \x ->
+        if x == 0 then return $ VUNext e
+        else local (second $ subtract 1) ( VENext <$> (f e >>= forceEval f) )
+
+    VIn e       -> VEIn     <$> (f e >>= forceEval f)
+    VInL e      -> VEInL    <$> (f e >>= forceEval f)
+    VInR e      -> VEInR    <$> (f e >>= forceEval f)
+    VBox l e    -> VEBox    <$> (f e >>= forceEval f)
+    VPair e1 e2 -> VEPair   <$> (f e1 >>= forceEval f) 
+                            <*> (f e2 >>= forceEval f)
+    other       -> return other
+

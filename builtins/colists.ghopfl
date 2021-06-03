@@ -70,7 +70,7 @@ map_gl  ← ( λ func . fix f . λ list .
 # We will extend the functions from the guarded colists to
 # coinductive colists using the limit function:
 # limit : [] (A -> B) -> [] A -> [] B
-limit   ← ( λ func . λ x . 
+limit_gl   ← ( λ func . λ x . 
     boxI ( ( unbox func ) ( unbox x ) )
 ) ;
 # As colists are defined as ([] glist), supplying a boxed
@@ -126,16 +126,16 @@ co_index ← ( fix f . λ idx . λ list .
 
 # Lifted glist functions:
 append_cl ← ( λ l1 . λ l2 .
-   limit ( boxI ( append_gl ( unbox l2 ) ) ) l1
+    limit_gl ( boxI ( append_gl ( unbox l2 ) ) ) l1
 ) ;
 take_cl ← ( λ n .
-    limit ( boxI ( take_gl n ) )
+    limit_gl ( boxI ( take_gl n ) )
 ) ;
 edit_cl ← ( λ n . λ func . 
-    limit ( boxI ( edit_gl n func ) )
+    limit_gl ( boxI ( edit_gl n func ) )
 ) ;
 map_cl ← ( λ func .
-    limit ( boxI ( map_gl func ) )
+    limit_gl ( boxI ( map_gl func ) )
 ) ;
 
 # Folds must be hard coded
