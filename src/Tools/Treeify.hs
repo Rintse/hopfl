@@ -22,10 +22,10 @@ instance Treeish Environment where
 instance Treeish Assignment where
     toTree (Assign x t) = Node "Substitution" [ toTree x, toTree t ]
 
+
+
 instance Treeish Exp where
     toTree exp = case exp of
-        -- Lists
-        List l          -> Node "List"          (map toTree l)
         LCons e1 e2     -> Node "List Cons"     [ toTree e1, toTree e2]
         LAppend e1 e2   -> Node "List Append"   [ toTree e1, toTree e2]
         LIndex e1 e2    -> Node "List Index"    [ toTree e1, toTree e2]
@@ -39,6 +39,8 @@ instance Treeish Exp where
         LElem e1 e2     -> Node "List Elem"     [ toTree e1, toTree e2 ]
         LTake e1 e2     -> Node "List Take"     [ toTree e1, toTree e2 ]
         LDrop e1 e2     -> Node "List Drop"     [ toTree e1, toTree e2 ]
+        -- Lists
+        List l          -> Node "List"          (map toTree l)
 
         -- Regular expressions
         Single              -> Node "()" []

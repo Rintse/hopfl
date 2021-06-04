@@ -166,20 +166,21 @@ transform exp = case exp of
     
     -- Lists
     Raw.EList (Raw.List l) -> List <$> mapM transform l
-    Raw.ListCons   e1 e2 -> liftA2 LCons    (transform e1) (transform e2)
-    Raw.ListAppend e1 e2 -> liftA2 LAppend  (transform e1) (transform e2)
-    Raw.ListIndex  e1 e2 -> liftA2 LIndex   (transform e1) (transform e2)
-    
-    Raw.ListHead   e -> fmap LHead      (transform e)
-    Raw.ListTail   e -> fmap LTail      (transform e)
-    Raw.ListNull   e -> fmap LNull      (transform e)
-    Raw.ListLength e -> fmap LLength    (transform e)
 
-    Raw.ListMap e1 e2   -> liftA2 LMap    (transform e1) (transform e2)
-    Raw.ListElem e1 e2  -> liftA2 LElem   (transform e1) (transform e2)
-    Raw.ListTake e1 e2  -> liftA2 LTake   (transform e1) (transform e2)
-    Raw.ListDrop e1 e2  -> liftA2 LDrop   (transform e1) (transform e2)
-    Raw.ListFold e1 e2 e3 -> liftA3 LFold (transform e1) (transform e2) (transform e3)
+    Raw.ListCons   e e2 -> liftA2 LCons     (transform e) (transform e2)
+    Raw.ListAppend e e2 -> liftA2 LAppend   (transform e) (transform e2)
+    Raw.ListIndex  e e2 -> liftA2 LIndex    (transform e) (transform e2)
+    
+    Raw.ListHead   e    -> fmap LHead       (transform e)
+    Raw.ListTail   e    -> fmap LTail       (transform e)
+    Raw.ListNull   e    -> fmap LNull       (transform e)
+    Raw.ListLength e    -> fmap LLength     (transform e)
+
+    Raw.ListMap e e2   -> liftA2 LMap       (transform e) (transform e2)
+    Raw.ListElem e e2  -> liftA2 LElem      (transform e) (transform e2)
+    Raw.ListTake e e2  -> liftA2 LTake      (transform e) (transform e2)
+    Raw.ListDrop e e2  -> liftA2 LDrop      (transform e) (transform e2)
+    Raw.ListFold e e2 e3 -> liftA3 LFold    (transform e) (transform e2) (transform e3)
 
 -- Translate a raw tree into the id tree with annotated identifiers
 annotateVars :: Raw.Exp -> Exp
