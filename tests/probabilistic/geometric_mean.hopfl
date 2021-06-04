@@ -6,11 +6,11 @@
 
 let
     # Performs a flip until a value below p is reached
-    geometric ← ( ( fix f . λ n . λ p . 
+    geometric ← ( λ p . fix f .
         if ( rand < p )
-            then in ( inL n )
-            else in ( inR ( f ⊙ next ( n + 1 ) ⊙ next p ) )
-    ) 0 ) ;
+            then in ( inL 0 )
+            else partial_map (add 1) ( partial_later f )
+    ) ;
   
     # Computes the average of a list of partial results
     list_avg ← ( λ l . 
