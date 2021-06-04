@@ -33,10 +33,14 @@ let
     eval ← ( λ s . 1.0 / ( cut_count s ) ) ;
 
     # Flip bit in s at given idx
-    flip_bit ← ( λ idx . λ s . ( take idx s ) ++ [ ¬ s|idx| ] ++ ( drop ( idx + 1 ) s ) ) ;
+    flip_bit ← ( λ idx . λ s . 
+        ( take idx s ) ++ 
+        [ ¬ s|idx| ] ++ 
+        ( drop ( idx + 1 ) s )
+    ) ;
 
     # Mutation function, randomly flips one bit in the solution vector
-    mutate ← ( flip_bit ( rand_idx n_vertices ) ) ;
+    mutate ← ( flip_bit ( idx4_from_rand rand ) ) ;
 
     # The chance of accepting a neigbour if it is worse
     p_accept_new ← ( λ old . λ new . λ temp . 
