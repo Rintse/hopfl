@@ -6,29 +6,8 @@ co_zero ← ( in ( inL 𝟙 ) ) ;
 co_inf  ← ( fix f . in ( inR f ) ) ;
 
 co_succ ← ( λ n . in ( inR ( next n ) ) ) ;
-co_pred ← ( 0 ) ; # only possible with box+
 
 co_isZero ← ( λ n . match ( out n ) { inL x → true ; inR y → false } ) ;
-
-# ill typed!
-co_eq   ← ( fix f . λ n1 . λ n2 .
-    match ( out n1 ) {
-        inL x → if ( co_isZero n2 )
-            then true
-            else false ;
-        inR x → if ( co_isZero n2 )
-            then false
-            else f ⊙ next ( pred n1 ) ⊙ next ( pred n2 )
-    }
-) ;
-
-# ill typed!
-co_sub  ← ( ( fix f . λ n . λ n1 . λ n2 .
-    if ( co_eq ( co_add n n1 ) n2 )
-        then n
-        else f ⊙ next ( co_succ n ) ⊙ next n1 ⊙ next n2
-) co_zero ) ;
-
 
 co_add  ← ( fix f . λ n1 . λ n2 .
     match ( out n1 ) {
@@ -36,18 +15,6 @@ co_add  ← ( fix f . λ n1 . λ n2 .
         inR y → in ( inR ( f ⊙ y ⊙ next n2 ) )
     }
 ) ;
-
-# TODO: not right
-co_mul  ← ( fix f . λ n1 . λ n2 .
-    match ( out n1 ) {
-        inL x → co_zero ;
-        inR y → co_add ( in ( inR ( f ⊙ y ⊙ next n2 ) ) ) n2
-    }
-) ;
- 
-# only possible with box+
-co_sub ← ( 0 ) ;
-
 
 # Conversion
 int_to_co  ← ( fix f . λ n .

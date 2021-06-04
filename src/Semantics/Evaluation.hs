@@ -181,9 +181,7 @@ eval exp@(LLength e) = eval e >>= \case
     _ -> throwError $ "Length on non-list:\n" ++ treeTerm exp
 
 eval exp@(LFold e1 e2 e3) = match3 eval e1 e2 e3 >>= \case
-    (VThunk f, val, VList l) -> do
-        let test = Prelude.foldl (App . App f) (toExp val) l
-        eval test
+    (VThunk f, val, VList l) -> eval $ Prelude.foldl (App . App f) (toExp val) l
     _ -> throwError $ "Invalid arguments to fold:\n" ++ treeTerm exp
 
 eval exp@(LMap e1 e2) = match2 eval e1 e2 >>= \case

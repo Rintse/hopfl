@@ -2,28 +2,23 @@
 # Free variables to pass through the environment:
 #   p:  The coinflip threshold
 # Example run:
-#   stack run ghopfl-exe -- -v -E -n 3 -e "p<-0.5;count<-5" 
-#   -d "0.6;0.7;0.8;0.1;0.6;0.1;0.7;0.9;0.2;0.4;0.8;0.3" 
-#   -i tests/probabilistic/geometric_mean.hopfl 
+#   stack run ghopfl-exe -- -v -E -n 4 -e "p<-0.5" -d "0.6;0.7;0.8;0.1;0.6;0.1;0.7;0.9;0.2;0.4;0.8;0.3" -i tests/probabilistic/geometric_mean.hopfl 
 
 let
-   # Performs a flip until a value below p is reached
-   # TODO: ill typed
+    # Performs a flip until a value below p is reached
     geometric ← ( ( fix f . λ n . λ p . 
         if ( rand < p )
-            then n
-            else f ⊙ next ( n + 1 ) ⊙ next p
+            then in ( inL n )
+            else in ( inR ( f ⊙ next ( n + 1 ) ⊙ next p ) )
     ) 0 ) ;
-   
-    # A colist is used as the foldl_4 function is defined there
-    # this could just as well be a stream
-    sample_colist ← ( λ p . fix f . λ x .
-        in ( inR ( geometric p, f ⊙  ) ) 
-    ) ;
-        
-
+  
+    # Computes the average of a list of partial results
     list_avg ← ( λ l . 
-        ( foldl_4 add 0 l ) / 4
+        ( partial_func2 divide )
+            ( foldl ( partial_func2 add ) ( partial_now 0 ) l ) # Sum of list
+            ( partial_now ( length l ) )
     ) ;
 
-in: list_avg ( sample_colist p )
+    sample_list ← ( [geometric p, geometric p, geometric p, geometric p, geometric p] ) ;
+
+in: list_avg sample_list 

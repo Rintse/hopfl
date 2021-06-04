@@ -57,6 +57,7 @@ instance Treeish Exp where
         InL e               -> Node "InL"       [ toTree e ]
         InR e               -> Node "InR"       [ toTree e ]
         Norm e              -> Node "Norm"      [ toTree e ]
+        Rand                -> Node "Rand"      [ ]
         Not e               -> Node "Not"       [ toTree e ]
         Force e             -> Node "Force"     [ toTree e ]
         App e1 e2           -> Node "App"       [ toTree e1, toTree e2 ]

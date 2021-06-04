@@ -1,5 +1,6 @@
 # Defines some common random functions
 let
+    # TODO: ill typed
     # Function that generates a (NOT UNIFORM) random idx between 0 and n
     rand_idx ← ( ( fix f . λ r . λ n . λ size .
         if ( r ≤ n * ( 1 / size ) )
