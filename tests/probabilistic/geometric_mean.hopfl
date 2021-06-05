@@ -1,22 +1,22 @@
-# Samples the geometric series
+# Samples the geometric series and calculates a mean
 # Free variables to pass through the environment:
-#   p:  The coinflip threshold
+#   p:  The bias for heads
 # Example run:
-#   stack run ghopfl-exe -- -v -E -n 4 -e "p<-0.5" -d "0.6;0.7;0.8;0.1;0.6;0.1;0.7;0.9;0.2;0.4;0.8;0.3" -i tests/probabilistic/geometric_mean.hopfl 
+#   stack run ghopfl-exe -- -v -E -n 4 -e "p<-0.5" -d "0.6;0.7;0.8;0.1;0.6;0.1;0.7;0.9;0.2;0.4;0.8;0.3" -i tests/probabilistic/geometric_mean.hopfl -n 7
 
 let
     # Performs a flip until a value below p is reached
     geometric ← ( λ p . fix f .
         if ( rand < p )
-            then in ( inL 0 )
-            else partial_map (add 1) ( partial_later f )
+            then dres_now 0
+            else dres_map (add 1) ( dres_later f )
     ) ;
   
     # Computes the average of a list of partial results
     list_avg ← ( λ l . 
-        ( partial_func2 divide )
-            ( foldl ( partial_func2 add ) ( partial_now 0 ) l ) # Sum of list
-            ( partial_now ( length l ) )
+        ( dres_func2 divide )
+            ( foldl ( dres_func2 add ) ( dres_now 0 ) l ) # Sum of list
+            ( dres_now ( length l ) )
     ) ;
 
     sample_list ← ( [geometric p, geometric p, geometric p, geometric p, geometric p] ) ;
