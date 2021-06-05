@@ -26,14 +26,17 @@ dres_func2_1 ← ( λ func . fix f . λ x . λ a .
     }
 ) ;
 
+# TODO: non-recursive imports?
+flip2   ← ( λ f . λ a1 . λ a2 . f a2 a1 ) ;
+
 # Applies a binary function to two delayed results
 dres_func2  ← ( λ func . fix f . λ x1 . λ x2 .
     match ( out x1 ) {
         # First argument available first, continue with second
-        inL value1 → dres_func2_2 func x2 value1 ;
+        inL value1 → dres_func2_1 (flip2 func) x2 value1 ;
         inR delay1 → ( match ( out x2 ) {
             # Second argument available first, continue with first
-            inL value2 → dres_func2_2 func x1 value2 ;
+            inL value2 → dres_func2_1 func x1 value2 ;
             # Otherwise, go one level deeper in both
             inR delay2 → dres_later ( f ⊙ delay1 ⊙ delay2 )
         } )

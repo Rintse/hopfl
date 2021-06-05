@@ -2,7 +2,7 @@
 # Free variables to pass through the environment:
 #   p:  The bias for heads
 # Example run:
-#   stack run ghopfl-exe -- -v -E -n 4 -e "p<-0.5" -d "0.6;0.7;0.8;0.1;0.6;0.1;0.7;0.9;0.2;0.4;0.8;0.3" -i tests/probabilistic/geometric_mean.hopfl -n 7
+#   stack run ghopfl-exe -- -v -E -n 4 -e "p<-0.5" -d "0.6;0.7;0.8;0.1;0.6;0.1;0.7;0.9;0.2;0.4;0.8;0.3" -i tests/probabilistic/geometric_mean.hopfl -n 3
 
 let
     # Performs a flip until a value below p is reached

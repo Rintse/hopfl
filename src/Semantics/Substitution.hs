@@ -35,6 +35,7 @@ recName = ana $ \case
     Abstr x e           -> AbstrF (incDepth x) e
     Rec x e             -> RecF  (incDepth x) e
     Match e x l y r     -> MatchF e (incDepth x) l (incDepth y) r
+    List l              -> ListF $ map recName l
     other               -> project other
 
 -- Performs substitution
@@ -51,10 +52,11 @@ substL (Env l) = Env <$> mapM (\(Assign x t) -> Assign x <$> subst t) l
 -- Substitutes, in exp, x for s
 subst :: Exp -> Reader (Ident, Exp) Exp
 subst = apoM $ \case
-    Var x    -> asks (fmap Left . project . doSub x)
-    Prev l e -> PrevF <$> substL l <*> return (Right e)
-    Box l e  -> BoxF <$> substL l <*> return (Right e)
-    other    -> return $ Right <$> project other
+    Var x       -> asks (fmap Left . project . doSub x)
+    Prev l e    -> PrevF <$> substL l <*> return (Right e)
+    Box l e     -> BoxF <$> substL l <*> return (Right e)
+    List l      -> fmap Right . project . List <$> mapM subst l
+    other       -> return $ Right <$> project other
 
 -- Substitutes in exp, s for x
 substitute :: Exp -> Ident -> Exp -> Exp

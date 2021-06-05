@@ -54,15 +54,19 @@ toSet l = Set.fromList $ map (\(Assign (Ident x) _ _) -> x) l
 
 -- Perform definition substitutions for a list of defs
 handleDefs :: Prg -> IO Exp
-handleDefs (DefProg (Env l) e) = do
+handleDefs p@(DefProg (Env l) e) = do
     let usedBuiltinNames = Set.intersection (toSet builtins) (toSet l)
 
     unless ( null usedBuiltinNames ) ( do
         putStrLn "Error. Used reserved name of builtin:"
         mapM_ putStrLn (Set.toList usedBuiltinNames)
         exitFailure )
+   
+    -- Expand programmers own definitions
+    let customDefs = foldl runDef e $ inDefs l
 
-    return $ foldl runDef e $ inDefs (builtins ++ l)
+    -- Expand the builtin definitions
+    return $ foldl runDef customDefs $ inDefs builtins
 
-handleDefs (Prog e) = return $ foldl runDef e $ inDefs builtins 
+handleDefs (Prog e) = return $ foldl runDef e $ inDefs builtins
 
