@@ -3,7 +3,7 @@
 # indicate in which partition a given vertex is contained
 #
 # Example run:
-#   stack run ghopfl-exe -- -v -E -e "iteration<-3" -d "0.6;0.3;0.4;0.1;0.9" -i tests/algorithms/annealing.hopfl -n 3
+#   stack run ghopfl-exe -- -v -E -e "iteration<-3" -d "0.6;0.3;0.4;0.1;0.9" -i tests/algorithms/annealing.hopfl
 # Should give the optimal, after first accepting a worse solution
 
 let
@@ -33,10 +33,10 @@ let
     eval ← ( λ s . 1.0 / ( cut_count s ) ) ;
 
     # Flip bit in s at given idx
-    flip_bit ← ( λ idx . λ s . 
-        ( take idx s ) ++ 
-        [ ¬ s|idx| ] ++ 
-        ( drop ( idx + 1 ) s )
+    flip_bit ← ( λ idx . λ sf . 
+        ( take idx sf ) ++ 
+        [ ¬ sf|idx| ] ++ 
+        ( drop ( idx + 1 ) sf )
     ) ;
 
     # Mutation function, randomly flips one bit in the solution vector
@@ -62,11 +62,13 @@ let
     get_temp ← ( λ k . init_temp / (k + 1) ) ; 
 
     # The optimization stream
-    opt_stream ← ( boxI ( ( fix f . λ k . λ s . in (
-        ( s, f ⊙ next ( k + 1 ) 
-               ⊙ next ( select s ( mutate s ) ( get_temp k ) ) 
-        ) ) ) 0 init_s )
-    ) ;
+    opt_stream ← ( boxI ( 
+        ( fix f . λ k . λ s . in (
+            ( s, f ⊙ next ( k + 1 ) 
+                   ⊙ next ( select s ( mutate s ) ( get_temp k ) ) 
+            ) ) 
+        ) 0 init_s 
+    ) ) ;
 
-in: force ( s_idx_c iteration opt_stream )
-
+# Get the result from the fourth iteration (initial value counts as iteration)
+in:  s_4th_c opt_stream

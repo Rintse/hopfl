@@ -3,9 +3,9 @@ let
 
 # Guarded streams
 s_cons_g    ← ( λ e . λ s . in ( e, next s ) ) ;
-s_cons_g_n ← ( λ e . λ s . in ( e, s ) ) ;
-s_head_g    ← ( λ s . fst ( out s ) ) ;
-s_tail_g    ← ( λ s . snd ( out s ) ) ;
+s_cons_g_n  ← ( λ e . λ s . in ( e, s ) ) ;
+s_head_g    ← ( λ sg1 . fst ( out sg1 ) ) ;
+s_tail_g    ← ( λ sg2 . snd ( out sg2 ) ) ;
 
 s_idx_g     ← ( fix f . λ n . λ s .
     if ( n = 0 )
@@ -26,14 +26,21 @@ s_map_g  ← ( λ func . fix f . λ s .
 ) ;
 
 # Coinductive streams
-s_head_c    ← ( λ s . s_head_g ( unbox s ) ) ;
-s_tail_c    ← ( λ s . boxI ( prevI ( s_tail_g ( unbox s ) ) ) ) ;
+s_head_c    ← ( λ s1 . s_head_g ( unbox s1 ) ) ;
+s_tail_c    ← ( λ s2 . boxI ( prevI ( s_tail_g ( unbox s2 ) ) ) ) ;
 
+# Still introduces nexts
 s_idx_c     ← ( fix f . λ n . λ s .
     if ( n = 0 )
         then in ( inL ( s_head_c s ) )
         else in ( inR ( f ⊙ next ( n - 1 ) ⊙ next ( s_tail_c s ) ) )
 ) ;
+
+# Some hard coded indexes
+s_2nd_c     ← ( λ s . s_head_c ( s_tail_c s ) ) ;
+s_3rd_c     ← ( λ s . s_head_c ( s_tail_c ( s_tail_c s ) ) ) ;
+s_4th_c     ← ( λ s . s_head_c ( s_tail_c ( s_tail_c ( s_tail_c s ) ) ) ) ;
+# Etc..
 
 # Lift guarded stream functions
 s_limit_c   ← ( λ func . λ x . 

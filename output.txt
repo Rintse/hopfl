@@ -1,0 +1,15 @@
+ghopfl-0.1.0.0: unregistering (local file changes: src/Semantics/Substitution.hs)
+ghopfl> configure (lib + exe)
+Configuring ghopfl-0.1.0.0...
+ghopfl> build (lib + exe)
+Preprocessing library for ghopfl-0.1.0.0..
+Building library for ghopfl-0.1.0.0..
+[20 of 23] Compiling Semantics.Substitution
+Preprocessing executable 'ghopfl-exe' for ghopfl-0.1.0.0..
+Building executable 'ghopfl-exe' for ghopfl-0.1.0.0..
+Linking .stack-work/dist/x86_64-linux-tinfo6/Cabal-3.2.1.0/build/ghopfl-exe/ghopfl-exe ...
+ghopfl> copy/register
+Installing library in /home/rijeun/Documents/mastor/ghopfl/.stack-work/install/x86_64-linux-tinfo6/33c265c88cbc8a5daf84dae1b50c0b080dba4ae1629bfdf14d2e3cc08b7890d1/8.10.3/lib/x86_64-linux-ghc-8.10.3/ghopfl-0.1.0.0-8zE60nvfCAw5nD18JdUEpF
+Installing executable ghopfl-exe in /home/rijeun/Documents/mastor/ghopfl/.stack-work/install/x86_64-linux-tinfo6/33c265c88cbc8a5daf84dae1b50c0b080dba4ae1629bfdf14d2e3cc08b7890d1/8.10.3/bin
+Installing executable builtin-exe in /home/rijeun/Documents/mastor/ghopfl/.stack-work/install/x86_64-linux-tinfo6/33c265c88cbc8a5daf84dae1b50c0b080dba4ae1629bfdf14d2e3cc08b7890d1/8.10.3/bin
+Registering library for ghopfl-0.1.0.0..
