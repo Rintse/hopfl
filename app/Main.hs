@@ -2,8 +2,9 @@ module Main where
 
 import Args
 import Syntax.Parse
-import Preprocess.Preprocess
 import Semantics.Evaluation
+import Preprocess.Definitions
+import Preprocess.AnnotateVars
 import Tools.Treeify
 
 import Control.Monad.Reader
@@ -31,7 +32,8 @@ main = do
     prog <- input >>= parse verb
    
     -- Preprocess raw AST into one expression
-    exp <- preprocess prog env
+    withDefinitions <- handleDefs prog
+    let exp = annotateVars withDefinitions
 
     -- Show the result
     showProg verb exp

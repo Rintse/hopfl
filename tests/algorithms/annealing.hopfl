@@ -3,7 +3,7 @@
 # indicate in which partition a given vertex is contained
 #
 # Example run:
-#   stack run ghopfl-exe -- -v -E -e "iteration<-3" -d "0.6;0.3;0.4;0.1;0.9" -i tests/algorithms/annealing.hopfl
+#   stack run ghopfl-exe -- -v -E -d "0.6;0.3;0.4;0.1;0.9" -i tests/algorithms/annealing.hopfl
 # Should give the optimal, after first accepting a worse solution
 
 let
