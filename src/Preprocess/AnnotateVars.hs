@@ -25,7 +25,6 @@ import qualified Data.HashMap.Lazy as HM
 import Data.List.Index
 import Debug.Trace
 
-
 -- State environment contains a counter and a hashmap in which the values 
 -- track all the names that we are currently substituting the key for.
 -- The last element in the sequence is the name to substitute the key for.
@@ -109,7 +108,7 @@ transform exp = case exp of
     Raw.Not _ e         -> fmap   Not   (transform e)
     Raw.Min e           -> fmap   Min   (transform e)
     Raw.In e            -> fmap   In    (transform e)
-    Raw.LApp e1 _ e2    -> liftA2 LApp  (transform e1) (transform e2)
+    Raw.LApp e1 _ e2    -> liftA2 DApp  (transform e1) (transform e2)
     Raw.Pair e1 e2      -> liftA2 Pair  (transform e1) (transform e2)
     Raw.Leq e1 o e2     -> liftA2 Leq   (transform e1) (transform e2)
     Raw.Geq e1 o e2     -> liftA2 Geq   (transform e1) (transform e2)

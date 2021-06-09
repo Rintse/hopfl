@@ -110,7 +110,7 @@ evalRelop f e1 op e2 = match2 f e1 e2 >>= \case
 -- Evluates everything underneath certain values to make it readable
 forceEval :: (Exp -> EvalMonad Value) -> Value -> EvalMonad Value
 forceEval f = \case
-    -- Still refuse to go underneath nexts
+    -- Still refuse to go underneath too many nexts
     VNext e     -> asks snd >>= \x ->
         if x == 0 then return $ VUNext e
         else local (second $ subtract 1) ( VENext <$> (f e >>= forceEval f) )

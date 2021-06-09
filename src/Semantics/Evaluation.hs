@@ -82,9 +82,9 @@ eval exp@(App e1 e2) = match2 eval e1 e2 >>= \case
     _ -> throwError $ " Application on non-function:\n" ++ treeTerm exp
 
 -- Delayed function application
-eval exp@(LApp e1 e2) = match2 eval e1 e2 >>= \case
+eval exp@(DApp e1 e2) = match2 eval e1 e2 >>= \case
     (VNext t, VNext s) -> eval $ Next $ App t s
-    (x,y) -> throwError $ "Invalid arguments to LApp:\n" ++ treeTerm exp
+    (x,y) -> throwError $ "Invalid arguments to DApp:\n" ++ treeTerm exp
 
 -- Pair creation
 eval exp@(Pair e1 e2) = return $ VPair e1 e2
@@ -208,6 +208,7 @@ eval exp = case exp of
     Val v       -> return $ VVal v
     BVal v      -> return $ VBVal $ toBool v
 
+    -- Arithmetic operators
     Min e       -> evalAExp1 eval negate e
     Pow e1 e2   -> evalAExp eval e1 numPow e2
     Div e1 e2   -> evalAExp eval e1 numDiv e2
@@ -216,14 +217,18 @@ eval exp = case exp of
     Sub e1 e2   -> evalAExp eval e1 (-) e2
     Mul e1 e2   -> evalAExp eval e1 (*) e2
 
+    -- Logic operators
     Not e       -> evalBExp1 eval not e
     And e1 e2   -> evalBExp eval e1 (&&) e2
     Or e1 e2    -> evalBExp eval e1 (||) e2
 
+    -- Relative operators
     Eq e1 e2    -> evalRelop eval e1 (==) e2
     Lt e1 e2    -> evalRelop eval e1 (<) e2
     Gt e1 e2    -> evalRelop eval e1 (>) e2
     Leq e1 e2   -> evalRelop eval e1 (<=) e2
     Geq e1 e2   -> evalRelop eval e1 (>=) e2
+
+    -- Singleton term
     Single      -> return VSingle
 

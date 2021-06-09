@@ -63,7 +63,7 @@ instance Treeish Exp where
         Not e               -> Node "Not"       [ toTree e ]
         Force e             -> Node "Force"     [ toTree e ]
         App e1 e2           -> Node "App"       [ toTree e1, toTree e2 ]
-        LApp e1 e2          -> Node "LApp"      [ toTree e1, toTree e2 ]
+        DApp e1 e2          -> Node "DApp"      [ toTree e1, toTree e2 ]
         Pair e1 e2          -> Node "Pair"      [ toTree e1, toTree e2 ]
         Ite b e1 e2         -> Node "Ite"       [ toTree b, toTree e1, toTree e2 ]
         Abstr x e           -> Node "λ"         [ toTree x, toTree e ]
@@ -84,7 +84,6 @@ instance Treeish Exp where
         Match e x1 e1 x2 e2 -> Node "Match"     [ toTree e,
                                                   toTree x1, toTree e1,
                                                   toTree x2, toTree e2 ]
-        other -> Node ("Unhandled case:\n" ++ show other) []
 
 instance Treeish Value where
     toTree val = case val of

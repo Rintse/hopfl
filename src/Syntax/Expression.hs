@@ -12,44 +12,64 @@ import Data.Functor.Foldable.TH
 -- some expressions, and allows variables to be annotated with identifiers
 data Exp
     = Single
+    -- Base types
     | Var   Ident
     | Val   Number
     | BVal  Raw.BConst
-    | Next  Exp
-    | Unbox Exp
-    | In    Exp
-    | Out   Exp
+
+    -- Lambda calculus with ite
+    | App   Exp Exp
+    | Abstr Ident Exp
+    | Ite   Exp Exp Exp
+
+    -- Products
     | Fst   Exp
     | Snd   Exp
+    | Pair  Exp Exp
+
+    -- Coproducts
     | InL   Exp
     | InR   Exp
+    | Match Exp Ident Exp Ident Exp
+    
+    -- Guarded recursion
+    | Next  Exp
+    | DApp  Exp Exp
+    | Rec   Ident Exp
+    -- Iso recursive types
+    | In    Exp
+    | Out   Exp
+
+    -- Constant modality
+    | Unbox Exp
+    | Box   Environment Exp
+    | Prev  Environment Exp
+
+    -- Sampling
     | Rand
     | Norm  Exp
+
+    --Logic
     | Not   Exp
+    | And   Exp Exp
+    | Or    Exp Exp
+
+    -- Relative operators
+    | Eq    Exp Exp
+    | Lt    Exp Exp
+    | Gt    Exp Exp
+    | Leq   Exp Exp
+    | Geq   Exp Exp
+
+    -- Arithmetic
     | Min   Exp
     | Force Exp
-    | App   Exp Exp
-    | LApp  Exp Exp
     | Pow   Exp Exp
     | Mul   Exp Exp
     | Mod   Exp Exp
     | Div   Exp Exp
     | Add   Exp Exp
     | Sub   Exp Exp
-    | Eq    Exp Exp
-    | Lt    Exp Exp
-    | Gt    Exp Exp
-    | Leq   Exp Exp
-    | Geq   Exp Exp
-    | And   Exp Exp
-    | Or    Exp Exp
-    | Pair  Exp Exp
-    | Abstr Ident Exp
-    | Rec   Ident Exp
-    | Ite   Exp Exp Exp
-    | Box   Environment Exp
-    | Prev  Environment Exp
-    | Match Exp Ident Exp Ident Exp
     
     -- List basics
     | List      [ Exp ]

@@ -17,24 +17,17 @@ import Debug.Trace
 
 -- Perform a single definition substitution
 defSub :: Exp -> Reader Assignment Exp
-defSub = anaM $ \case
-    e@(Var (Ident x)) -> do
-        (Assign (Ident s) o t) <- ask
-        if x == s
+defSub exp = do 
+    a@(Assign (Ident s) o t) <- ask
+    let doList = (\(Assign x o t) -> Assign x o $ runDef t a)
+    ( anaM $ \case
+        Prev (Env l) e      -> return $ PrevF (Env $ map doList l) e
+        Box (Env l) e       -> return $ BoxF (Env $ map doList l) e
+        EList (List l)      -> return $ EListF $ List $ map (`runDef` a) l
+        e@(Var (Ident x))   -> if x == s
             then return $ project t
             else return $ project e
-    Prev (Env l) e -> do
-        a <- ask
-        let rl = Env $ map (\(Assign x o t) -> Assign x o $ runDef t a) l
-        return $ PrevF rl e
-    Box (Env l) e -> do
-        a <- ask
-        let rl = Env $ map (\(Assign x o t) -> Assign x o $ runDef t a) l
-        return $ BoxF rl e
-    EList ( (List l) ) -> do
-        a <- ask
-        return $ EListF $ List $ map (`runDef` a) l
-    other -> return $ project other
+        other -> return $ project other ) exp
 
 -- Runs definition substitution inside a reader monad
 runDef :: Exp -> Assignment -> Exp
@@ -61,7 +54,7 @@ handleDefs p@(DefProg (Env l) e) = do
         putStrLn "Error. Used reserved name of builtin:"
         mapM_ putStrLn (Set.toList usedBuiltinNames)
         exitFailure )
-   
+
     -- Expand programmers own definitions
     let customDefs = foldl runDef e $ inDefs l
 
