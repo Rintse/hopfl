@@ -4,8 +4,8 @@ let
 # Guarded streams
 s_cons_g    ← ( λ e . λ s . in ( e, next s ) ) ;
 s_cons_g_n  ← ( λ e . λ s . in ( e, s ) ) ;
-s_head_g    ← ( λ sg1 . fst ( out sg1 ) ) ;
-s_tail_g    ← ( λ sg2 . snd ( out sg2 ) ) ;
+s_head_g    ← ( λ s . fst ( out s ) ) ;
+s_tail_g    ← ( λ s . snd ( out s ) ) ;
 
 s_idx_g     ← ( fix f . λ n . λ s .
     if ( n = 0 )
