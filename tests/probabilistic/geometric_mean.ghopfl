@@ -1,4 +1,4 @@
-# Samples the geometric series and calculates a mean
+# Samples the geometric distribution and calculates a mean
 # Free variables to pass through the environment:
 #   p:  The bias for heads
 # Example run:

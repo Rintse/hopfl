@@ -1,0 +1,42 @@
+# Samples a Poisson distribution and calculates the mean
+# of the distribution from an infinite stream of samples
+# Free variables to pass through the environment:
+#   l:  The mean of the desired Poisson
+# Example run:
+#   stack run ghopfl-exe -- -i tests/probabilistic/poisson.ghopfl -E -e "l<-1.0" -d "0.5;0.1;0.9;0.9;0.1;0.1;0.5;0.1;0.9;0.8;0.5" -n 7
+# This run should return the samples: (1, 2, 0, 1, 2), which has mean 6/5 = 1.2.
+
+let
+    # Recursively sample [0,1] in such a way 
+    # that the result is poisson distributed
+    poisson ← ( λ l . fix f . λ p .
+        if ( p < exp ( - l ) )
+            then dres_now (-1)
+            else dres_map ( add 1 ) 
+                ( dres_later ( f ⊙ next ( p * rand ) ) )
+    ) ;
+
+    # Wrapper that fixes unlogical arguments
+    sample_poisson ← ( ( flip2 poisson ) 1.0 ) ;
+
+    # Infinite stream of samples
+    sample_stream ← ( fix f . λ l .
+        in ( sample_poisson l, f ⊙ next l )
+    ) ;
+
+    dres_add ← ( λ x . dres_map ( add x ) ) ;
+
+    # Calculate the average of the stream so far
+    stream_sum ← ( fix f . λ i . λ s .
+        if ( i = 0 ) then dres_now 0
+        else dres_func2 add ( s_head_g s ) 
+            ( dres_later ( f ⊙ next ( i - 1 ) ⊙ ( s_tail_g s ) ) )
+    ) ;
+    
+    stream_avg ← ( λ i . λ s . 
+        dres_func2 divide 
+            ( stream_sum i s ) 
+            ( dres_now i ) 
+    ) ;
+
+in: stream_avg 5 ( sample_stream l )
