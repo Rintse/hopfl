@@ -62,10 +62,11 @@ performDraw dist params = gets snd >>= \case
     (c:rest) -> let d = pdf dist params c in
         if  | isNaN d -> throwError $
                 "PDF " ++ show (name dist) ++ " not defined for value " ++ show d
-
+            
             | (==0) d -> throwError $
                 "Impossible draw for " ++ show (name dist )
-                ++ " with parameters" ++ show params ++ ": " ++ show d
+                ++ " with parameters" ++ show params ++ ": " ++ show c
+                ++ "\nRemaining draws: " ++ show rest
 
             | otherwise -> do
                 modify (\(w, _) -> (w * d, rest))

@@ -8,7 +8,7 @@ pdfNorm params c = do
     (1 / (sd * sqrt (2 * pi))) * exp (-0.5 * (((c - m) / sd) ^^ 2)) 
 
 pdfRand :: [Double] -> Double -> Double
-pdfRand params c = if 0 <= c && c <= 1 then 1 else 0
+pdfRand params c = if 0.0 <= c && c <= 1.0 then 1 else 0
 
 data Distribution = Distribution {
     name :: String,
