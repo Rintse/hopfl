@@ -1,0 +1,25 @@
+# Showcases some of the distributions that may be generated using a normally
+# distributed variable.  
+# Example run:
+#   stack run ghopfl-exe -- -E -d "0.6;0.9;0.3;0.1;0.98" -i tests/probabilistic/distributions.ghopfl
+
+let
+    # The ratio between two standard normally distributed variables
+    # follows the Cauchy distribution
+    sample_cauchy ← (
+        (normal (0.0,1.0)) / (normal (0.0,1.0))
+    ) ;
+
+    # The Euclidian norm of two standard normally distributed variables
+    # follows the Rayleigh distribution
+    sample_rayleigh ← (
+        sqrt ( ( normal (0.0,1.0) ) ^ 2 + ( normal (0.0,1.0) ) ^ 2 )
+    ) ;
+
+    # The square of a normalized standard normally distributed variable
+    # follows the chi squared distribution
+    sample_chi_squared ← (
+        ( ( normal (0.0,4.0) ) / 2 ) ^ 2
+    ) ;
+
+in: [ sample_cauchy, sample_rayleigh, sample_chi_squared ]
