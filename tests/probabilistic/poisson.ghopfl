@@ -17,7 +17,7 @@ let
                 ( dres_later ( f ⊙ next ( p * rand ) ) )
     ) ;
 
-    # Wrapper that fixes unlogical arguments
+    # Wrapper that fixes illogical argument order
     sample_poisson ← ( ( flip2 poisson ) 1.0 ) ;
 
     # Infinite stream of samples
@@ -45,3 +45,4 @@ let
     ) ( dres_now 0.0 ) ( dres_now 0 ) ) ;
     
 in: force ( s_idx_g 5 ( mean_stream ( sample_stream l ) ) )
+

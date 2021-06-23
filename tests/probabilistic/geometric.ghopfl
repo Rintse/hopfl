@@ -1,0 +1,15 @@
+# Samples the geometric distribution
+# Free variables to pass through the environment:
+#   p:  The bias for heads
+# Example run:
+#   stack run ghopfl-exe -- -v -E -e "p<-0.5" -d "0.6;0.7;0.8;0.1" -i tests/probabilistic/geometric.ghopfl -n 3
+
+let
+    # Performs a flip until a value below p is reached
+    geometric ← ( λ p . fix f .
+        if ( rand < p )
+            then dres_now 0
+            else dres_map (add 1) ( dres_later f )
+    ) ;
+
+in: geometric p

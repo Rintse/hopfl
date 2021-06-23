@@ -1,6 +1,6 @@
 # Takes the idx'th number out of a random walk stream over R^2
 # Free variables to pass through the environment:
-#   x0:     The initial position of the walk
+#   x0:     The initial position of the walks
 #   s:      The variance of the normal distribution
 # Example run:
 #   stack run ghopfl-exe -- -i tests/probabilistic/random_walk.ghopfl -E -n 3 -e "s<-1.0;x0<-0.0;" -d "1.1;-1.1;2.2;-2.2;3.3;-3.3"
