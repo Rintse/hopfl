@@ -1,5 +1,6 @@
 # GHOPFL
-A program to implement a big-step, call-by-value semantics of a guarded higher order probabilistic language (GHOPFL).
+A interpreter for a guarded higher order probabilistic language (GHOPFL), 
+based on the big-step, call-by-value semantics given in my thesis.
 
 ## Running the program
 To execute the program use:
