@@ -3,9 +3,7 @@
 # Free variables to pass through the environment:
 #   l:  The mean of the desired Poisson
 # Example run:
-#   stack run ghopfl-exe -- -i tests/probabilistic/poisson.ghopfl -E -e "l<-1.0" -d "0.5;0.1;0.9;0.9;0.1;0.1;0.5;0.1;0.9;0.8;0.5" -n 8
-# This run should give the following poisson the samples: (1, 2, 0, 1, 2)
-# The mean, as sampled so far, then is 6/5 = 1.2.
+#   stack run ghopfl-exe -- -i tests/probabilistic/poisson.ghopfl -E -e "l<-1.0" -d "0.9;0.8;0.5" -n 3
 
 let
     # Recursively sample [0,1] in such a way 
@@ -20,29 +18,5 @@ let
     # Wrapper that fixes illogical argument order
     sample_poisson ← ( ( flip2 poisson ) 1.0 ) ;
 
-    # Infinite stream of samples
-    sample_stream ← ( λ l . fix f .
-        in ( sample_poisson l, f )
-    ) ;
-
-    # Recalculates avg given a new value 
-    avg_step ← ( λ avg . λ new_val . λ old_count .
-        dres_func2 divide 
-            ( dres_func2 add 
-                ( dres_func2 multiply 
-                    avg old_count 
-                ) new_val 
-            ) ( dres_map ( add 1 ) old_count )
-    ) ;
-
-    # Stream of better and better mean approximations
-    mean_stream ← ( ( fix f . λ mean . λ c . λ s .
-        in ( mean, 
-            f   ⊙ next ( avg_step mean ( s_head_g s ) c )
-                ⊙ next ( dres_map ( add 1 ) c )
-                ⊙ ( s_tail_g s )
-        )
-    ) ( dres_now 0.0 ) ( dres_now 0 ) ) ;
-    
-in: force ( s_idx_g 5 ( mean_stream ( sample_stream l ) ) )
+in: force ( sample_poisson l )
 

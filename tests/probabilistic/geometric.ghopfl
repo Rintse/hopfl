@@ -2,7 +2,9 @@
 # Free variables to pass through the environment:
 #   p:  The bias for heads
 # Example run:
-#   stack run ghopfl-exe -- -v -E -e "p<-0.5" -d "0.6;0.7;0.8;0.1" -i tests/probabilistic/geometric.ghopfl -n 3
+#   stack run ghopfl-exe -- -i tests/probabilistic/geometric.ghopfl -E -e "p<-0.5" -d "0.6;0.1;0.9;0.6;0.4;0.1;0.7;0.3;0.6;0.8;0.4" -n 8
+# This run should give the following poisson the samples: (1, 2, 0, 1, 2)
+# The mean, as sampled so far, then is 6/5 = 1.2.
 
 let
     # Performs a flip until a value below p is reached
@@ -12,4 +14,29 @@ let
             else dres_map (add 1) ( dres_later f )
     ) ;
 
-in: geometric p
+    # Infinite stream of samples
+    sample_stream ← ( λ p . fix f .
+        in ( geometric p, f )
+    ) ;
+
+    # Recalculates avg given a new value 
+    avg_step ← ( λ avg . λ new_val . λ old_count .
+        dres_func2 divide 
+            ( dres_func2 add 
+                ( dres_func2 multiply 
+                    avg old_count 
+                ) new_val 
+            ) ( dres_map ( add 1 ) old_count )
+    ) ;
+
+    # Stream of better and better mean approximations
+    mean_stream ← ( ( fix f . λ mean . λ c . λ s .
+        in ( mean, 
+            f   ⊙ next ( avg_step mean ( s_head_g s ) c )
+                ⊙ next ( dres_map ( add 1 ) c )
+                ⊙ ( s_tail_g s )
+        )
+    ) ( dres_now 0.0 ) ( dres_now 0 ) ) ;
+    
+in: force ( s_idx_g 5 ( mean_stream ( sample_stream p ) ) )
+
