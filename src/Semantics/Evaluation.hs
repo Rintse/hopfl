@@ -231,4 +231,4 @@ eval exp = case exp of
 
     -- Singleton term
     Single      -> return VSingle
-
+    other       -> throwError $ "Tried to evaluate value: " ++ show other

@@ -10,6 +10,6 @@ let
     ) ) ;
 
 # Even though there are multiple tails, the result contains no laters
-in: s_head_c ( s_tail_c ( s_tail_c ( 
-    s_map_c ( ( flip2 mod ) 4 ) stream 
+in: s_head_b ( s_tail_b ( s_tail_b ( 
+    s_map_b ( ( flip2 mod ) 4 ) stream 
 ) ) )

@@ -71,4 +71,4 @@ let
     ) ) ;
 
 # Get the result from the fourth iteration (initial value counts as iteration)
-in:  s_4th_c opt_stream
+in:  s_4th_b opt_stream

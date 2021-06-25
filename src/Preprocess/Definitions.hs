@@ -39,6 +39,7 @@ inDef l a = map (\(Assign x o t) -> Assign x o (runDef t a)) l
 
 -- Perform all definition subs in the definitions after it
 inDefs :: [Assignment] -> [Assignment]
+inDefs [] = []
 inDefs [a] = [a]
 inDefs (a:l) = a : inDefs (inDef l a)
 

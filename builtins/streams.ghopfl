@@ -19,35 +19,35 @@ s_3rd_g     ← ( λ s . next s_2nd_g ⊙ ( s_tail_g s ) ) ;
 s_4th_g     ← ( λ s . next s_3rd_g ⊙ ( s_tail_g s ) ) ;
 # Etc..
 
-# map_gl : (A -> B) -> gStr A -> gStr B
+# map_g : (A -> B) -> gStr A -> gStr B
 s_map_g  ← ( λ func . fix f . λ s .
     s_cons_g_n ( func ( s_head_g s ) ) 
                ( f ⊙ ( s_tail_g s ) )
 ) ;
 
 # Coinductive streams
-s_head_c    ← ( λ s1 . s_head_g ( unbox s1 ) ) ;
-s_tail_c    ← ( λ s2 . boxI ( prevI ( s_tail_g ( unbox s2 ) ) ) ) ;
+s_head_b    ← ( λ s1 . s_head_g ( unbox s1 ) ) ;
+s_tail_b    ← ( λ s2 . boxI ( prevI ( s_tail_g ( unbox s2 ) ) ) ) ;
 
 # Still introduces nexts
-s_idx_c     ← ( fix f . λ n . λ s .
+s_idx_b     ← ( fix f . λ n . λ s .
     if ( n = 0 )
-        then in ( inL ( s_head_c s ) )
-        else in ( inR ( f ⊙ next ( n - 1 ) ⊙ next ( s_tail_c s ) ) )
+        then in ( inL ( s_head_b s ) )
+        else in ( inR ( f ⊙ next ( n - 1 ) ⊙ next ( s_tail_b s ) ) )
 ) ;
 
 # Some hard coded indexes
-s_2nd_c     ← ( λ s . s_head_c ( s_tail_c s ) ) ;
-s_3rd_c     ← ( λ s . s_head_c ( s_tail_c ( s_tail_c s ) ) ) ;
-s_4th_c     ← ( λ s . s_head_c ( s_tail_c ( s_tail_c ( s_tail_c s ) ) ) ) ;
+s_2nd_b     ← ( λ s . s_head_b ( s_tail_b s ) ) ;
+s_3rd_b     ← ( λ s . s_head_b ( s_tail_b ( s_tail_b s ) ) ) ;
+s_4th_b     ← ( λ s . s_head_b ( s_tail_b ( s_tail_b ( s_tail_b s ) ) ) ) ;
 # Etc..
 
 # Lift guarded stream functions
-s_limit_c   ← ( λ func . λ x . 
+s_limit_b   ← ( λ func . λ x . 
     boxI ( ( unbox func ) ( unbox x ) )
 ) ;
 
-# map_gl : (A -> B) -> cStr A -> cStr B
-s_map_c     ← ( λ f . s_limit_c ( boxI ( s_map_g f ) ) ) ;
+# map_c : (A -> B) -> bStr A -> bStr B
+s_map_b     ← ( λ f . s_limit_b ( boxI ( s_map_g f ) ) ) ;
 
 in: builtin
