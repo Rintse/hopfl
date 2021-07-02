@@ -1,0 +1,7 @@
+let
+    iS  ← ( fix f . λ x .
+        in ( x, f ⊙ next ( x + 1 ) )
+    ) ;
+    r   ← ( normal (0.0, 1.0) )
+
+in: ( next ( λ x . fst ( out x ) ) ) ⊙ ( snd ( out ( iS r ) ) )
