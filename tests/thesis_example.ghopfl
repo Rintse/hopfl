@@ -1,7 +1,12 @@
-let
-    iS  ← ( fix f . λ x .
-        in ( x, f ⊙ next ( x + 1 ) )
-    ) ;
-    r   ← ( normal (0.0, 1.0) )
+# Example for during the thesis presentation
+# Run:
+#   stack run ghopfl-exe -- -v -E -d "0.5" -i tests/thesis_example.ghopfl -n 1
 
-in: ( next ( λ x . fst ( out x ) ) ) ⊙ ( snd ( out ( iS r ) ) )
+let
+    iS  ← ( fix f . λ x . in ( x, f ⊙ next ( x + 1 ) ) ) ;
+    r   ← ( normal (0.0, 1.0) ) ; 
+
+    s_head ← ( λ x . fst ( out x ) ) ;
+    s_tail ← ( λ x . snd ( out x ) ) ;
+
+in: ( next s_head ) ⊙ ( s_tail ( iS r ) )
